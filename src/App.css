@@ -1,0 +1,19 @@
+a{
+  color: inherit;
+  text-decoration: none
+}
+
+.video, .canva{
+  width: 100%;
+}
+.hidden {
+  display: none !important;
+  visibility: hidden;
+}
+.captureButton{
+margin: 10px auto !important;
+display: block !important;
+}
+.iconactive, .activeTextButton{
+  color: #212985 !important;
+}
