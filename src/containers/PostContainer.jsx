@@ -1,5 +1,5 @@
 import { PureComponent } from 'react';
-import firebase from 'helpers/firebase';
+import firebase from '../helpers/firebase';
 
 
 export default class PostContainer extends PureComponent {

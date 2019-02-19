@@ -3,10 +3,10 @@ import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import Grid from '@material-ui/core/Grid';
 import { withStyles } from '@material-ui/core/styles';
-import PostContainer from 'containers/PostContainer';
-import PostCard from 'components/PostCard';
-import BottomAppNavigation from 'components/BottomAppNavigation';
-import Navigation from 'components/Navigation';
+import PostContainer from '../containers/PostContainer';
+import PostCard from '../components/PostCard';
+import BottomAppNavigation from '../components/BottomAppNavigation';
+import Navigation from '../components/Navigation';
 
 const styles = theme => ({
   layout: {

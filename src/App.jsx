@@ -5,11 +5,11 @@ import {
 } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core';
-import Home from 'layouts/Home';
-import Profile from 'layouts/Profile';
-import AddPost from 'layouts/AddPost';
-import ScrollToTop from 'components/ScrollToTop';
-import Login from 'layouts/Login';
+import Home from './layouts/Home';
+import Profile from './layouts/Profile';
+import AddPost from './layouts/AddPost';
+import ScrollToTop from './components/ScrollToTop';
+import Login from './layouts/Login';
 import './App.css';
 
 const styles = {

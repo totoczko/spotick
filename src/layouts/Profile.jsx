@@ -1,14 +1,14 @@
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types';
-import { auth } from 'helpers/firebase.js'
+import { auth } from '../helpers/firebase.js'
 import { withStyles } from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card';
 import CardHeader from '@material-ui/core/CardHeader';
 import Avatar from '@material-ui/core/Avatar';
 import red from '@material-ui/core/colors/red';
 import { Typography } from '@material-ui/core';
-import BottomAppNavigation from 'components/BottomAppNavigation';
-import Navigation from 'components/Navigation';
+import BottomAppNavigation from '../components/BottomAppNavigation';
+import Navigation from '../components/Navigation';
 
 const styles = theme => ({
 	profile: {

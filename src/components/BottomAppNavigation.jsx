@@ -9,7 +9,7 @@ import HomeIcon from '@material-ui/icons/Home';
 import PersonIcon from '@material-ui/icons/Person';
 import AddIcon from '@material-ui/icons/Add';
 import { Button } from '@material-ui/core';
-import { auth } from 'helpers/firebase.js';
+import { auth } from '../helpers/firebase.js';
 
 const styles = {
   root: {

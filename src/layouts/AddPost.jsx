@@ -1,17 +1,17 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
-import firebase from 'helpers/firebase';
+import firebase from '../helpers/firebase';
 import uuid from 'uuid';
-import { dataURItoBlob } from 'helpers/imageFiles';
+import { dataURItoBlob } from '../helpers/imageFiles';
 import Grid from '@material-ui/core/Grid';
 import { withStyles } from '@material-ui/core/styles';
 import { Button } from '@material-ui/core';
 import * as classNames from 'classnames';
-import CapturePhoto from 'components/CapturePhoto';
-import AddInfo from 'components/AddInfo';
-import BottomAppNavigation from 'components/BottomAppNavigation';
-import Navigation from 'components/Navigation';
-import AddFile from 'components/AddFile';
+import CapturePhoto from '../components/CapturePhoto';
+import AddInfo from '../components/AddInfo';
+import BottomAppNavigation from '../components/BottomAppNavigation';
+import Navigation from '../components/Navigation';
+import AddFile from '../components/AddFile';
 
 const styles = theme => ({
   layout: {
