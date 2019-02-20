@@ -115,6 +115,7 @@ class AddPost extends PureComponent {
     const imageId = uuid();
     const storage = firebase.storage();
     const imgRef = storage.ref().child('images').child(imageId);
+    const user = firebase.auth().currentUser.displayName;
     let today = new Date();
     let dd = today.getDate();
     let mm = today.getMonth() + 1;
@@ -134,7 +135,7 @@ class AddPost extends PureComponent {
         const itemsRef = firebase.database().ref('posts');
         const item = {
           id: imageId,
-          user: 'user',
+          user: user,
           data: today,
           img: url,
           geo: this.state.geo,
@@ -154,6 +155,8 @@ class AddPost extends PureComponent {
           likes: ''
         });
       })
+    }).catch((err) => {
+      console.log(err)
     });
   }
 

@@ -17,9 +17,13 @@ export default class PostContainer extends PureComponent {
 
   getPosts = () => {
     const postsRef = firebase.database().ref('posts');
+    let posts = [];
     postsRef.on('value', (snapshot) => {
-      const posts = snapshot.val();
-      this.setState({ posts });
+      snapshot.forEach((child) => {
+        posts.push(child.val());
+      })
+      posts.reverse();
+      this.setState({ posts })
     });
   }
 
