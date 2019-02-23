@@ -1,7 +1,6 @@
-import firebase from 'firebase';
-// import 'firebase/auth';
-// import 'firebase/database';
-// import 'firebase/storage';
+import firebase from 'firebase/app';
+import 'firebase/auth';
+import 'firebase/database';
 
 export const firebaseConfig = {
     apiKey: "AIzaSyBot5tOfkhdUCvJsWh6sk--42syvvJwM4M",
@@ -11,16 +10,7 @@ export const firebaseConfig = {
 };
 
 firebase.initializeApp(firebaseConfig);
+
 export const provider = new firebase.auth.GoogleAuthProvider();
 export const auth = firebase.auth();
-
-firebase.auth().onAuthStateChanged(function (user) {
-    if (user) {
-        const currentUser = auth.currentUser;
-        console.log(currentUser)
-    }
-});
-
-
-// console.log(currentUser)
 export default firebase;

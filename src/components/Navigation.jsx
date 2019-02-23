@@ -10,7 +10,7 @@ import { Button } from '@material-ui/core';
 import FavoriteIcon from '@material-ui/icons/Favorite';
 import SettingsIcon from '@material-ui/icons/Settings';
 import classnames from 'classnames';
-import logo from '../assets/images/logo-nb.png';
+import logo from 'assets/images/logo-nb.png';
 
 const styles = {
 	root: {

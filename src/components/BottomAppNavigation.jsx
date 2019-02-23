@@ -9,7 +9,6 @@ import HomeIcon from '@material-ui/icons/Home';
 import PersonIcon from '@material-ui/icons/Person';
 import AddIcon from '@material-ui/icons/Add';
 import { Button } from '@material-ui/core';
-import { auth } from '../helpers/firebase.js';
 
 const styles = {
   root: {
@@ -37,91 +36,74 @@ const styles = {
 };
 
 class BottomAppNavigation extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      logged: false
-    }
-  }
-
-  componentDidMount() {
-    auth.onAuthStateChanged((user) => {
-      if (user) {
-        this.setState({
-          logged: true
-        })
-      }
-    });
-  }
-
   render() {
     const { classes, location, handleSwitch, step, camera } = this.props;
-    const { logged } = this.state;
 
     return (
-      <BottomNavigation
-        className={classes.root}
-      >
-        {location.pathname !== '/add' ?
-          <div>
-            <NavLink
-              to="/"
-              activeClassName='iconactive'
-              exact={true}
-              className={classes.icon}
-            >
-              <BottomNavigationAction
-                className={classes.button}
-                label="Home"
-                icon={<HomeIcon />}
-              />
-            </NavLink>
-            <NavLink
-              to="/add"
-              activeClassName='iconactive'
-              exact={true}
-              className={classes.icon}
-            >
-              <BottomNavigationAction
-                label="Add"
-                className={classes.button}
-                icon={<AddIcon />}
-              />
-            </NavLink>
-            <NavLink
-              to={logged ? "/profile" : "/login"}
-              activeClassName='iconactive'
-              exact={true}
-              className={classes.icon}
-            >
-              <BottomNavigationAction
-                label="Profile"
-                className={classes.button}
-                icon={<PersonIcon />}
-              />
-            </NavLink>
-          </div> :
-          <div className={classes.flex}>
-            {camera &&
-              <Button
-                className={classes.textButton + ' ' + (step === 1 && 'activeTextButton')}
-                type="button"
-                onClick={handleSwitch(1)}
+      <>
+        <BottomNavigation
+          className={classes.root}
+        >
+          {location.pathname !== '/add' ?
+            <div>
+              <NavLink
+                to="/"
+                activeClassName='iconactive'
+                exact={true}
+                className={classes.icon}
               >
-                Zdjęcie
+                <BottomNavigationAction
+                  className={classes.button}
+                  label="Home"
+                  icon={<HomeIcon />}
+                />
+              </NavLink>
+              <NavLink
+                to="/add"
+                activeClassName='iconactive'
+                exact={true}
+                className={classes.icon}
+              >
+                <BottomNavigationAction
+                  label="Add"
+                  className={classes.button}
+                  icon={<AddIcon />}
+                />
+              </NavLink>
+              <NavLink
+                to={"/profile"}
+                activeClassName='iconactive'
+                exact={true}
+                className={classes.icon}
+              >
+                <BottomNavigationAction
+                  label="Profile"
+                  className={classes.button}
+                  icon={<PersonIcon />}
+                />
+              </NavLink>
+            </div> :
+            <div className={classes.flex}>
+              {camera &&
+                <Button
+                  className={classes.textButton + ' ' + (step === 1 && 'activeTextButton')}
+                  type="button"
+                  onClick={handleSwitch(1)}
+                >
+                  Zdjęcie
               </Button>
-            }
-            <Button
-              className={classes.textButton + ' ' + (step === 2 && 'activeTextButton')}
-              type="button"
-              onClick={handleSwitch(2)}
-            >
-              Galeria
+              }
+              <Button
+                className={classes.textButton + ' ' + (step === 2 && 'activeTextButton')}
+                type="button"
+                onClick={handleSwitch(2)}
+              >
+                Galeria
             </Button>
-          </div>
-        }
-
-      </BottomNavigation>
+            </div>
+          }
+        </BottomNavigation>
+      </>
     );
   }
 }
