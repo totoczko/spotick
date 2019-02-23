@@ -5,9 +5,10 @@ import Card from '@material-ui/core/Card';
 import CardHeader from '@material-ui/core/CardHeader';
 import Avatar from '@material-ui/core/Avatar';
 import red from '@material-ui/core/colors/red';
-import { Typography } from '@material-ui/core';
+import { Typography, CircularProgress, GridListTile, GridList } from '@material-ui/core';
 import BottomAppNavigation from 'components/BottomAppNavigation';
 import Navigation from 'components/Navigation';
+import UserPostContainer from '../containers/UserPostContainer';
 
 const styles = theme => ({
 	profile: {
@@ -20,12 +21,46 @@ const styles = theme => ({
 		backgroundColor: red[500],
 	},
 	heading: {
-		padding: 16,
-		marginLeft: 16
+		lineHeight: '1em',
+		color: '#999',
+		marginBottom: 5,
+		marginTop: 15
+	},
+	counter: {
+		lineHeight: '1em',
+		marginBottom: 15
+	},
+	gridList: {
+		margin: '0 !important'
+	},
+	postCounter: {
+		border: '1px solid #eee',
+		textAlign: 'center'
+	},
+	center: {
+		width: '100%',
+		height: '100vh',
+		position: 'absolute',
+		left: 0,
+		top: 0,
+		display: 'flex',
+		justifyContent: 'center',
+		alignItems: 'center'
 	}
 });
 
 class Profile extends PureComponent {
+
+	renderPostsCounter(count) {
+		const { classes } = this.props;
+		return (
+			<div className={classes.postCounter}>
+				<Typography variant="overline" className={classes.heading}>Moje posty</Typography>
+				<Typography variant="overline" className={classes.counter}>{count}</Typography>
+			</div>
+		)
+	}
+
 	render() {
 		const { classes } = this.props;
 		const user = JSON.parse(localStorage.getItem('user_data'));
@@ -41,7 +76,38 @@ class Profile extends PureComponent {
 						subheader={user ? user.email : ''}
 					/>
 				</Card>
-				<Typography variant="overline" gutterBottom className={classes.heading}>Moje posty</Typography>
+				<UserPostContainer>
+					{(posts, status) => {
+						if (status === 'loading') {
+							return (
+								<>
+									{this.renderPostsCounter(0)}
+									<div className={classes.center}>
+										<CircularProgress className={classes.progress} size={30} thickness={5} />
+									</div>
+								</>
+							)
+						}
+						return (
+							<>
+								{this.renderPostsCounter(posts.length)}
+								<GridList container spacing={0} className={classes.gridList}>
+									{posts.length > 0 ?
+										posts.map((post, index) => (
+											<GridListTile cols={1} key={index} className={classes.gridListTile}>
+												<img src={post.img} alt={post.shortText} />
+											</GridListTile>
+										)) : (
+											<Typography variant="subheading" className={classes.center}>
+												Brak postów do wyświetlenia
+                   </Typography>
+										)}
+								</GridList>
+							</>
+						)
+					}
+					}
+				</UserPostContainer>
 				<BottomAppNavigation />
 			</>
 		)

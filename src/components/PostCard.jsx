@@ -87,10 +87,10 @@ class PostCard extends React.Component {
           avatar={
             <Avatar
               aria-label="Recipe"
-              className={classes.avatar}>{user[0].toUpperCase()}
+              className={classes.avatar}>{user.name[0].toUpperCase()}
             </Avatar>
           }
-          title={user}
+          title={user.name}
           subheader={data}
         />
         <CardMedia

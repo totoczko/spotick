@@ -7,7 +7,8 @@ export default class PostContainer extends PureComponent {
     super(props);
 
     this.state = {
-      posts: 'loading'
+      status: 'loading',
+      posts: []
     }
   }
 
@@ -17,19 +18,21 @@ export default class PostContainer extends PureComponent {
 
   getPosts = () => {
     const postsRef = firebase.database().ref('posts');
+    const user_id = JSON.parse(localStorage.getItem('user_data')).uid;
     let posts = [];
-
     postsRef.on('value', (snapshot) => {
       snapshot.forEach((child) => {
-        posts.push(child.val());
+        if (child.val().user.id === user_id) {
+          posts.push(child.val());
+        }
       })
       posts.reverse();
-      this.setState({ posts })
+      this.setState({ posts, status: 'loaded' })
     });
   }
 
   render() {
-    return this.props.children(this.state.posts)
+    return this.props.children(this.state.posts, this.state.status)
   }
 
 }

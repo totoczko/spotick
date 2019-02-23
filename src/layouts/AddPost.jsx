@@ -115,7 +115,10 @@ class AddPost extends PureComponent {
     const imageId = uuid();
     const storage = firebase.storage();
     const imgRef = storage.ref().child('images').child(imageId);
-    const user = firebase.auth().currentUser.displayName;
+    const user = {
+      id: firebase.auth().currentUser.uid,
+      name: firebase.auth().currentUser.displayName
+    };
     let today = new Date();
     let dd = today.getDate();
     let mm = today.getMonth() + 1;
