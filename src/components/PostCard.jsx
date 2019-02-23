@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import firebase from '../helpers/firebase';
 import { withStyles } from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card';
 import CardHeader from '@material-ui/core/CardHeader';
@@ -58,8 +59,9 @@ const styles = theme => ({
   },
   likes: {
     fontSize: 12,
-    width: 80,
-    justifyContent: 'space-between'
+  },
+  liked: {
+    color: 'red'
   }
 });
 
@@ -77,10 +79,31 @@ class PostCard extends React.Component {
     this.setState(state => ({ expanded: !state.expanded }));
   };
 
+  handleLike = (post_id, user, likes) => {
+    let count_upd = likes.count;
+    let users_upd = likes.users ? likes.users : [];
+    const like_index = users_upd.indexOf(user);
+    if (like_index) {
+      count_upd++;
+      users_upd.push(user);
+    } else {
+      count_upd--;
+      users_upd.splice(like_index, 1)
+    }
+    firebase.database().ref('posts/' + post_id).update({
+      likes: {
+        count: count_upd,
+        users: users_upd
+      }
+    });
+  }
+
   render() {
     const { classes, content } = this.props;
     const { expanded } = this.state;
-    const { user, data, img, geo, shortText, longText, likes } = content;
+    const { postId, user, data, img, geo, shortText, longText, likes } = content;
+    const current_user = JSON.parse(localStorage.getItem('user_data')).uid;
+    const liked = likes.users ? likes.users.indexOf(current_user) >= 0 : false;
     return (
       <Card className={classes.card}>
         <CardHeader
@@ -111,13 +134,10 @@ class PostCard extends React.Component {
           className={classes.actions}
           disableActionSpacing
         >
-          <IconButton
-            aria-label="Polajkuj"
-            className={classes.likes}
-          >
-            <FavoriteIcon />
-            {likes}
+          <IconButton aria-label="Polajkuj" onClick={() => this.handleLike(postId, current_user, likes)}>
+            <FavoriteIcon className={liked ? classes.liked : ''} />
           </IconButton>
+          <span className={classes.likes}>{likes.count !== undefined ? likes.count : 2}</span>
           <IconButton aria-label="Udostępnij">
             <ShareIcon />
           </IconButton>

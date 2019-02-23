@@ -58,7 +58,6 @@ class AddPost extends PureComponent {
       geo: '',
       shortText: '',
       longText: '',
-      likes: '',
       step: 2,
       imgSent: false,
       camera: false
@@ -113,6 +112,7 @@ class AddPost extends PureComponent {
   handleSend = () => {
     //add photo 
     const imageId = uuid();
+    const postId = uuid();
     const storage = firebase.storage();
     const imgRef = storage.ref().child('images').child(imageId);
     const user = {
@@ -135,8 +135,9 @@ class AddPost extends PureComponent {
     imgRef.put(this.state.img).then(() => {
       imgRef.getDownloadURL().then((url) => {
         //add content
-        const itemsRef = firebase.database().ref('posts');
+        const itemsRef = firebase.database().ref('posts/' + postId);
         const item = {
+          postId: postId,
           id: imageId,
           user: user,
           data: today,
@@ -144,18 +145,20 @@ class AddPost extends PureComponent {
           geo: this.state.geo,
           shortText: this.state.shortText,
           longText: this.state.longText,
-          likes: 0
+          likes: {
+            count: 0
+          }
         }
-        itemsRef.push(item);
+        itemsRef.set(item);
         this.setState({
+          postId: '',
           id: '',
           user: '',
           data: '',
           img: '',
           geo: '',
           shortText: '',
-          longText: '',
-          likes: ''
+          longText: ''
         });
       })
     }).catch((err) => {

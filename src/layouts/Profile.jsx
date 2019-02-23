@@ -9,6 +9,7 @@ import { Typography, CircularProgress, GridListTile, GridList } from '@material-
 import BottomAppNavigation from 'components/BottomAppNavigation';
 import Navigation from 'components/Navigation';
 import UserPostContainer from '../containers/UserPostContainer';
+import classnames from 'classnames';
 
 const styles = theme => ({
 	profile: {
@@ -37,9 +38,19 @@ const styles = theme => ({
 		border: '1px solid #eee',
 		textAlign: 'center'
 	},
+	postCounterButton: {
+		width: '50%',
+		borderRight: '1px solid #eee',
+		display: 'inline-block',
+		boxSizing: 'border-box'
+	},
+	buttonActive: {
+		background: '#fafafa'
+	},
 	center: {
-		width: '100%',
-		height: '100vh',
+		width: '100% !important',
+		height: '100vh !important',
+		zIndex: -1,
 		position: 'absolute',
 		left: 0,
 		top: 0,
@@ -50,20 +61,47 @@ const styles = theme => ({
 });
 
 class Profile extends PureComponent {
+	constructor(props) {
+		super(props);
+		this.state = {
+			view: 'posts'
+		}
+	}
 
-	renderPostsCounter(count) {
+	switchView = (view) => {
+		this.setState({ view })
+	}
+
+	renderPostsCounter(count, count_likes) {
 		const { classes } = this.props;
+		const { view } = this.state;
+		const count_num = count.length === 0 ? 0 : count;
+		const count_likes_num = count_likes.length === 0 ? 0 : count_likes;
 		return (
 			<div className={classes.postCounter}>
-				<Typography variant="overline" className={classes.heading}>Moje posty</Typography>
-				<Typography variant="overline" className={classes.counter}>{count}</Typography>
-			</div>
+				<div className={classnames(classes.postCounterButton, view === 'posts' ? classes.buttonActive : '')} onClick={() => this.switchView('posts')}>
+					<Typography variant="overline" className={classes.heading}>Moje posty</Typography>
+					<Typography variant="overline" className={classes.counter}>{count_num}</Typography>
+				</div>
+				<div className={classnames(classes.postCounterButton, view === 'likes' ? classes.buttonActive : '')} onClick={() => this.switchView('likes')}>
+					<Typography variant="overline" className={classes.heading}>Polubione</Typography>
+					<Typography variant="overline" className={classes.counter}>{count_likes_num}</Typography>
+				</div>
+			</div >
 		)
 	}
 
 	render() {
+		const { view } = this.state;
 		const { classes } = this.props;
 		const user = JSON.parse(localStorage.getItem('user_data'));
+		const empty = (
+			<div className={classes.center}>
+				<Typography variant="subheading">
+					Brak postów do wyświetlenia
+			 </Typography>
+			</div>
+		)
 		return (
 			<>
 				<Navigation />
@@ -77,11 +115,11 @@ class Profile extends PureComponent {
 					/>
 				</Card>
 				<UserPostContainer>
-					{(posts, status) => {
+					{(posts, likes, status) => {
 						if (status === 'loading') {
 							return (
 								<>
-									{this.renderPostsCounter(0)}
+									{this.renderPostsCounter(0, 0)}
 									<div className={classes.center}>
 										<CircularProgress className={classes.progress} size={30} thickness={5} />
 									</div>
@@ -90,19 +128,26 @@ class Profile extends PureComponent {
 						}
 						return (
 							<>
-								{this.renderPostsCounter(posts.length)}
-								<GridList container spacing={0} className={classes.gridList}>
-									{posts.length > 0 ?
-										posts.map((post, index) => (
-											<GridListTile cols={1} key={index} className={classes.gridListTile}>
-												<img src={post.img} alt={post.shortText} />
-											</GridListTile>
-										)) : (
-											<Typography variant="subheading" className={classes.center}>
-												Brak postów do wyświetlenia
-                   </Typography>
-										)}
-								</GridList>
+								{this.renderPostsCounter(posts.length, likes.length)}
+								{view === 'posts' ? (
+									<GridList container spacing={0} className={classes.gridList}>
+										{posts.length > 0 ?
+											posts.map((post, index) => (
+												<GridListTile cols={1} key={index} className={classes.gridListTile}>
+													<img src={post.img} alt={post.shortText} />
+												</GridListTile>
+											)) : empty}
+									</GridList>
+								) : (
+										<GridList container spacing={0} className={classes.gridList}>
+											{likes.length > 0 ?
+												likes.map((post, index) => (
+													<GridListTile cols={1} key={index} className={classes.gridListTile}>
+														<img src={post.img} alt={post.shortText} />
+													</GridListTile>
+												)) : empty}
+										</GridList>
+									)}
 							</>
 						)
 					}

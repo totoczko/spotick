@@ -7,9 +7,7 @@ import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import { Button } from '@material-ui/core';
-import FavoriteIcon from '@material-ui/icons/Favorite';
 import SettingsIcon from '@material-ui/icons/Settings';
-import classnames from 'classnames';
 import logo from 'assets/images/logo-nb.png';
 
 const styles = {
@@ -81,14 +79,9 @@ function Navigation(props) {
 						</Button>
 					}
 					{location.pathname === '/profile' &&
-						<>
-							<Link to="/upvotes" >
-								<FavoriteIcon className={classnames(classes.link, classes.lefticon)} />
-							</Link>
-							<Link to="/settings" >
-								<SettingsIcon className={classes.link} />
-							</Link>
-						</>
+						<Link to="/settings" >
+							<SettingsIcon className={classes.link} />
+						</Link>
 					}
 				</Toolbar>
 			</AppBar>

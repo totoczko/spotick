@@ -8,6 +8,7 @@ export default class PostContainer extends PureComponent {
 
     this.state = {
       status: 'loading',
+      likes: [],
       posts: []
     }
   }
@@ -20,19 +21,25 @@ export default class PostContainer extends PureComponent {
     const postsRef = firebase.database().ref('posts');
     const user_id = JSON.parse(localStorage.getItem('user_data')).uid;
     let posts = [];
+    let likes = [];
     postsRef.on('value', (snapshot) => {
       snapshot.forEach((child) => {
         if (child.val().user.id === user_id) {
           posts.push(child.val());
         }
+        if (child.val().likes.users) {
+          if (child.val().likes.users.indexOf(user_id) >= 0) {
+            likes.push(child.val());
+          }
+        }
       })
       posts.reverse();
-      this.setState({ posts, status: 'loaded' })
+      this.setState({ posts, likes, status: 'loaded' })
     });
   }
 
   render() {
-    return this.props.children(this.state.posts, this.state.status)
+    return this.props.children(this.state.posts, this.state.likes, this.state.status)
   }
 
 }

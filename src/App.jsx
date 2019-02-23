@@ -31,6 +31,7 @@ class App extends Component {
   }
 
   componentDidMount() {
+    // TODO: przeniesc przy cache
     this.authFirebaseListener = auth.onAuthStateChanged((user) => {
       if (user) {
         this.setState({ user })
