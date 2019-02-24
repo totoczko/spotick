@@ -5,7 +5,7 @@ import Navigation from '../components/Navigation';
 import BottomAppNavigation from '../components/BottomAppNavigation';
 import PostContainer from '../containers/PostContainer';
 import PostCard from 'components/PostCard';
-import { CircularProgress, Button } from '@material-ui/core';
+import { CircularProgress, Typography } from '@material-ui/core';
 import PostActions from '../components/PostActions';
 
 
@@ -42,6 +42,7 @@ class Post extends Component {
   };
   render() {
     const { id, classes } = this.props;
+    const userId = localStorage.getItem('user_data') ? JSON.parse(localStorage.getItem('user_data')).uid : null;
     return (
       <>
         <PostContainer id={id}>
@@ -49,7 +50,7 @@ class Post extends Component {
             if (status === 'loading') {
               return (
                 <>
-                  <Navigation singlePost={true} openActions={this.handleClickOpen} />
+                  <Navigation singlePost={true} />
                   <div className={classes.center}>
                     <CircularProgress className={classes.progress} size={30} thickness={5} />
                   </div>
@@ -60,20 +61,27 @@ class Post extends Component {
             return (
               (post ? (
                 <>
-                  <Navigation singlePost={true} openActions={this.handleClickOpen} />
-                  <PostActions
-                    selectedValue={this.state.selectedValue}
-                    open={this.state.open}
-                    onClose={this.handleClose}
-                    id={id}
-                  />
+                  <Navigation singlePost={true} openActions={post.user.id === userId ? this.handleClickOpen : false} />
+                  {post.user.id === userId ? (
+                    <PostActions
+                      selectedValue={this.state.selectedValue}
+                      open={this.state.open}
+                      onClose={this.handleClose}
+                      id={id}
+                    />
+                  ) : ''}
                   <PostCard content={post} />
                 </>
               ) : (
                   <>
                     <Navigation onlyBack={true} />
-                    404
-              </>
+                    <Typography
+                      variant="subheading"
+                      className={classes.center}
+                    >
+                      Ten post nie istnieje!
+                  </Typography>
+                  </>
                 ))
             )
 

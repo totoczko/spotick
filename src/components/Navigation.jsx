@@ -79,7 +79,7 @@ class Navigation extends React.Component {
 								<SettingsIcon className={classes.link} />
 							</Link>
 						}
-						{singlePost &&
+						{singlePost && openActions &&
 							<MoreVertIcon className={classes.link} onClick={() => openActions()} />
 						}
 					</Toolbar>

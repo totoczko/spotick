@@ -53,7 +53,7 @@ class AddPost extends PureComponent {
     this.state = {
       imageId: '',
       postId: '',
-      user: '',
+      user: null,
       data: '',
       img: '',
       geo: '',
@@ -95,6 +95,13 @@ class AddPost extends PureComponent {
       }
     }
 
+    const current_user = JSON.parse(localStorage.getItem('user_data'));
+    this.setState({
+      user: {
+        id: current_user.uid,
+        name: current_user.displayName
+      }
+    })
   }
 
   handleChange = name => event => {
@@ -116,11 +123,6 @@ class AddPost extends PureComponent {
     const postId = uuid();
     const storage = firebase.storage();
     const imgRef = storage.ref().child('images').child(imageId);
-    const current_user = JSON.parse(localStorage.getItem('user_data'));
-    const user = {
-      id: current_user.uid,
-      name: current_user.displayName
-    };
     let today = new Date();
     today = today.getTime()
     imgRef.put(this.state.img).then(() => {
@@ -130,7 +132,7 @@ class AddPost extends PureComponent {
         const item = {
           postId: postId,
           imageid: imageId,
-          user: user,
+          user: this.state.user,
           data: today,
           img: url,
           geo: this.state.geo,
@@ -144,13 +146,13 @@ class AddPost extends PureComponent {
         this.setState({
           postId: '',
           imageId: '',
-          user: '',
           data: '',
           img: '',
           geo: '',
           shortText: '',
           longText: ''
         });
+        this.props.history.goBack()
       })
     }).catch((err) => {
       console.log(err)
@@ -207,7 +209,7 @@ class AddPost extends PureComponent {
   render() {
     const { classes } = this.props;
     const { step, imgSent, camera } = this.state;
-
+    console.log(this.state.user)
     return (
       <>
         <Navigation handleSwitch={this.handleSwitch} imgSent={imgSent} step={step} />

@@ -14,11 +14,14 @@ import './App.css';
 import Redirect from 'react-router-dom/Redirect';
 import { auth } from './helpers/firebase';
 import Post from './layouts/Post';
+import Settings from './layouts/Settings';
 
 const styles = {
   container: {
-    marginTop: 50,
-    marginBottom: 50
+    paddingTop: 50,
+    paddingBottom: 50,
+    minHeight: '100vh',
+    boxSizing: 'border-box'
   }
 };
 
@@ -77,6 +80,7 @@ class App extends Component {
             <Route exact path="/post/:id" component={PostsContainer} />
             <PrivateRoute exact path="/profile" component={Profile} />
             <PrivateRoute exact path="/add" component={AddPost} />
+            <PrivateRoute exact path="/settings" component={Settings} />
             <Route exact path="/login" component={Login} />
           </div>
         </ScrollToTop>

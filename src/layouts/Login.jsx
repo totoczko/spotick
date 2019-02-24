@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types';
 import { auth } from 'helpers/firebase.js';
+import firebase from '../helpers/firebase';
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -60,6 +61,7 @@ class Login extends Component {
     this.state = {
       login: '',
       password: '',
+      username: '',
       user: null,
       type: 'login'
     }
@@ -87,7 +89,18 @@ class Login extends Component {
       auth.currentUser.updateProfile({
         displayName: this.state.username
       })
+      const userId = auth.currentUser.uid;
+      const usersRef = firebase.database().ref('users/' + userId);
+      const user = {
+        id: userId,
+        username: this.state.username,
+        email: email
+      }
+      usersRef.set(user).then(() => {
+        this.props.history.goBack().reload();
+      });
     });
+
   }
 
   toggleType = () => {

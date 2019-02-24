@@ -1,6 +1,5 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import firebase from '../helpers/firebase';
 import { withStyles } from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card';
 import CardHeader from '@material-ui/core/CardHeader';
@@ -12,10 +11,10 @@ import Avatar from '@material-ui/core/Avatar';
 import IconButton from '@material-ui/core/IconButton';
 import Typography from '@material-ui/core/Typography';
 import red from '@material-ui/core/colors/red';
-import FavoriteIcon from '@material-ui/icons/Favorite';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import PlaceIcon from '@material-ui/icons/Place';
 import classnames from 'classnames';
+import LikeCounter from './LikeCounter';
 
 const styles = theme => ({
   card: {
@@ -55,12 +54,6 @@ const styles = theme => ({
   iconGeo: {
     width: 14,
     height: 14
-  },
-  likes: {
-    fontSize: 12,
-  },
-  liked: {
-    color: 'red'
   }
 });
 
@@ -78,25 +71,6 @@ class PostCard extends React.Component {
     this.setState(state => ({ expanded: !state.expanded }));
   };
 
-  handleLike = (post_id, user, likes) => {
-    let count_upd = likes.count;
-    let users_upd = likes.users ? likes.users : [];
-    const like_index = users_upd.indexOf(user);
-    if (like_index) {
-      count_upd++;
-      users_upd.push(user);
-    } else {
-      count_upd--;
-      users_upd.splice(like_index, 1)
-    }
-    firebase.database().ref('posts/' + post_id).update({
-      likes: {
-        count: count_upd,
-        users: users_upd
-      }
-    });
-  }
-
   formatData = (data) => {
     let now = new Date();
     let formatted = new Date(data);
@@ -108,8 +82,6 @@ class PostCard extends React.Component {
     var diff = (now.getTime() - formatted.getTime()) / 1000;
     const diff_min = Math.abs(Math.round(diff / 60));
     const pl = (num) => {
-      let str = num.toString();
-      str = str.substr(str.length - 1)
       if (num === 1) {
         return 'ę';
       } else if (num > 1 && num < 5) {
@@ -132,24 +104,16 @@ class PostCard extends React.Component {
     const { classes, content } = this.props;
     const { expanded } = this.state;
     const { postId, user, data, img, geo, shortText, longText, likes } = content;
-    const current_user = JSON.parse(localStorage.getItem('user_data')).uid;
-    const liked = likes.users ? likes.users.indexOf(current_user) >= 0 : false;
     return (
       <Card className={classes.card}>
         <CardHeader
           avatar={
-            <Avatar
-              aria-label="Recipe"
-              className={classes.avatar}>{user.name[0].toUpperCase()}
-            </Avatar>
+            <Avatar className={classes.avatar}>{user && user.name[0].toUpperCase()}</Avatar>
           }
           title={user.name}
           subheader={this.formatData(data)}
         />
-        <CardMedia
-          className={classes.media}
-          image={img}
-          title={shortText}
+        <CardMedia className={classes.media} image={img} title={shortText}
         />
         <CardContent>
           <p className={classes.localization}>
@@ -160,14 +124,8 @@ class PostCard extends React.Component {
             {shortText}
           </Typography>
         </CardContent>
-        <CardActions
-          className={classes.actions}
-          disableActionSpacing
-        >
-          <IconButton aria-label="Polajkuj" onClick={() => this.handleLike(postId, current_user, likes)}>
-            <FavoriteIcon className={liked ? classes.liked : ''} />
-          </IconButton>
-          <span className={classes.likes}>{likes.count !== undefined ? likes.count : 2}</span>
+        <CardActions className={classes.actions} disableActionSpacing>
+          <LikeCounter likes={likes} postId={postId} />
           <IconButton
             className={classnames(classes.expand, {
               [classes.expandOpen]: expanded,
