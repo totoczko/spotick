@@ -5,9 +5,10 @@ import { withRouter } from "react-router";
 import { withStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
-import Typography from '@material-ui/core/Typography';
 import { Button } from '@material-ui/core';
 import SettingsIcon from '@material-ui/icons/Settings';
+import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
+import MoreVertIcon from '@material-ui/icons/MoreVert';
 import logo from 'assets/images/logo-nb.png';
 
 const styles = {
@@ -15,7 +16,9 @@ const styles = {
 		flexGrow: 1
 	},
 	appbar: {
-		backgroundColor: '#CFDEF5'
+		backgroundColor: '#fafafa',
+		boxShadow: 'none',
+		borderBottom: '1px solid #eee',
 	},
 	grow: {
 		flexGrow: 1,
@@ -36,57 +39,54 @@ const styles = {
 	},
 	lefticon: {
 		marginRight: 30
+	},
+	toolbar: {
+		justifyContent: 'space-between'
 	}
 };
 
-function Navigation(props) {
-	const { classes, location, handleSwitch, imgSent, step } = props;
-	return (
-		<div className={classes.root}>
-			<AppBar
-				position="fixed"
-				className={classes.appbar}
-			>
-				<Toolbar>
-					<Typography
-						variant="h6"
-						color="inherit"
-						className={classes.grow}
-					>
-						<Link
-							to="/"
-							className={classes.logo}
-						>
-							<img src={logo} alt="" className={classes.logoimage} />
-						</Link>
-					</Typography>
-					{location.pathname === '/add' && imgSent && step !== 3
-						&&
-						<Button
-							className={classes.link}
-							onClick={handleSwitch(3)}
-						>
-							Krok 2
+class Navigation extends React.Component {
+	goBack = () => {
+		this.props.history.goBack();
+	}
+
+	render() {
+		const { classes, location, handleSwitch, imgSent, step, singlePost } = this.props;
+		return (
+			<div className={classes.root}>
+				<AppBar position="fixed" className={classes.appbar}>
+					<Toolbar className={classes.toolbar}>
+						{!singlePost &&
+							<Link to="/" className={classes.logo}>
+								<img src={logo} alt="" className={classes.logoimage} />
+							</Link>
+						}
+						{singlePost &&
+							<ArrowBackIosIcon className={classes.link} onClick={() => this.goBack()} />
+						}
+						{location.pathname === '/add' && imgSent && step !== 3 &&
+							<Button className={classes.link} onClick={handleSwitch(3)}>
+								Krok 2
 						</Button>
-					}
-					{location.pathname === '/add' && imgSent && step === 3
-						&&
-						<Button
-							className={classes.link}
-							onClick={handleSwitch(1)}
-						>
-							Wróć
+						}
+						{location.pathname === '/add' && imgSent && step === 3 &&
+							<Button className={classes.link} onClick={handleSwitch(1)}>
+								Wróć
 						</Button>
-					}
-					{location.pathname === '/profile' &&
-						<Link to="/settings" >
-							<SettingsIcon className={classes.link} />
-						</Link>
-					}
-				</Toolbar>
-			</AppBar>
-		</div>
-	);
+						}
+						{location.pathname === '/profile' &&
+							<Link to="/settings" >
+								<SettingsIcon className={classes.link} />
+							</Link>
+						}
+						{singlePost &&
+							<MoreVertIcon className={classes.link} />
+						}
+					</Toolbar>
+				</AppBar>
+			</div>
+		);
+	}
 }
 
 Navigation.propTypes = {
@@ -94,7 +94,8 @@ Navigation.propTypes = {
 	location: PropTypes.object,
 	handleSwitch: PropTypes.func,
 	imgSent: PropTypes.bool,
-	step: PropTypes.number
+	step: PropTypes.number,
+	singlePost: PropTypes.bool
 };
 
 const navigationWithRouter = withRouter(Navigation);

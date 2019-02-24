@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import Grid from '@material-ui/core/Grid';
 import { withStyles } from '@material-ui/core/styles';
-import PostContainer from 'containers/PostContainer';
+import PostsContainer from 'containers/PostsContainer';
 import PostCard from 'components/PostCard';
 import BottomAppNavigation from 'components/BottomAppNavigation';
 import Navigation from 'components/Navigation';
@@ -50,7 +50,7 @@ function Home(props) {
     <div className={classNames(classes.layout, classes.cardGrid)}>
       <>
         <Navigation />
-        <PostContainer>
+        <PostsContainer>
           {(posts) => (
             posts === 'loading' ? (
               <div className={classes.center}>
@@ -59,7 +59,7 @@ function Home(props) {
             ) : (
                 <Grid container spacing={40} className={classes.cardItem}>
                   {posts.length > 0 ?
-                    Object.values(posts).map((post, index) => (
+                    posts.map((post, index) => (
                       <Grid item key={index} xs={12} sm={6} md={4} lg={3} className={classes.cardItemGrid}>
                         <PostCard content={post} />
                       </Grid>
@@ -70,13 +70,12 @@ function Home(props) {
                       >
                         Brak postów do wyświetlenia
                   </Typography>
-                      // <CircularProgress className={classNames(classes.progress, classes.spinner)} size={30} thickness={5} />
                     )}
                 </Grid>
               )
           )
           }
-        </PostContainer>
+        </PostsContainer>
         <BottomAppNavigation />
       </>
     </div>

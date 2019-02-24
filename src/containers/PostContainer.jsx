@@ -2,34 +2,32 @@ import { PureComponent } from 'react';
 import firebase from '../helpers/firebase';
 
 
-export default class PostContainer extends PureComponent {
+export default class PostsContainer extends PureComponent {
   constructor(props) {
     super(props);
 
     this.state = {
-      posts: 'loading'
+      post: 'loading'
     }
   }
 
   componentDidMount() {
-    this.getPosts();
+    this.getPost();
   }
 
-  getPosts = () => {
-    const postsRef = firebase.database().ref('posts');
-    let posts = [];
+  getPost = () => {
+    const { id } = this.props;
+    const postRef = firebase.database().ref('posts/' + id);
+    let post = [];
 
-    postsRef.on('value', (snapshot) => {
-      snapshot.forEach((child) => {
-        posts.push(child.val());
-      })
-      posts.reverse();
-      this.setState({ posts })
+    postRef.on('value', (snapshot) => {
+      post = snapshot.val();
+      this.setState({ post })
     });
   }
 
   render() {
-    return this.props.children(this.state.posts)
+    return this.props.children(this.state.post)
   }
 
 }

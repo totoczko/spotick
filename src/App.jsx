@@ -13,6 +13,7 @@ import Login from 'layouts/Login';
 import './App.css';
 import Redirect from 'react-router-dom/Redirect';
 import { auth } from './helpers/firebase';
+import Post from './layouts/Post';
 
 const styles = {
   container: {
@@ -64,11 +65,16 @@ class App extends Component {
         }
       />
     );
+    const PostsContainer = ({ match }) => (
+      <Post id={match.params.id} />
+    );
+
     return (
       <Router>
         <ScrollToTop>
           <div className={classes.container}>
             <Route exact path="/" component={Home} />
+            <Route exact path="/post/:id" component={PostsContainer} />
             <PrivateRoute exact path="/profile" component={Profile} />
             <PrivateRoute exact path="/add" component={AddPost} />
             <Route exact path="/login" component={Login} />

@@ -2,7 +2,7 @@ import { PureComponent } from 'react';
 import firebase from '../helpers/firebase';
 
 
-export default class PostContainer extends PureComponent {
+export default class PostsContainer extends PureComponent {
   constructor(props) {
     super(props);
 

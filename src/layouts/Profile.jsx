@@ -8,8 +8,9 @@ import red from '@material-ui/core/colors/red';
 import { Typography, CircularProgress, GridListTile, GridList } from '@material-ui/core';
 import BottomAppNavigation from 'components/BottomAppNavigation';
 import Navigation from 'components/Navigation';
-import UserPostContainer from '../containers/UserPostContainer';
+import UserPostsContainer from '../containers/UserPostsContainer';
 import classnames from 'classnames';
+import { Link } from 'react-router-dom';
 
 const styles = theme => ({
 	profile: {
@@ -57,6 +58,11 @@ const styles = theme => ({
 		display: 'flex',
 		justifyContent: 'center',
 		alignItems: 'center'
+	},
+	gridImg: {
+		objectFit: 'cover',
+		width: '100%',
+		height: '100%'
 	}
 });
 
@@ -95,13 +101,26 @@ class Profile extends PureComponent {
 		const { view } = this.state;
 		const { classes } = this.props;
 		const user = JSON.parse(localStorage.getItem('user_data'));
-		const empty = (
-			<div className={classes.center}>
-				<Typography variant="subheading">
-					Brak postów do wyświetlenia
-			 </Typography>
-			</div>
-		)
+		const renderList = (listType) => {
+			return (
+				<GridList container spacing={0} className={classes.gridList}>
+					{listType.length > 0 ?
+						listType.map((post, index) => (
+							<GridListTile cols={1} key={index} className={classes.gridListTile}>
+								<Link to={'/post/' + post.postId}>
+									<img src={post.img} alt={post.shortText} className={classes.gridImg} />
+								</Link>
+							</GridListTile>
+						)) : (
+							<div className={classes.center}>
+								<Typography variant="subheading">
+									Brak postów do wyświetlenia
+						 </Typography>
+							</div>
+						)}
+				</GridList>
+			)
+		}
 		return (
 			<>
 				<Navigation />
@@ -114,7 +133,7 @@ class Profile extends PureComponent {
 						subheader={user ? user.email : ''}
 					/>
 				</Card>
-				<UserPostContainer>
+				<UserPostsContainer>
 					{(posts, likes, status) => {
 						if (status === 'loading') {
 							return (
@@ -129,30 +148,12 @@ class Profile extends PureComponent {
 						return (
 							<>
 								{this.renderPostsCounter(posts.length, likes.length)}
-								{view === 'posts' ? (
-									<GridList container spacing={0} className={classes.gridList}>
-										{posts.length > 0 ?
-											posts.map((post, index) => (
-												<GridListTile cols={1} key={index} className={classes.gridListTile}>
-													<img src={post.img} alt={post.shortText} />
-												</GridListTile>
-											)) : empty}
-									</GridList>
-								) : (
-										<GridList container spacing={0} className={classes.gridList}>
-											{likes.length > 0 ?
-												likes.map((post, index) => (
-													<GridListTile cols={1} key={index} className={classes.gridListTile}>
-														<img src={post.img} alt={post.shortText} />
-													</GridListTile>
-												)) : empty}
-										</GridList>
-									)}
+								{view === 'posts' ? renderList(posts) : renderList(likes)}
 							</>
 						)
 					}
 					}
-				</UserPostContainer>
+				</UserPostsContainer>
 				<BottomAppNavigation />
 			</>
 		)
