@@ -51,17 +51,17 @@ class Navigation extends React.Component {
 	}
 
 	render() {
-		const { classes, location, handleSwitch, imgSent, step, singlePost } = this.props;
+		const { classes, location, handleSwitch, imgSent, step, singlePost, openActions, onlyBack } = this.props;
 		return (
 			<div className={classes.root}>
 				<AppBar position="fixed" className={classes.appbar}>
 					<Toolbar className={classes.toolbar}>
-						{!singlePost &&
+						{!singlePost && !onlyBack &&
 							<Link to="/" className={classes.logo}>
 								<img src={logo} alt="" className={classes.logoimage} />
 							</Link>
 						}
-						{singlePost &&
+						{(singlePost || onlyBack) &&
 							<ArrowBackIosIcon className={classes.link} onClick={() => this.goBack()} />
 						}
 						{location.pathname === '/add' && imgSent && step !== 3 &&
@@ -80,7 +80,7 @@ class Navigation extends React.Component {
 							</Link>
 						}
 						{singlePost &&
-							<MoreVertIcon className={classes.link} />
+							<MoreVertIcon className={classes.link} onClick={() => openActions()} />
 						}
 					</Toolbar>
 				</AppBar>
@@ -95,7 +95,9 @@ Navigation.propTypes = {
 	handleSwitch: PropTypes.func,
 	imgSent: PropTypes.bool,
 	step: PropTypes.number,
-	singlePost: PropTypes.bool
+	singlePost: PropTypes.bool,
+	openActions: PropTypes.func,
+	onlyBack: PropTypes.bool
 };
 
 const navigationWithRouter = withRouter(Navigation);

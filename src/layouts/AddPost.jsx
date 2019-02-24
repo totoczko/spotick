@@ -51,7 +51,8 @@ class AddPost extends PureComponent {
     super(props);
 
     this.state = {
-      id: '',
+      imageId: '',
+      postId: '',
       user: '',
       data: '',
       img: '',
@@ -115,30 +116,20 @@ class AddPost extends PureComponent {
     const postId = uuid();
     const storage = firebase.storage();
     const imgRef = storage.ref().child('images').child(imageId);
+    const current_user = JSON.parse(localStorage.getItem('user_data'));
     const user = {
-      id: firebase.auth().currentUser.uid,
-      name: firebase.auth().currentUser.displayName
+      id: current_user.uid,
+      name: current_user.displayName
     };
     let today = new Date();
-    let dd = today.getDate();
-    let mm = today.getMonth() + 1;
-    let yyyy = today.getFullYear();
-    let hh = today.getHours();
-    let ii = today.getMinutes();
-    if (dd < 10) {
-      dd = '0' + dd
-    };
-    if (mm < 10) {
-      mm = '0' + mm
-    };
-    today = mm + '/' + dd + '/' + yyyy + ' ' + hh + ':' + ii;
+    today = today.getTime()
     imgRef.put(this.state.img).then(() => {
       imgRef.getDownloadURL().then((url) => {
         //add content
         const itemsRef = firebase.database().ref('posts/' + postId);
         const item = {
           postId: postId,
-          id: imageId,
+          imageid: imageId,
           user: user,
           data: today,
           img: url,
@@ -152,7 +143,7 @@ class AddPost extends PureComponent {
         itemsRef.set(item);
         this.setState({
           postId: '',
-          id: '',
+          imageId: '',
           user: '',
           data: '',
           img: '',

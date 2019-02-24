@@ -13,7 +13,6 @@ import IconButton from '@material-ui/core/IconButton';
 import Typography from '@material-ui/core/Typography';
 import red from '@material-ui/core/colors/red';
 import FavoriteIcon from '@material-ui/icons/Favorite';
-import ShareIcon from '@material-ui/icons/Share';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import PlaceIcon from '@material-ui/icons/Place';
 import classnames from 'classnames';
@@ -98,6 +97,37 @@ class PostCard extends React.Component {
     });
   }
 
+  formatData = (data) => {
+    let now = new Date();
+    let formatted = new Date(data);
+    let dd = formatted.getDate();
+    let mm = formatted.getMonth() + 1;
+    if (dd < 10) {
+      dd = '0' + dd
+    };
+    var diff = (now.getTime() - formatted.getTime()) / 1000;
+    const diff_min = Math.abs(Math.round(diff / 60));
+    const pl = (num) => {
+      let str = num.toString();
+      str = str.substr(str.length - 1)
+      if (num === 1) {
+        return 'ę';
+      } else if (num > 1 && num < 5) {
+        return 'y';
+      }
+      return '';
+    }
+    let result = diff_min + ' minut' + pl(diff_min) + ' temu';
+    if (diff_min >= 60 && diff_min < (60 * 24)) {
+      const diff_hour = Math.abs(Math.round(diff / (60 * 60)));
+      result = diff_hour + ' godzin' + pl(diff_hour) + ' temu'
+    } else if (diff_min >= (60 * 24)) {
+      const month = ['stycznia', 'lutego', 'marca', 'kwietnia', 'maja', 'czerwca', 'lipca', 'sierpnia', 'września', 'października', 'listopada', 'grudnia']
+      result = dd + ' ' + month[mm]
+    }
+    return result
+  }
+
   render() {
     const { classes, content } = this.props;
     const { expanded } = this.state;
@@ -114,7 +144,7 @@ class PostCard extends React.Component {
             </Avatar>
           }
           title={user.name}
-          subheader={data}
+          subheader={this.formatData(data)}
         />
         <CardMedia
           className={classes.media}
@@ -138,9 +168,6 @@ class PostCard extends React.Component {
             <FavoriteIcon className={liked ? classes.liked : ''} />
           </IconButton>
           <span className={classes.likes}>{likes.count !== undefined ? likes.count : 2}</span>
-          <IconButton aria-label="Udostępnij">
-            <ShareIcon />
-          </IconButton>
           <IconButton
             className={classnames(classes.expand, {
               [classes.expandOpen]: expanded,

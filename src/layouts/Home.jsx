@@ -51,30 +51,32 @@ function Home(props) {
       <>
         <Navigation />
         <PostsContainer>
-          {(posts) => (
-            posts === 'loading' ? (
-              <div className={classes.center}>
-                <CircularProgress className={classes.progress} size={30} thickness={5} />
-              </div>
-            ) : (
-                <Grid container spacing={40} className={classes.cardItem}>
-                  {posts.length > 0 ?
-                    posts.map((post, index) => (
-                      <Grid item key={index} xs={12} sm={6} md={4} lg={3} className={classes.cardItemGrid}>
-                        <PostCard content={post} />
-                      </Grid>
-                    )) : (
-                      <Typography
-                        variant="subheading"
-                        className={classes.center}
-                      >
-                        Brak postów do wyświetlenia
-                  </Typography>
-                    )}
-                </Grid>
+          {(posts, status) => {
+            if (status === 'loading') {
+              return (
+                <div className={classes.center}>
+                  <CircularProgress className={classes.progress} size={30} thickness={5} />
+                </div>
               )
-          )
-          }
+            }
+            return (
+              <Grid container spacing={40} className={classes.cardItem}>
+                {posts.length > 0 ?
+                  posts.map((post, index) => (
+                    <Grid item key={index} xs={12} sm={6} md={4} lg={3} className={classes.cardItemGrid}>
+                      <PostCard content={post} />
+                    </Grid>
+                  )) : (
+                    <Typography
+                      variant="subheading"
+                      className={classes.center}
+                    >
+                      Brak postów do wyświetlenia
+                  </Typography>
+                  )}
+              </Grid>
+            )
+          }}
         </PostsContainer>
         <BottomAppNavigation />
       </>

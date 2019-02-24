@@ -18,7 +18,7 @@ export default class PostsContainer extends PureComponent {
   }
 
   getPosts = () => {
-    const postsRef = firebase.database().ref('posts');
+    const postsRef = firebase.database().ref('posts').orderByChild('data');
     const user_id = JSON.parse(localStorage.getItem('user_data')).uid;
     let posts = [];
     let likes = [];

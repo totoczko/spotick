@@ -5,7 +5,8 @@ import Navigation from '../components/Navigation';
 import BottomAppNavigation from '../components/BottomAppNavigation';
 import PostContainer from '../containers/PostContainer';
 import PostCard from 'components/PostCard';
-import { CircularProgress } from '@material-ui/core';
+import { CircularProgress, Button } from '@material-ui/core';
+import PostActions from '../components/PostActions';
 
 
 const styles = theme => ({
@@ -22,21 +23,61 @@ const styles = theme => ({
 });
 
 class Post extends Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      open: false,
+      selectedValue: '',
+    }
+  }
+  handleClickOpen = () => {
+    this.setState({
+      open: true,
+    });
+  };
+
+  handleClose = value => {
+    this.setState({ selectedValue: value, open: false });
+  };
   render() {
     const { id, classes } = this.props;
     return (
       <>
-        <Navigation singlePost={true} />
         <PostContainer id={id}>
-          {(post) => (
-            post === 'loading' ? (
-              <div className={classes.center}>
-                <CircularProgress className={classes.progress} size={30} thickness={5} />
-              </div>
-            ) : (
-                <PostCard content={post} />
+          {(post, status) => {
+            if (status === 'loading') {
+              return (
+                <>
+                  <Navigation singlePost={true} openActions={this.handleClickOpen} />
+                  <div className={classes.center}>
+                    <CircularProgress className={classes.progress} size={30} thickness={5} />
+                  </div>
+                </>
               )
-          )}
+            }
+
+            return (
+              (post ? (
+                <>
+                  <Navigation singlePost={true} openActions={this.handleClickOpen} />
+                  <PostActions
+                    selectedValue={this.state.selectedValue}
+                    open={this.state.open}
+                    onClose={this.handleClose}
+                    id={id}
+                  />
+                  <PostCard content={post} />
+                </>
+              ) : (
+                  <>
+                    <Navigation onlyBack={true} />
+                    404
+              </>
+                ))
+            )
+
+          }}
         </PostContainer>
         <BottomAppNavigation />
       </>

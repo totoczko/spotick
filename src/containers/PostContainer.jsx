@@ -7,7 +7,8 @@ export default class PostsContainer extends PureComponent {
     super(props);
 
     this.state = {
-      post: 'loading'
+      status: 'loading',
+      post: null
     }
   }
 
@@ -22,12 +23,12 @@ export default class PostsContainer extends PureComponent {
 
     postRef.on('value', (snapshot) => {
       post = snapshot.val();
-      this.setState({ post })
+      this.setState({ post, status: 'loaded' })
     });
   }
 
   render() {
-    return this.props.children(this.state.post)
+    return this.props.children(this.state.post, this.state.status)
   }
 
 }
