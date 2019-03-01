@@ -16,10 +16,14 @@ export default class PostsContainer extends PureComponent {
     this.getPosts();
   }
 
+  componentWillUnmount() {
+    this.postsRef.off();
+  }
+
   getPosts = () => {
-    const postsRef = firebase.database().ref('posts').orderByChild('data');
+    this.postsRef = firebase.database().ref('posts').orderByChild('data');
     let posts = [];
-    postsRef.on('value', (snapshot) => {
+    this.postsRef.on('value', (snapshot) => {
       snapshot.forEach((child) => {
         posts.push(child.val());
       })

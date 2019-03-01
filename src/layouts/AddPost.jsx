@@ -209,7 +209,6 @@ class AddPost extends PureComponent {
   render() {
     const { classes } = this.props;
     const { step, imgSent, camera } = this.state;
-    console.log(this.state.user)
     return (
       <>
         <Navigation handleSwitch={this.handleSwitch} imgSent={imgSent} step={step} />

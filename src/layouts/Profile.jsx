@@ -102,7 +102,7 @@ class Profile extends PureComponent {
     const user = JSON.parse(localStorage.getItem('user_data'));
     const renderList = (listType) => {
       return (
-        <GridList container spacing={0} className={classes.gridList}>
+        <GridList spacing={0} className={classes.gridList}>
           {listType.length > 0 ?
             listType.map((post, index) => (
               <GridListTile cols={1} key={index} className={classes.gridListTile}>

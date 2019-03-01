@@ -12,6 +12,7 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import { Button, TextField } from '@material-ui/core';
 import SaveIcon from '@material-ui/icons/Save';
 import { red } from '@material-ui/core/colors';
+import { auth } from '../helpers/firebase';
 
 const styles = theme => ({
   root: {
@@ -77,7 +78,10 @@ class Settings extends Component {
     expanded: null,
     login: null,
     email: null,
-    password: null
+    password: null,
+    newLogin: null,
+    newEmail: null,
+    newPassword: null
   };
 
   componentDidMount() {
@@ -107,24 +111,50 @@ class Settings extends Component {
     });
   };
 
+  handleUpdateFirebase = (type) => {
+    const userId = JSON.parse(localStorage.getItem('user_data')).uid;
+    if (type === 'email') {
+      firebase.database().ref('users/' + userId).update({
+        email: this.state.newEmail
+      })
+      firebase.auth().currentUser.updateEmail(this.state.newEmail);
+    } else if (type === 'login') {
+      firebase.database().ref('users/' + userId).update({
+        username: this.state.newLogin
+      })
+      firebase.auth().currentUser.updateProfile({
+        displayName: this.state.newLogin
+      })
+      this.authFirebaseListener = auth.onAuthStateChanged((user) => {
+        if (user) {
+          localStorage.setItem('user_data', JSON.stringify(user));
+        }
+      });
+    }
+
+  };
+
   render() {
     const { classes } = this.props;
     const { expanded, login, email } = this.state;
     const settings = [
       {
         type: 'login',
+        new: 'newLogin',
         heading: 'Login',
         placeholder: login,
         description: 'Zmień nazwę użytkownika:'
       },
       {
         type: 'email',
+        new: 'newEmail',
         heading: 'Email',
         placeholder: email,
         description: 'Zmień swój adres e-mail:'
       },
       {
         type: 'password',
+        new: 'newPassword',
         heading: 'Zmień hasło',
         placeholder: '',
         description: 'Zmień hasło:'
@@ -147,21 +177,21 @@ class Settings extends Component {
                 <Typography className={classes.secondaryHeading}>{setting.placeholder}</Typography>
               </ExpansionPanelSummary>
               <ExpansionPanelDetails>
-                <Typography className={classes.expanded}>
+                <div className={classes.expanded}>
                   {setting.description}
                   <div className={classes.form}>
                     <TextField
-                      id="outlined-name"
+                      id={`outlined-name-${index}`}
                       label={setting.heading}
                       className={classes.textField}
-                      onChange={this.handleEdit(setting.type)}
+                      onChange={this.handleEdit(setting.new)}
                       margin="normal"
                       variant="outlined"
                       type={setting.type === 'password' ? 'password' : 'text'}
                     />
-                    <Button className={classes.button}><SaveIcon className={classes.iconSmall} /></Button>
+                    <Button className={classes.button} onClick={() => this.handleUpdateFirebase(setting.type)}><SaveIcon className={classes.iconSmall} /></Button>
                   </div>
-                </Typography>
+                </div>
               </ExpansionPanelDetails>
             </ExpansionPanel>
           ))}

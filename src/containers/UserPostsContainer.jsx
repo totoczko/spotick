@@ -17,12 +17,16 @@ export default class PostsContainer extends PureComponent {
     this.getPosts();
   }
 
+  componentWillUnmount() {
+    this.postsRef.off();
+  }
+
   getPosts = () => {
-    const postsRef = firebase.database().ref('posts').orderByChild('data');
+    this.postsRef = firebase.database().ref('posts').orderByChild('data');
     const user_id = JSON.parse(localStorage.getItem('user_data')).uid;
     let posts = [];
     let likes = [];
-    postsRef.on('value', (snapshot) => {
+    this.postsRef.on('value', (snapshot) => {
       snapshot.forEach((child) => {
         if (child.val().user.id === user_id) {
           posts.push(child.val());
@@ -34,6 +38,7 @@ export default class PostsContainer extends PureComponent {
         }
       })
       posts.reverse();
+      likes.reverse();
       this.setState({ posts, likes, status: 'loaded' })
     });
   }

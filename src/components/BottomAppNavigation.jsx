@@ -8,7 +8,7 @@ import BottomNavigationAction from '@material-ui/core/BottomNavigationAction';
 import HomeIcon from '@material-ui/icons/Home';
 import PersonIcon from '@material-ui/icons/Person';
 import AddIcon from '@material-ui/icons/Add';
-import { Button } from '@material-ui/core';
+import classNames from 'classnames';
 
 const styles = {
   root: {
@@ -42,68 +42,62 @@ class BottomAppNavigation extends React.Component {
 
     return (
       <>
-        <BottomNavigation
-          className={classes.root}
-        >
-          {location.pathname !== '/add' ?
-            <div>
-              <NavLink
+        {location.pathname !== '/add' ?
+          <BottomNavigation
+            className={classes.root}
+          >
+            <BottomNavigationAction
+              className={classes.button}
+              label="Home"
+              icon={<NavLink
                 to="/"
                 activeClassName='iconactive'
                 exact={true}
                 className={classes.icon}
-              >
-                <BottomNavigationAction
-                  className={classes.button}
-                  label="Home"
-                  icon={<HomeIcon />}
-                />
-              </NavLink>
-              <NavLink
+              ><HomeIcon /></NavLink>}
+            />
+            <BottomNavigationAction
+              label="Add"
+              className={classes.button}
+              icon={<NavLink
                 to="/add"
                 activeClassName='iconactive'
                 exact={true}
                 className={classes.icon}
-              >
-                <BottomNavigationAction
-                  label="Add"
-                  className={classes.button}
-                  icon={<AddIcon />}
-                />
-              </NavLink>
-              <NavLink
+              ><AddIcon /></NavLink>}
+            />
+            <BottomNavigationAction
+              label="Profile"
+              className={classes.button}
+              icon={<NavLink
                 to={"/profile"}
                 activeClassName='iconactive'
                 exact={true}
                 className={classes.icon}
-              >
-                <BottomNavigationAction
-                  label="Profile"
-                  className={classes.button}
-                  icon={<PersonIcon />}
-                />
-              </NavLink>
-            </div> :
-            <div className={classes.flex}>
-              {camera &&
-                <Button
-                  className={classes.textButton + ' ' + (step === 1 && 'activeTextButton')}
-                  type="button"
-                  onClick={handleSwitch(1)}
-                >
-                  Zdjęcie
-              </Button>
-              }
-              <Button
-                className={classes.textButton + ' ' + (step === 2 && 'activeTextButton')}
-                type="button"
-                onClick={handleSwitch(2)}
-              >
-                Galeria
-            </Button>
-            </div>
-          }
-        </BottomNavigation>
+              ><PersonIcon /></NavLink>}
+            />
+          </BottomNavigation>
+          :
+          <BottomNavigation
+            className={classes.root}
+          >
+            {camera &&
+              <BottomNavigationAction
+                label="Profile"
+                className={classNames(classes.button, classes.textButton + ' ' + (step === 1 && 'activeTextButton'))}
+                onClick={handleSwitch(1)}
+                icon={"Zdjęcie"}
+              />
+            }
+            <BottomNavigationAction
+              label="Profile"
+              className={classNames(classes.button, classes.textButton + ' ' + (step === 2 && 'activeTextButton'))}
+              icon={"Galeria"}
+              onClick={handleSwitch(2)}
+            />
+          </BottomNavigation>
+        }
+
       </>
     );
   }

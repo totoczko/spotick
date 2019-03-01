@@ -16,12 +16,16 @@ export default class PostsContainer extends PureComponent {
     this.getPost();
   }
 
+  componentWillUnmount() {
+    this.postRef.off();
+  }
+
   getPost = () => {
     const { id } = this.props;
-    const postRef = firebase.database().ref('posts/' + id);
+    this.postRef = firebase.database().ref('posts/' + id);
     let post = [];
 
-    postRef.on('value', (snapshot) => {
+    this.postRef.on('value', (snapshot) => {
       post = snapshot.val();
       this.setState({ post, status: 'loaded' })
     });

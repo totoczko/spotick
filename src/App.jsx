@@ -68,16 +68,13 @@ class App extends Component {
         }
       />
     );
-    const PostsContainer = ({ match }) => (
-      <Post id={match.params.id} />
-    );
 
     return (
       <Router>
         <ScrollToTop>
           <div className={classes.container}>
             <Route exact path="/" component={Home} />
-            <Route exact path="/post/:id" component={PostsContainer} />
+            <Route exact path="/post/:id" component={({ match }) => <Post id={match.params.id} />} />
             <PrivateRoute exact path="/profile" component={Profile} />
             <PrivateRoute exact path="/add" component={AddPost} />
             <PrivateRoute exact path="/settings" component={Settings} />

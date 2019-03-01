@@ -80,8 +80,7 @@ class LikeCounter extends Component {
 }
 
 LikeCounter.propTypes = {
-  classes: PropTypes.object.isRequired,
-  content: PropTypes.object.isRequired
+  classes: PropTypes.object.isRequired
 };
 
 export default withStyles(styles)(LikeCounter);
