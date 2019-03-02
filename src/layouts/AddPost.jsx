@@ -65,15 +65,25 @@ class AddPost extends PureComponent {
     }
   }
 
+  getCity(lat, long) {
+    return fetch("https://us1.locationiq.com/v1/reverse.php?key=2c35b6ae22579a&lat=" + lat + "&lon=" + long + "&format=json", {
+      "async": true,
+      "crossDomain": true,
+      "method": "GET"
+    }).then(res => res.json()).then(res => res.address.city)
+  }
+
   componentDidMount() {
     //check if there is navigation, if there is, autofill locatization
     if (("geolocation" in navigator)) {
       navigator.geolocation.getCurrentPosition(
         (position) => {
-          const fetchedLocation = position.coords.latitude + '/' + position.coords.longitude;
-          this.setState({
-            geo: fetchedLocation
-          })
+          this.getCity(position.coords.latitude, position.coords.longitude)
+            .then(city => {
+              this.setState({
+                geo: city
+              })
+            })
         },
         (err) => {
           console.log(err);
