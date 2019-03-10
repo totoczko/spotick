@@ -9,10 +9,13 @@ import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
 import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
 import Typography from '@material-ui/core/Typography';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import { Button, TextField } from '@material-ui/core';
+import { Button, TextField, Divider, ExpansionPanelActions } from '@material-ui/core';
 import SaveIcon from '@material-ui/icons/Save';
 import { red } from '@material-ui/core/colors';
 import { auth } from '../helpers/firebase';
+import FormGroup from '@material-ui/core/FormGroup';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import Switch from '@material-ui/core/Switch';
 
 const styles = theme => ({
   root: {
@@ -81,7 +84,8 @@ class Settings extends Component {
     password: null,
     newLogin: null,
     newEmail: null,
-    newPassword: null
+    newPassword: null,
+    push: false
   };
 
   componentDidMount() {
@@ -111,6 +115,10 @@ class Settings extends Component {
     });
   };
 
+  handleToggle = name => event => {
+    this.setState({ [name]: event.target.checked });
+  };
+
   handleUpdateFirebase = (type) => {
     const userId = JSON.parse(localStorage.getItem('user_data')).uid;
     if (type === 'email') {
@@ -130,13 +138,19 @@ class Settings extends Component {
           localStorage.setItem('user_data', JSON.stringify(user));
         }
       });
+    } else if (type === 'push') {
+      firebase.database().ref('users/' + userId).update({
+        push: this.state.push
+      })
     }
-
+    this.setState({
+      expanded: null
+    })
   };
 
   render() {
     const { classes } = this.props;
-    const { expanded, login, email } = this.state;
+    const { expanded, login, email, push } = this.state;
     const settings = [
       {
         type: 'login',
@@ -162,7 +176,7 @@ class Settings extends Component {
       {
         type: 'push',
         heading: 'Powiadomienia',
-        placeholder: 'wyłączone',
+        placeholder: push ? 'włączone' : 'wyłączone',
         description: 'Włącz / wyłącz powiadomienia push:'
       }
     ]
@@ -171,6 +185,7 @@ class Settings extends Component {
         <Navigation onlyBack={true} />
         <div className={classes.root}>
           {settings.map((setting, index) => (
+
             <ExpansionPanel key={index} expanded={expanded === 'panel' + (index + 1)} onChange={this.handleChange('panel' + (index + 1))} className={classes.panel}>
               <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
                 <Typography className={classes.heading}>{setting.heading}</Typography>
@@ -178,21 +193,40 @@ class Settings extends Component {
               </ExpansionPanelSummary>
               <ExpansionPanelDetails>
                 <div className={classes.expanded}>
-                  {setting.description}
-                  <div className={classes.form}>
-                    <TextField
-                      id={`outlined-name-${index}`}
-                      label={setting.heading}
-                      className={classes.textField}
-                      onChange={this.handleEdit(setting.new)}
-                      margin="normal"
-                      variant="outlined"
-                      type={setting.type === 'password' ? 'password' : 'text'}
-                    />
-                    <Button className={classes.button} onClick={() => this.handleUpdateFirebase(setting.type)}><SaveIcon className={classes.iconSmall} /></Button>
-                  </div>
+                  <Typography className={classes.secondaryHeading}>{setting.description}</Typography>
+                  {setting.type === 'push' ? (
+                    <FormGroup row>
+                      <FormControlLabel
+                        control={
+                          <Switch
+                            checked={push}
+                            onChange={this.handleToggle('push')}
+                            value={!push}
+                          />
+                        }
+                        label={push ? 'włączone' : 'wyłączone'}
+                      />
+                    </FormGroup>
+                  ) : (
+                      <div className={classes.form}>
+                        <TextField
+                          id={`outlined-name-${index}`}
+                          label={setting.heading}
+                          className={classes.textField}
+                          onChange={this.handleEdit(setting.new)}
+                          margin="normal"
+                          variant="outlined"
+                          type={setting.type === 'password' ? 'password' : 'text'}
+                        />
+                      </div>
+                    )}
                 </div>
               </ExpansionPanelDetails>
+              <Divider />
+              <ExpansionPanelActions>
+                <Button size="small" onClick={this.handleChange('panel' + (index + 1))}>Anuluj</Button>
+                <Button size="small" color="primary" onClick={() => this.handleUpdateFirebase(setting.type)}>Zapisz</Button>
+              </ExpansionPanelActions>
             </ExpansionPanel>
           ))}
           <Button className={classes.panelButton} onClick={() => this.handleLogout()}>Wyloguj się</Button>

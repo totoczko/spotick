@@ -14,7 +14,7 @@
     "uuid": "^3.3.2"
   },
   "scripts": {
-    "start": "npm run build && http-server ./build -c-1",
+    "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"

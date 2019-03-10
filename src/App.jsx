@@ -3,7 +3,8 @@ import {
   BrowserRouter as Router,
   Route
 } from 'react-router-dom';
-import firebase from './helpers/firebase';
+// import firebase from './helpers/firebase';
+import prompt from './helpers/prompt';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core';
 import Home from 'layouts/Home';
@@ -16,6 +17,8 @@ import { auth } from './helpers/firebase';
 import Post from './layouts/Post';
 import Settings from './layouts/Settings';
 import PrivateRoute from './components/PrivateRoute'
+
+//    "start": "npm run build && http-server ./build",
 
 const styles = {
   container: {
@@ -38,16 +41,10 @@ class App extends Component {
   componentDidMount() {
     // TODO: przeniesc przy cache
     this.authFirebaseListener = auth.onAuthStateChanged((user) => {
-      console.log(firebase.auth().currentUser)
-      firebase.auth().currentUser.getIdToken(true)
-        .then(idToken => {
-          console.log(idToken)
-        }).catch(error => {
-          console.log(error)
-        });
       if (user) {
         this.setState({ user })
         localStorage.setItem('user_data', JSON.stringify(user));
+        console.log(this.state.user)
       }
     });
   }

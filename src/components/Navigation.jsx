@@ -66,7 +66,7 @@ class Navigation extends React.Component {
 						}
 						{location.pathname === '/add' && imgSent && step !== 3 &&
 							<Button className={classes.link} onClick={handleSwitch(3)}>
-								Krok 2
+								Dalej
 						</Button>
 						}
 						{location.pathname === '/add' && imgSent && step === 3 &&

@@ -75,7 +75,7 @@ class AddPost extends PureComponent {
 
   componentDidMount() {
     //check if there is navigation, if there is, autofill locatization
-    if (("geolocation" in navigator)) {
+    if ("geolocation" in navigator) {
       navigator.geolocation.getCurrentPosition(
         (position) => {
           this.getCity(position.coords.latitude, position.coords.longitude)
@@ -92,16 +92,12 @@ class AddPost extends PureComponent {
     }
 
     //check if we have access to the camera
-    if (('mediaDevices' in navigator)) {
+    if ('mediaDevices' in navigator) {
       if ('getUserMedia' in navigator.mediaDevices) {
-        navigator.permissions.query({ name: 'camera' }).then((result) => {
-          if (result.state === 'granted') {
-            this.setState({
-              camera: true,
-              step: 1
-            })
-          }
-        });
+        this.setState({
+          camera: true,
+          step: 1
+        })
       }
     }
 

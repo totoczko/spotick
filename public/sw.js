@@ -5,9 +5,9 @@ if (workbox) {
 
     workbox.precaching.precacheAndRoute([]);
 
-    importScripts(
-        "/precache-manifest.5683773f26cb2d8ce534cde80cf446ce.js"
-    );
+    // importScripts(
+    //     "/precache-manifest.5683773f26cb2d8ce534cde80cf446ce.js"
+    // );
 
     workbox.clientsClaim();
 
