@@ -16,6 +16,7 @@ import { auth } from '../helpers/firebase';
 import FormGroup from '@material-ui/core/FormGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Switch from '@material-ui/core/Switch';
+import classnames from 'classnames';
 
 const styles = theme => ({
   root: {
@@ -31,18 +32,20 @@ const styles = theme => ({
     borderTop: '1px solid #eee !important'
   },
   panelButton: {
-    margin: '0 !important',
     boxShadow: 'none',
     borderBottom: '1px solid #eee !important',
     borderTop: '1px solid #eee !important',
     width: '100%',
     textAlign: 'left',
-    padding: '12px 24px',
+    padding: '15px 24px',
     justifyContent: 'flex-start',
     textTransform: 'none',
     fontWeight: 'normal',
-    color: red[500],
-
+    marginBottom: 15,
+    background: '#fff'
+  },
+  red: {
+    color: red[500]
   },
   heading: {
     flexBasis: '40%',
@@ -229,7 +232,8 @@ class Settings extends Component {
               </ExpansionPanelActions>
             </ExpansionPanel>
           ))}
-          <Button className={classes.panelButton} onClick={() => this.handleLogout()}>Wyloguj się</Button>
+          <Button className={classes.panelButton}>Dodaj do ekranu głównego</Button>
+          <Button className={classnames(classes.panelButton, classes.red)} onClick={() => this.handleLogout()}>Wyloguj się</Button>
         </div>
         <BottomAppNavigation />
       </>

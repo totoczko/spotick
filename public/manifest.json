@@ -1,11 +1,11 @@
 {
   "name": "Spotick - Simple PWA",
   "short_name": "Spotick",
-  "theme_color": "#212985",
+  "theme_color": "#fafafa",
   "background_color": "#fafafa",
   "display": "standalone",
   "orientation": "portrait",
-  "Scope": "/",
+  "scope": "/",
   "start_url": "/",
   "icons": [
     {
