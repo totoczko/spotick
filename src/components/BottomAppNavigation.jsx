@@ -32,7 +32,12 @@ const styles = {
     alignItems: 'center'
   },
   textButton: {
-    color: '#2129857a'
+    color: '#2129857a',
+    textTransform: 'uppercase',
+    fontWeight: 500,
+    fontFamily: '"Roboto", "Helvetica", "Arial", sans-serif',
+    fontSize: '0.875rem',
+    lineHeight: '0.875rem'
   }
 };
 
@@ -83,14 +88,12 @@ class BottomAppNavigation extends React.Component {
           >
             {camera &&
               <BottomNavigationAction
-                label="Profile"
                 className={classNames(classes.button, classes.textButton + ' ' + (step === 1 && 'activeTextButton'))}
                 onClick={handleSwitch(1)}
                 icon={"Zdjęcie"}
               />
             }
             <BottomNavigationAction
-              label="Profile"
               className={classNames(classes.button, classes.textButton + ' ' + (step === 2 && 'activeTextButton'))}
               icon={"Galeria"}
               onClick={handleSwitch(2)}

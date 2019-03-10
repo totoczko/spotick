@@ -59,7 +59,6 @@ class LikeCounter extends Component {
       })
     } else {
       // TODO: przekierowanie do logowania
-      console.log('nope')
     }
   }
 

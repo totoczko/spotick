@@ -17,6 +17,7 @@ import FormGroup from '@material-ui/core/FormGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Switch from '@material-ui/core/Switch';
 import classnames from 'classnames';
+import * as prompt from '../helpers/prompt'
 
 const styles = theme => ({
   root: {
@@ -232,6 +233,9 @@ class Settings extends Component {
               </ExpansionPanelActions>
             </ExpansionPanel>
           ))}
+          {prompt.defferedPrompt ? (
+            prompt.defferedPrompt.prompt()
+          ) : ''}
           <Button className={classes.panelButton}>Dodaj do ekranu głównego</Button>
           <Button className={classnames(classes.panelButton, classes.red)} onClick={() => this.handleLogout()}>Wyloguj się</Button>
         </div>

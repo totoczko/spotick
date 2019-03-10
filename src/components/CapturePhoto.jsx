@@ -14,9 +14,19 @@ const styles = theme => ({
 const cx = classNames.bind(styles)
 
 class CapturePhoto extends PureComponent {
+  constructor(props) {
+    super(props);
+    this.state = {
+      elementHeight: 300
+    }
+  }
+
   componentDidMount() {
     if (this.props.camera) {
-      this.showCamera()
+      this.showCamera();
+      setTimeout(() => {
+        this.setState({ elementHeight: this.divRef.offsetHeight });
+      }, 1000);
     }
   }
 
@@ -26,10 +36,12 @@ class CapturePhoto extends PureComponent {
     }).catch(err => {
       console.log(err)
     })
+
   }
 
   render() {
     const { classes, captureImage, imgSent } = this.props;
+    const { elementHeight } = this.state;
     const videoClass = cx({
       video: true,
       hidden: imgSent
@@ -47,16 +59,17 @@ class CapturePhoto extends PureComponent {
 
     return (
       <>
-        <video
-          className={videoClass}
-          autoPlay
-          ref={(stream) => { this.videoStream = stream }}
-        />
+        <div className="video-container" ref={element => this.divRef = element}>
+          <video
+            className={videoClass}
+            autoPlay
+            ref={(stream) => { this.videoStream = stream }}
+          />
+        </div>
         <canvas
           className={canvasClass}
           ref={(canvas) => { this.canvas = canvas }}
-          width="320px"
-          height="240px"
+          height={elementHeight}
         />
         <Button
           className={buttonClass}

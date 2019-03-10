@@ -20,7 +20,7 @@ export class Camera extends PureComponent {
 				<canvas
 					ref={(canvas) => { this.canvas = canvas }}
 					width='800'
-					height='600'
+					height='1000'
 					style={{ display: 'none' }}
 				>
 				</canvas>

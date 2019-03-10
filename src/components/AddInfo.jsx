@@ -21,19 +21,10 @@ class AddInfo extends PureComponent {
       <>
         <TextField
           id="outlined-name"
-          label="Krótki opis"
+          label="Podpis"
           className={classes.textField}
           value={values.shortText}
           onChange={handleChange('shortText')}
-          margin="normal"
-          variant="outlined"
-        />
-        <TextField
-          id="outlined-name"
-          label="Długi opis"
-          className={classes.textField}
-          value={values.longText}
-          onChange={handleChange('longText')}
           margin="normal"
           variant="outlined"
         />

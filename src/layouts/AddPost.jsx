@@ -5,7 +5,7 @@ import uuid from 'uuid';
 import { dataURItoBlob } from '../helpers/imageFiles';
 import Grid from '@material-ui/core/Grid';
 import { withStyles } from '@material-ui/core/styles';
-import { Button } from '@material-ui/core';
+import { Button, CircularProgress } from '@material-ui/core';
 import * as classNames from 'classnames';
 import CapturePhoto from '../components/CapturePhoto';
 import AddInfo from '../components/AddInfo';
@@ -27,9 +27,6 @@ const styles = theme => ({
   container: {
     padding: 40
   },
-  cardGrid: {
-    padding: `${theme.spacing.unit * 4}px 0`,
-  },
   form: {
     ...theme.mixins.gutters(),
     paddingTop: theme.spacing.unit * 2,
@@ -42,6 +39,18 @@ const styles = theme => ({
     width: '100%',
     marginTop: 15,
     height: 50
+  },
+  center: {
+    width: '100%',
+    height: '100vh',
+    position: 'absolute',
+    left: 0,
+    top: 0,
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    background: 'rgba(255,255,255,.5)',
+    zIndex: 1
   }
 });
 
@@ -61,7 +70,8 @@ class AddPost extends PureComponent {
       longText: '',
       step: 2,
       imgSent: false,
-      camera: false
+      camera: false,
+      status: 'beforeSend'
     }
   }
 
@@ -70,7 +80,13 @@ class AddPost extends PureComponent {
       "async": true,
       "crossDomain": true,
       "method": "GET"
-    }).then(res => res.json()).then(res => res.address.city)
+    }).then(res => res.json()).then(res => {
+      if (res.address.city) {
+        return res.address.city;
+      } else {
+        return res.address.town
+      }
+    })
   }
 
   componentDidMount() {
@@ -125,6 +141,7 @@ class AddPost extends PureComponent {
 
   handleSend = () => {
     //add photo 
+    this.setState({ status: 'loading' })
     const imageId = uuid();
     const postId = uuid();
     const storage = firebase.storage();
@@ -143,7 +160,6 @@ class AddPost extends PureComponent {
           img: url,
           geo: this.state.geo,
           shortText: this.state.shortText,
-          longText: this.state.longText,
           likes: {
             count: 0
           }
@@ -156,11 +172,12 @@ class AddPost extends PureComponent {
           img: '',
           geo: '',
           shortText: '',
-          longText: ''
         });
+        this.setState({ status: 'loaded' })
         this.props.history.goBack()
       })
     }).catch((err) => {
+      this.setState({ status: 'loaded' })
       console.log(err)
     });
   }
@@ -175,8 +192,8 @@ class AddPost extends PureComponent {
   captureImage = (canvas, video) => {
     const context = canvas.getContext('2d');
     const width = canvas.width;
-    const height = video.videoHeight / (video.videoWidth / canvas.width);
-    context.drawImage(video, 0, 0, width, height);
+    // const height = video.videoHeight / (video.videoWidth / canvas.width);
+    context.drawImage(video, 0, 0, width, canvas.height);
     video.srcObject.getVideoTracks().forEach(track => {
       track.stop()
     })
@@ -189,8 +206,8 @@ class AddPost extends PureComponent {
 
   renderStep = (step) => {
     const { classes } = this.props;
-    const { imgSent, camera, longText, shortText, geo } = this.state;
-    const values = { longText, shortText, geo };
+    const { imgSent, camera, shortText, geo } = this.state;
+    const values = { shortText, geo };
     switch (step) {
       case 1:
         return <CapturePhoto captureImage={this.captureImage} imgSent={imgSent} camera={camera} />
@@ -214,7 +231,7 @@ class AddPost extends PureComponent {
 
   render() {
     const { classes } = this.props;
-    const { step, imgSent, camera } = this.state;
+    const { step, imgSent, camera, status } = this.state;
     return (
       <>
         <Navigation handleSwitch={this.handleSwitch} imgSent={imgSent} step={step} />
@@ -227,6 +244,11 @@ class AddPost extends PureComponent {
             </Grid>
           </Grid>
         </div>
+        {status === 'loading' ? (
+          <div className={classes.center}>
+            <CircularProgress className={classes.progress} size={30} thickness={5} />
+          </div>
+        ) : ''}
         <BottomAppNavigation handleSwitch={this.handleSwitch} step={step} camera={camera} />
       </>
     )

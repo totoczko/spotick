@@ -17,6 +17,7 @@ import { auth } from './helpers/firebase';
 import Post from './layouts/Post';
 import Settings from './layouts/Settings';
 import PrivateRoute from './components/PrivateRoute'
+import BrowserRouter from 'react-router-dom/BrowserRouter';
 
 //    "start": "npm run build && http-server ./build",
 
@@ -58,7 +59,7 @@ class App extends Component {
     const { user } = this.state;
     const isLogged = Boolean(user)
     return (
-      <Router>
+      <BrowserRouter basename={process.env.PUBLIC_URL}>
         <ScrollToTop>
           <div className={classes.container}>
             <Route exact path="/" component={Home} />
@@ -69,7 +70,7 @@ class App extends Component {
             <Route exact path="/login" component={Login} />
           </div>
         </ScrollToTop>
-      </Router>
+      </BrowserRouter>
     )
   }
 }
