@@ -16,7 +16,7 @@ self.__precacheManifest = [
     "url": "/spotick/static/css/main.c06cf3ef.chunk.css"
   },
   {
-    "revision": "8a64895ef985be5556d1f1af3d4a4422",
+    "revision": "fbd2f9b19968199fa047a5e3101310f0",
     "url": "/spotick/index.html"
   }
 ];
