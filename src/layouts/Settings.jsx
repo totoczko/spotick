@@ -10,14 +10,12 @@ import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
 import Typography from '@material-ui/core/Typography';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import { Button, TextField, Divider, ExpansionPanelActions } from '@material-ui/core';
-import SaveIcon from '@material-ui/icons/Save';
 import { red } from '@material-ui/core/colors';
 import { auth } from '../helpers/firebase';
 import FormGroup from '@material-ui/core/FormGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Switch from '@material-ui/core/Switch';
 import classnames from 'classnames';
-import * as prompt from '../helpers/prompt'
 
 const styles = theme => ({
   root: {
@@ -121,6 +119,42 @@ class Settings extends Component {
 
   handleToggle = name => event => {
     this.setState({ [name]: event.target.checked });
+    console.log(event.target.checked)
+    if (event.target.checked) {
+      Notification.requestPermission((result) => {
+        console.log(result);
+        if (result !== 'granted') {
+          console.log('No notification permission gramted')
+        } else {
+          if ('serviceWorker' in navigator) {
+            const options = {
+              body: 'lorem ipsum',
+              icon: 'img/icons/icon-96x96.png',
+              vibrate: [100, 50, 200],
+              badge: 'img/icons/icon-96x96.png',
+              tag: 'confirm-notification',
+              renotify: true,
+              actions: [
+                {
+                  action: 'confrim',
+                  title: 'Ok',
+                  icon: 'img/icons/icon-96x96.png'
+                },
+                {
+                  action: 'cancel',
+                  title: 'Cancel',
+                  icon: 'img/icons/icon-96x96.png'
+                }
+              ]
+            }
+            navigator.serviceWorker.ready.then((swreg) => {
+              swreg.showNotification('Siccesfully subscribed! (from sw)', options);
+            })
+          }
+
+        }
+      })
+    }
   };
 
   handleUpdateFirebase = (type) => {
@@ -161,27 +195,31 @@ class Settings extends Component {
         new: 'newLogin',
         heading: 'Login',
         placeholder: login,
-        description: 'Zmień nazwę użytkownika:'
+        description: 'Zmień nazwę użytkownika:',
+        show: true
       },
       {
         type: 'email',
         new: 'newEmail',
         heading: 'Email',
         placeholder: email,
-        description: 'Zmień swój adres e-mail:'
+        description: 'Zmień swój adres e-mail:',
+        show: true
       },
       {
         type: 'password',
         new: 'newPassword',
         heading: 'Zmień hasło',
         placeholder: '',
-        description: 'Zmień hasło:'
+        description: 'Zmień hasło:',
+        show: true
       },
       {
         type: 'push',
         heading: 'Powiadomienia',
         placeholder: push ? 'włączone' : 'wyłączone',
-        description: 'Włącz / wyłącz powiadomienia push:'
+        description: 'Włącz / wyłącz powiadomienia push:',
+        show: 'Notification' in window ? true : false
       }
     ]
     return (
@@ -189,54 +227,53 @@ class Settings extends Component {
         <Navigation onlyBack={true} />
         <div className={classes.root}>
           {settings.map((setting, index) => (
-
-            <ExpansionPanel key={index} expanded={expanded === 'panel' + (index + 1)} onChange={this.handleChange('panel' + (index + 1))} className={classes.panel}>
-              <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
-                <Typography className={classes.heading}>{setting.heading}</Typography>
-                <Typography className={classes.secondaryHeading}>{setting.placeholder}</Typography>
-              </ExpansionPanelSummary>
-              <ExpansionPanelDetails>
-                <div className={classes.expanded}>
-                  <Typography className={classes.secondaryHeading}>{setting.description}</Typography>
-                  {setting.type === 'push' ? (
-                    <FormGroup row>
-                      <FormControlLabel
-                        control={
-                          <Switch
-                            checked={push}
-                            onChange={this.handleToggle('push')}
-                            value={!push}
+            <>
+              {setting.show === true ? (
+                <ExpansionPanel key={index} expanded={expanded === 'panel' + (index + 1)} onChange={this.handleChange('panel' + (index + 1))} className={classes.panel}>
+                  <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
+                    <Typography className={classes.heading}>{setting.heading}</Typography>
+                    <Typography className={classes.secondaryHeading}>{setting.placeholder}</Typography>
+                  </ExpansionPanelSummary>
+                  <ExpansionPanelDetails>
+                    <div className={classes.expanded}>
+                      <Typography className={classes.secondaryHeading}>{setting.description}</Typography>
+                      {setting.type === 'push' ? (
+                        <FormGroup row>
+                          <FormControlLabel
+                            control={
+                              <Switch
+                                checked={push}
+                                onChange={this.handleToggle('push')}
+                                value={!push}
+                              />
+                            }
+                            label={push ? 'włączone' : 'wyłączone'}
                           />
-                        }
-                        label={push ? 'włączone' : 'wyłączone'}
-                      />
-                    </FormGroup>
-                  ) : (
-                      <div className={classes.form}>
-                        <TextField
-                          id={`outlined-name-${index}`}
-                          label={setting.heading}
-                          className={classes.textField}
-                          onChange={this.handleEdit(setting.new)}
-                          margin="normal"
-                          variant="outlined"
-                          type={setting.type === 'password' ? 'password' : 'text'}
-                        />
-                      </div>
-                    )}
-                </div>
-              </ExpansionPanelDetails>
-              <Divider />
-              <ExpansionPanelActions>
-                <Button size="small" onClick={this.handleChange('panel' + (index + 1))}>Anuluj</Button>
-                <Button size="small" color="primary" onClick={() => this.handleUpdateFirebase(setting.type)}>Zapisz</Button>
-              </ExpansionPanelActions>
-            </ExpansionPanel>
+                        </FormGroup>
+                      ) : (
+                          <div className={classes.form}>
+                            <TextField
+                              id={`outlined-name-${index}`}
+                              label={setting.heading}
+                              className={classes.textField}
+                              onChange={this.handleEdit(setting.new)}
+                              margin="normal"
+                              variant="outlined"
+                              type={setting.type === 'password' ? 'password' : 'text'}
+                            />
+                          </div>
+                        )}
+                    </div>
+                  </ExpansionPanelDetails>
+                  <Divider />
+                  <ExpansionPanelActions>
+                    <Button size="small" onClick={this.handleChange('panel' + (index + 1))}>Anuluj</Button>
+                    <Button size="small" color="primary" onClick={() => this.handleUpdateFirebase(setting.type)}>Zapisz</Button>
+                  </ExpansionPanelActions>
+                </ExpansionPanel>
+              ) : ''}
+            </>
           ))}
-          {prompt.defferedPrompt ? (
-            prompt.defferedPrompt.prompt()
-          ) : ''}
-          <Button className={classes.panelButton}>Dodaj do ekranu głównego</Button>
           <Button className={classnames(classes.panelButton, classes.red)} onClick={() => this.handleLogout()}>Wyloguj się</Button>
         </div>
         <BottomAppNavigation />

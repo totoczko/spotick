@@ -4,7 +4,6 @@ import {
   Route
 } from 'react-router-dom';
 // import firebase from './helpers/firebase';
-import prompt from './helpers/prompt';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core';
 import Home from 'layouts/Home';

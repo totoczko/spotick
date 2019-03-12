@@ -91,6 +91,18 @@ if (workbox) {
         })
     );
 
+    self.addEventListener('notificationclick', (e) => {
+        const notification = e.notification;
+        const action = e.action;
+        console.log(notification);
+        if (action === 'confirm') {
+            console.log('confirm was chosen')
+            notification.close();
+        } else {
+            console.log(action)
+        }
+    })
+
 } else {
     console.log(`Boo! Workbox didn't load 😬`);
 }
