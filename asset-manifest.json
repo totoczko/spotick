@@ -1,13 +1,13 @@
 {
-  "main.css": "/spotick/static/css/main.f0a2d6c7.chunk.css",
-  "main.js": "/spotick/static/js/main.22862748.chunk.js",
-  "main.js.map": "/spotick/static/js/main.22862748.chunk.js.map",
-  "static/js/1.16041f25.chunk.js": "/spotick/static/js/1.16041f25.chunk.js",
-  "static/js/1.16041f25.chunk.js.map": "/spotick/static/js/1.16041f25.chunk.js.map",
+  "main.css": "/spotick/static/css/main.7d24cd2d.chunk.css",
+  "main.js": "/spotick/static/js/main.a4faa748.chunk.js",
+  "main.js.map": "/spotick/static/js/main.a4faa748.chunk.js.map",
+  "static/js/1.fca807d1.chunk.js": "/spotick/static/js/1.fca807d1.chunk.js",
+  "static/js/1.fca807d1.chunk.js.map": "/spotick/static/js/1.fca807d1.chunk.js.map",
   "runtime~main.js": "/spotick/static/js/runtime~main.0f559a56.js",
   "runtime~main.js.map": "/spotick/static/js/runtime~main.0f559a56.js.map",
-  "static/css/main.f0a2d6c7.chunk.css.map": "/spotick/static/css/main.f0a2d6c7.chunk.css.map",
+  "static/css/main.7d24cd2d.chunk.css.map": "/spotick/static/css/main.7d24cd2d.chunk.css.map",
   "index.html": "/spotick/index.html",
-  "precache-manifest.032bf8659fd3ac6be8a14d6482b2da85.js": "/spotick/precache-manifest.032bf8659fd3ac6be8a14d6482b2da85.js",
+  "precache-manifest.9d33ed6b9d92946cf687e43417279038.js": "/spotick/precache-manifest.9d33ed6b9d92946cf687e43417279038.js",
   "service-worker.js": "/spotick/service-worker.js"
 }
