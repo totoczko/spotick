@@ -96,6 +96,7 @@ class Settings extends Component {
         login: user.displayName,
         email: user.email
       })
+      this.getUserSubscription(user.uid)
     });
   }
 
@@ -103,7 +104,17 @@ class Settings extends Component {
     this.authFirebaseListener && this.authFirebaseListener()
   }
 
-  handleChange = panel => (event, expanded) => {
+  getUserSubscription = (userId) => {
+    this.userRef = firebase.database().ref('users/' + userId);
+    this.userRef.on('value', (snapshot) => {
+      const subscription = snapshot.val().subscription;
+      const push = snapshot.val().push;
+      this.setState({ push, subscription })
+    });
+  }
+
+
+  toggleExpand = panel => (event, expanded) => {
     this.setState({
       expanded: expanded ? panel : false,
     });
@@ -124,16 +135,12 @@ class Settings extends Component {
   handleUpdateFirebase = (type) => {
     const { user } = this.state;
     if (type === 'email') {
-
       firebase.database().ref('users/' + user.uid).update({ email: this.state.newEmail })
       firebase.auth().currentUser.updateEmail(this.state.newEmail);
-
     } else if (type === 'login') {
-
       firebase.database().ref('users/' + user.uid).update({ username: this.state.newLogin })
       firebase.auth().currentUser.updateProfile({ displayName: this.state.newLogin })
     }
-
     this.setState({
       expanded: null
     })
@@ -141,7 +148,7 @@ class Settings extends Component {
 
   render() {
     const { classes } = this.props;
-    const { expanded, login, email, push } = this.state;
+    const { expanded, login, email, push, user } = this.state;
     const settings = [
       {
         type: 'login',
@@ -179,55 +186,50 @@ class Settings extends Component {
       <>
         <Navigation onlyBack={true} />
         <div className={classes.root}>
-          {settings.map((setting, index) => (
-            <>
-              {setting.show === true ? (
-                <ExpansionPanel key={index} expanded={expanded === 'panel' + (index + 1)} onChange={this.handleChange('panel' + (index + 1))} className={classes.panel}>
-                  <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
-                    <Typography className={classes.heading}>{setting.heading}</Typography>
-                    <Typography className={classes.secondaryHeading}>{setting.placeholder}</Typography>
-                  </ExpansionPanelSummary>
-                  {setting.type === 'push' ? (
-                    <>
+          {settings.map((setting, index) =>
+            setting.show === true ? (
+              <ExpansionPanel key={index} expanded={expanded === 'panel' + (index + 1)} onChange={this.toggleExpand('panel' + (index + 1))} className={classes.panel}>
+                <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
+                  <Typography className={classes.heading}>{setting.heading}</Typography>
+                  <Typography className={classes.secondaryHeading}>{setting.placeholder}</Typography>
+                </ExpansionPanelSummary>
+                {setting.type === 'push' ? (
+                  <ExpansionPanelDetails>
+                    <div className={classes.expanded}>
+                      <Typography className={classes.secondaryHeading}>{setting.description}</Typography>
+                      <div className={classes.form}>
+                        <PushToggle push={push} user={user} />
+                      </div>
+                    </div>
+                  </ExpansionPanelDetails>
+                ) : (
+                    <div>
                       <ExpansionPanelDetails>
                         <div className={classes.expanded}>
                           <Typography className={classes.secondaryHeading}>{setting.description}</Typography>
                           <div className={classes.form}>
-                            <PushToggle push={push} />
+                            <TextField
+                              id={`outlined-name-${index}`}
+                              label={setting.heading}
+                              className={classes.textField}
+                              onChange={this.handleEdit(setting.new)}
+                              margin="normal"
+                              variant="outlined"
+                              type={setting.type === 'password' ? 'password' : 'text'}
+                            />
                           </div>
                         </div>
                       </ExpansionPanelDetails>
                       <Divider />
-                    </>
-                  ) : (
-                      <>
-                        <ExpansionPanelDetails>
-                          <div className={classes.expanded}>
-                            <Typography className={classes.secondaryHeading}>{setting.description}</Typography>
-                            <div className={classes.form}>
-                              <TextField
-                                id={`outlined-name-${index}`}
-                                label={setting.heading}
-                                className={classes.textField}
-                                onChange={this.handleEdit(setting.new)}
-                                margin="normal"
-                                variant="outlined"
-                                type={setting.type === 'password' ? 'password' : 'text'}
-                              />
-                            </div>
-                          </div>
-                        </ExpansionPanelDetails>
-                        <Divider />
-                        <ExpansionPanelActions>
-                          <Button size="small" onClick={this.handleChange('panel' + (index + 1))}>Anuluj</Button>
-                          <Button size="small" color="primary" onClick={() => this.handleUpdateFirebase(setting.type)}>Zapisz</Button>
-                        </ExpansionPanelActions>
-                      </>
-                    )}
-                </ExpansionPanel>
-              ) : ''}
-            </>
-          ))}
+                      <ExpansionPanelActions>
+                        <Button size="small" onClick={this.toggleExpand('panel' + (index + 1))}>Anuluj</Button>
+                        <Button size="small" color="primary" onClick={() => this.handleUpdateFirebase(setting.type)}>Zapisz</Button>
+                      </ExpansionPanelActions>
+                    </div>
+                  )}
+              </ExpansionPanel>
+            ) : ''
+          )}
           <Button className={classnames(classes.panelButton, classes.red)} onClick={() => this.handleLogout()}>Wyloguj się</Button>
         </div>
         <BottomAppNavigation />

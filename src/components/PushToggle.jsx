@@ -14,20 +14,14 @@ export default class PushToggle extends Component {
     }
   }
 
-  componentDidMount() {
-    this.authFirebaseListener = auth.onAuthStateChanged((user) => {
-      if (user) {
-        this.setState({ user })
-        this.getUserSubscription(user.uid)
-      }
-    });
+  componentWillUpdate(nextProps) {
+    if (nextProps.user !== this.props.user || nextProps.push !== this.props.push) {
+      this.setState({
+        user: nextProps.user,
+        push: nextProps.push
+      })
+    }
   }
-
-  componentWillUnmount() {
-    this.authFirebaseListener && this.authFirebaseListener()
-  }
-
-
   handleToggle = name => event => {
     this.setState({ [name]: event.target.checked });
   };
@@ -110,12 +104,12 @@ export default class PushToggle extends Component {
   }
 
   getUserSubscription = (userId) => {
-    this.userRef = firebase.database().ref('users/' + userId + '/subscription');
-    let subscription;
+    this.userRef = firebase.database().ref('users/' + userId);
 
     this.userRef.on('value', (snapshot) => {
-      subscription = snapshot.val();
-      this.setState({ push: true, subscription })
+      const subscription = snapshot.val().subscription;
+      const push = snapshot.val().push;
+      this.setState({ push, subscription })
     });
   }
 
@@ -141,7 +135,7 @@ export default class PushToggle extends Component {
 
 
   render() {
-    const { push } = this.props;
+    const { push } = this.state;
     return (
       <FormGroup row>
         <FormControlLabel
