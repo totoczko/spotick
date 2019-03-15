@@ -51,7 +51,7 @@ class Navigation extends React.Component {
 	}
 
 	render() {
-		const { classes, location, handleSwitch, imgSent, step, singlePost, openActions, onlyBack } = this.props;
+		const { classes, location, handleSwitch, imgSent, step, singlePost, openActions, onlyBack, loggedOut } = this.props;
 		return (
 			<div className={classes.root}>
 				<AppBar position="fixed" className={classes.appbar}>
@@ -61,25 +61,25 @@ class Navigation extends React.Component {
 								<img src={logo} alt="" className={classes.logoimage} />
 							</Link>
 						}
-						{(singlePost || onlyBack) &&
+						{(singlePost || onlyBack) && !loggedOut &&
 							<ArrowBackIosIcon className={classes.link} onClick={() => this.goBack()} />
 						}
-						{location.pathname === '/add' && imgSent && step !== 3 &&
+						{location.pathname === '/add' && imgSent && step !== 3 && !loggedOut &&
 							<Button className={classes.link} onClick={handleSwitch(3)}>
 								Dalej
 						</Button>
 						}
-						{location.pathname === '/add' && imgSent && step === 3 &&
+						{location.pathname === '/add' && imgSent && step === 3 && !loggedOut &&
 							<Button className={classes.link} onClick={handleSwitch(1)}>
 								Wróć
 						</Button>
 						}
-						{location.pathname === '/profile' &&
+						{location.pathname === '/profile' && !loggedOut &&
 							<Link to="/settings" >
 								<SettingsIcon className={classes.link} />
 							</Link>
 						}
-						{singlePost && openActions &&
+						{singlePost && openActions && !loggedOut &&
 							<MoreVertIcon className={classes.link} onClick={() => openActions()} />
 						}
 					</Toolbar>

@@ -8,7 +8,6 @@ import PostCard from 'components/PostCard';
 import { CircularProgress, Typography } from '@material-ui/core';
 import PostActions from '../components/PostActions';
 
-
 const styles = theme => ({
   center: {
     width: '100%',
@@ -31,6 +30,7 @@ class Post extends Component {
       selectedValue: '',
     }
   }
+
   handleClickOpen = () => {
     this.setState({
       open: true,
@@ -41,8 +41,7 @@ class Post extends Component {
     this.setState({ selectedValue: value, open: false });
   };
   render() {
-    const { id, classes } = this.props;
-    const userId = localStorage.getItem('user_data') ? JSON.parse(localStorage.getItem('user_data')).uid : null;
+    const { id, classes, user } = this.props;
     return (
       <>
         <PostContainer id={id}>
@@ -61,8 +60,8 @@ class Post extends Component {
             return (
               (post ? (
                 <>
-                  <Navigation singlePost={true} openActions={post.user.id === userId ? this.handleClickOpen : false} />
-                  {post.user.id === userId ? (
+                  <Navigation singlePost={true} openActions={post.user.id === user.uid ? this.handleClickOpen : false} />
+                  {post.user.id === user.uid ? (
                     <PostActions
                       selectedValue={this.state.selectedValue}
                       open={this.state.open}

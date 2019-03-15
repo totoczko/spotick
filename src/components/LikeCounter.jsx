@@ -5,6 +5,7 @@ import { withStyles } from '@material-ui/core/styles';
 import IconButton from '@material-ui/core/IconButton';
 import FavoriteIcon from '@material-ui/icons/Favorite';
 import red from '@material-ui/core/colors/red';
+import { auth } from '../helpers/firebase';
 
 const styles = theme => ({
   likes: {
@@ -33,7 +34,8 @@ class LikeCounter extends Component {
     })
   }
 
-  handleLike = (post_id, user, likes) => {
+  handleLike = (post_id, likes) => {
+    const user = auth.currentUser.uid;
     if (user) {
       let count_upd = likes.count;
       let users_upd = likes.users ? likes.users : [];
@@ -65,11 +67,11 @@ class LikeCounter extends Component {
   render() {
     const { likes } = this.state;
     const { postId, classes } = this.props;
-    const current_user = localStorage.getItem('user_data') ? JSON.parse(localStorage.getItem('user_data')) : null;
-    const liked = current_user && likes.users ? likes.users.indexOf(current_user.uid) >= 0 : false;
+    const user = auth.currentUser;
+    const liked = user && likes.users ? likes.users.indexOf(user.uid) >= 0 : false;
     return (
       <>
-        <IconButton aria-label="Polajkuj" onClick={() => this.handleLike(postId, current_user ? current_user.uid : null, likes)}>
+        <IconButton aria-label="Polajkuj" onClick={() => this.handleLike(postId, likes)}>
           <FavoriteIcon className={liked ? classes.liked : ''} />
         </IconButton>
         <span className={classes.likes}>{likes && likes.count}</span>

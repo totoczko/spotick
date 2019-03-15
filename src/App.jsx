@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import {
-  BrowserRouter as Router,
+  BrowserRouter,
   Route
 } from 'react-router-dom';
 // import firebase from './helpers/firebase';
@@ -16,7 +16,7 @@ import { auth } from './helpers/firebase';
 import Post from './layouts/Post';
 import Settings from './layouts/Settings';
 import PrivateRoute from './components/PrivateRoute'
-import BrowserRouter from 'react-router-dom/BrowserRouter';
+import Loading from './components/Loading';
 
 //    "start": "npm run build && http-server ./build",
 
@@ -32,20 +32,19 @@ const styles = {
 class App extends Component {
   constructor(props) {
     super(props);
-
     this.state = {
-      user: localStorage.getItem('user_data') ? localStorage.getItem('user_data') : null
+      user: null,
+      isLogged: false,
+      loading: true
     }
   }
 
   componentDidMount() {
-    // TODO: przeniesc przy cache
     this.authFirebaseListener = auth.onAuthStateChanged((user) => {
       if (user) {
-        this.setState({ user })
-        localStorage.setItem('user_data', JSON.stringify(user));
-        console.log(this.state.user)
+        this.setState({ user, isLogged: true })
       }
+      this.setState({ loading: false })
     });
   }
 
@@ -53,21 +52,45 @@ class App extends Component {
     this.authFirebaseListener && this.authFirebaseListener()
   }
 
-  render() {
+  getAppContent = () => {
+    const { user, isLogged, loading } = this.state;
     const { classes } = this.props;
-    const { user } = this.state;
-    const isLogged = Boolean(user)
-    return (
-      <BrowserRouter basename={process.env.PUBLIC_URL}>
-        <ScrollToTop>
+    let appState = loading ? 0 : (isLogged ? 1 : 2);
+    switch (appState) {
+      case 0:
+        return <Loading />
+      case 1:
+        return (
+          <div className={classes.container}>
+            <Route exact path="/" component={Home} />
+            <Route exact path="/post/:id" component={({ match }) => <Post id={match.params.id} user={user} />} />
+            <PrivateRoute isLogged={isLogged} exact path="/profile" component={Profile} user={user} />
+            <PrivateRoute isLogged={isLogged} exact path="/add" component={AddPost} user={user} />
+            <PrivateRoute isLogged={isLogged} exact path="/settings" component={Settings} user={user} />
+            <Route exact path="/login" component={Login} />
+          </div>
+        )
+      case 2:
+        return (
           <div className={classes.container}>
             <Route exact path="/" component={Home} />
             <Route exact path="/post/:id" component={({ match }) => <Post id={match.params.id} />} />
-            <PrivateRoute isLogged={isLogged} exact path="/profile" component={Profile} />
-            <PrivateRoute isLogged={isLogged} exact path="/add" component={AddPost} />
-            <PrivateRoute isLogged={isLogged} exact path="/settings" component={Settings} />
+            <Route exact path="/profile" component={Login} />
+            <Route exact path="/add" component={Login} />
+            <Route exact path="/settings" component={Login} />
             <Route exact path="/login" component={Login} />
           </div>
+        )
+      default:
+        return <Loading />
+    }
+  }
+
+  render() {
+    return (
+      <BrowserRouter basename={process.env.PUBLIC_URL}>
+        <ScrollToTop>
+          {this.getAppContent()}
         </ScrollToTop>
       </BrowserRouter>
     )

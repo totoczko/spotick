@@ -12,10 +12,8 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import { Button, TextField, Divider, ExpansionPanelActions } from '@material-ui/core';
 import { red } from '@material-ui/core/colors';
 import { auth } from '../helpers/firebase';
-import FormGroup from '@material-ui/core/FormGroup';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import Switch from '@material-ui/core/Switch';
 import classnames from 'classnames';
+import PushToggle from '../components/PushToggle';
 
 const styles = theme => ({
   root: {
@@ -80,6 +78,7 @@ const styles = theme => ({
 
 class Settings extends Component {
   state = {
+    user: null,
     expanded: null,
     login: null,
     email: null,
@@ -91,11 +90,17 @@ class Settings extends Component {
   };
 
   componentDidMount() {
-    const user = JSON.parse(localStorage.getItem('user_data'));
-    this.setState({
-      login: user.displayName,
-      email: user.email
-    })
+    this.authFirebaseListener = auth.onAuthStateChanged((user) => {
+      this.setState({
+        user,
+        login: user.displayName,
+        email: user.email
+      })
+    });
+  }
+
+  componentWillUnmount() {
+    this.authFirebaseListener && this.authFirebaseListener()
   }
 
   handleChange = panel => (event, expanded) => {
@@ -106,7 +111,6 @@ class Settings extends Component {
 
   handleLogout = () => {
     firebase.auth().signOut().then(() => {
-      localStorage.removeItem('user_data')
       window.location.reload()
     });
   }
@@ -117,70 +121,19 @@ class Settings extends Component {
     });
   };
 
-  handleToggle = name => event => {
-    this.setState({ [name]: event.target.checked });
-    console.log(event.target.checked)
-    if (event.target.checked) {
-      Notification.requestPermission((result) => {
-        console.log(result);
-        if (result !== 'granted') {
-          console.log('No notification permission gramted')
-        } else {
-          if ('serviceWorker' in navigator) {
-            const options = {
-              body: 'lorem ipsum',
-              icon: 'img/icons/icon-96x96.png',
-              vibrate: [100, 50, 200],
-              badge: 'img/icons/icon-96x96.png',
-              tag: 'confirm-notification',
-              renotify: true,
-              actions: [
-                {
-                  action: 'confrim',
-                  title: 'Ok',
-                  icon: 'img/icons/icon-96x96.png'
-                },
-                {
-                  action: 'cancel',
-                  title: 'Cancel',
-                  icon: 'img/icons/icon-96x96.png'
-                }
-              ]
-            }
-            navigator.serviceWorker.ready.then((swreg) => {
-              swreg.showNotification('Siccesfully subscribed! (from sw)', options);
-            })
-          }
-
-        }
-      })
-    }
-  };
-
   handleUpdateFirebase = (type) => {
-    const userId = JSON.parse(localStorage.getItem('user_data')).uid;
+    const { user } = this.state;
     if (type === 'email') {
-      firebase.database().ref('users/' + userId).update({
-        email: this.state.newEmail
-      })
+
+      firebase.database().ref('users/' + user.uid).update({ email: this.state.newEmail })
       firebase.auth().currentUser.updateEmail(this.state.newEmail);
+
     } else if (type === 'login') {
-      firebase.database().ref('users/' + userId).update({
-        username: this.state.newLogin
-      })
-      firebase.auth().currentUser.updateProfile({
-        displayName: this.state.newLogin
-      })
-      this.authFirebaseListener = auth.onAuthStateChanged((user) => {
-        if (user) {
-          localStorage.setItem('user_data', JSON.stringify(user));
-        }
-      });
-    } else if (type === 'push') {
-      firebase.database().ref('users/' + userId).update({
-        push: this.state.push
-      })
+
+      firebase.database().ref('users/' + user.uid).update({ username: this.state.newLogin })
+      firebase.auth().currentUser.updateProfile({ displayName: this.state.newLogin })
     }
+
     this.setState({
       expanded: null
     })
@@ -234,42 +187,43 @@ class Settings extends Component {
                     <Typography className={classes.heading}>{setting.heading}</Typography>
                     <Typography className={classes.secondaryHeading}>{setting.placeholder}</Typography>
                   </ExpansionPanelSummary>
-                  <ExpansionPanelDetails>
-                    <div className={classes.expanded}>
-                      <Typography className={classes.secondaryHeading}>{setting.description}</Typography>
-                      {setting.type === 'push' ? (
-                        <FormGroup row>
-                          <FormControlLabel
-                            control={
-                              <Switch
-                                checked={push}
-                                onChange={this.handleToggle('push')}
-                                value={!push}
-                              />
-                            }
-                            label={push ? 'włączone' : 'wyłączone'}
-                          />
-                        </FormGroup>
-                      ) : (
+                  {setting.type === 'push' ? (
+                    <>
+                      <ExpansionPanelDetails>
+                        <div className={classes.expanded}>
+                          <Typography className={classes.secondaryHeading}>{setting.description}</Typography>
                           <div className={classes.form}>
-                            <TextField
-                              id={`outlined-name-${index}`}
-                              label={setting.heading}
-                              className={classes.textField}
-                              onChange={this.handleEdit(setting.new)}
-                              margin="normal"
-                              variant="outlined"
-                              type={setting.type === 'password' ? 'password' : 'text'}
-                            />
+                            <PushToggle push={push} />
                           </div>
-                        )}
-                    </div>
-                  </ExpansionPanelDetails>
-                  <Divider />
-                  <ExpansionPanelActions>
-                    <Button size="small" onClick={this.handleChange('panel' + (index + 1))}>Anuluj</Button>
-                    <Button size="small" color="primary" onClick={() => this.handleUpdateFirebase(setting.type)}>Zapisz</Button>
-                  </ExpansionPanelActions>
+                        </div>
+                      </ExpansionPanelDetails>
+                      <Divider />
+                    </>
+                  ) : (
+                      <>
+                        <ExpansionPanelDetails>
+                          <div className={classes.expanded}>
+                            <Typography className={classes.secondaryHeading}>{setting.description}</Typography>
+                            <div className={classes.form}>
+                              <TextField
+                                id={`outlined-name-${index}`}
+                                label={setting.heading}
+                                className={classes.textField}
+                                onChange={this.handleEdit(setting.new)}
+                                margin="normal"
+                                variant="outlined"
+                                type={setting.type === 'password' ? 'password' : 'text'}
+                              />
+                            </div>
+                          </div>
+                        </ExpansionPanelDetails>
+                        <Divider />
+                        <ExpansionPanelActions>
+                          <Button size="small" onClick={this.handleChange('panel' + (index + 1))}>Anuluj</Button>
+                          <Button size="small" color="primary" onClick={() => this.handleUpdateFirebase(setting.type)}>Zapisz</Button>
+                        </ExpansionPanelActions>
+                      </>
+                    )}
                 </ExpansionPanel>
               ) : ''}
             </>

@@ -79,9 +79,21 @@ class Login extends Component {
   }
 
   login = (email, password) => {
-    auth.signInWithEmailAndPassword(email, password).then(() => {
-      this.props.history.push('/')
-    }, (error) => { this.catchError(error) })
+    auth.setPersistence(firebase.auth.Auth.Persistence.SESSION)
+      .then(function () {
+        // Existing and future Auth states are now persisted in the current
+        // session only. Closing the window would clear any existing state even
+        // if a user forgets to sign out.
+        // ...
+        // New sign-in will be persisted with session persistence.
+        return firebase.auth().signInWithEmailAndPassword(email, password)
+      })
+      .then(() => {
+        this.props.history.push('/')
+      })
+      .catch(function (error) {
+        this.catchError(error)
+      });
   }
 
   register = (email, password) => {
@@ -97,7 +109,7 @@ class Login extends Component {
         email: email
       }
       usersRef.set(user).then(() => {
-        this.props.history.goBack().reload();
+        this.props.history.push('/')
       });
     });
 
@@ -124,7 +136,7 @@ class Login extends Component {
 
     return (
       <main className={classes.main}>
-        <Navigation />
+        <Navigation loggedOut={true} />
         <CssBaseline />
         <Paper className={classes.paper}>
           <Avatar className={classes.avatar}>
@@ -163,7 +175,7 @@ class Login extends Component {
               </Button></small>
           </form>
         </Paper>
-        <BottomAppNavigation />
+        <BottomAppNavigation loggedOut={true} />
       </main>
     );
   }

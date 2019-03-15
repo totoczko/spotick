@@ -43,11 +43,28 @@ const styles = {
 
 class BottomAppNavigation extends React.Component {
   render() {
-    const { classes, location, handleSwitch, step, camera } = this.props;
+    const { classes, location, handleSwitch, step, camera, loggedOut } = this.props;
 
     return (
       <>
-        {location.pathname !== '/add' ?
+        {location.pathname === '/add' && !loggedOut ?
+          <BottomNavigation
+            className={classes.root}
+          >
+            {camera &&
+              <BottomNavigationAction
+                className={classNames(classes.button, classes.textButton + ' ' + (step === 1 && 'activeTextButton'))}
+                onClick={() => handleSwitch(1)}
+                icon={"Zdjęcie"}
+              />
+            }
+            <BottomNavigationAction
+              className={classNames(classes.button, classes.textButton + ' ' + (step === 2 && 'activeTextButton'))}
+              icon={"Galeria"}
+              onClick={() => handleSwitch(2)}
+            />
+          </BottomNavigation>
+          :
           <BottomNavigation
             className={classes.root}
           >
@@ -80,23 +97,6 @@ class BottomAppNavigation extends React.Component {
                 exact={true}
                 className={classes.icon}
               ><PersonIcon /></NavLink>}
-            />
-          </BottomNavigation>
-          :
-          <BottomNavigation
-            className={classes.root}
-          >
-            {camera &&
-              <BottomNavigationAction
-                className={classNames(classes.button, classes.textButton + ' ' + (step === 1 && 'activeTextButton'))}
-                onClick={handleSwitch(1)}
-                icon={"Zdjęcie"}
-              />
-            }
-            <BottomNavigationAction
-              className={classNames(classes.button, classes.textButton + ' ' + (step === 2 && 'activeTextButton'))}
-              icon={"Galeria"}
-              onClick={handleSwitch(2)}
             />
           </BottomNavigation>
         }

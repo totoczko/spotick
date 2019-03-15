@@ -98,8 +98,7 @@ class Profile extends PureComponent {
 
   render() {
     const { view } = this.state;
-    const { classes } = this.props;
-    const user = JSON.parse(localStorage.getItem('user_data'));
+    const { classes, user } = this.props;
     const renderList = (listType) => {
       return (
         <GridList spacing={0} className={classes.gridList}>
@@ -126,13 +125,13 @@ class Profile extends PureComponent {
         <Card className={classes.profile}>
           <CardHeader
             avatar={
-              <Avatar className={classes.avatar}>{user.displayName ? user.displayName[0].toUpperCase() : ''}</Avatar>
+              <Avatar className={classes.avatar}>{user ? user.displayName[0].toUpperCase() : ''}</Avatar>
             }
             title={user ? user.displayName : ''}
             subheader={user ? user.email : ''}
           />
         </Card>
-        <UserPostsContainer>
+        <UserPostsContainer user={user}>
           {(posts, likes, status) => {
             if (status === 'loading') {
               return (

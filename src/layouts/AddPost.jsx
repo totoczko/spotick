@@ -117,13 +117,25 @@ class AddPost extends PureComponent {
       }
     }
 
-    const current_user = JSON.parse(localStorage.getItem('user_data'));
-    this.setState({
-      user: {
-        id: current_user.uid,
-        name: current_user.displayName
-      }
-    })
+    if (this.props.user) {
+      this.setState({
+        user: {
+          id: this.props.user.uid,
+          name: this.props.user.displayName
+        }
+      })
+    }
+  }
+
+  componentWillUpdate(nextProps, nextState) {
+    if (nextProps.user !== this.props.user) {
+      this.setState({
+        user: {
+          id: nextProps.user.uid,
+          name: nextProps.user.displayName
+        }
+      })
+    }
   }
 
   handleChange = name => event => {
@@ -221,7 +233,7 @@ class AddPost extends PureComponent {
         return (
           <div className={classes.container}>
             <AddInfo handleChange={this.handleChange} values={values} />
-            <Button variant="contained" color="primary" className={classes.button} onClick={this.handleSend}>Opublikuj</Button>
+            <Button variant="contained" color="primary" className={classes.button} onClick={() => this.handleSend()}>Opublikuj</Button>
           </div>
         )
       default:

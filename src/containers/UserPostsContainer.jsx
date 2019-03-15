@@ -2,7 +2,7 @@ import { PureComponent } from 'react';
 import firebase from '../helpers/firebase';
 
 
-export default class PostsContainer extends PureComponent {
+export default class UserPostsContainer extends PureComponent {
   constructor(props) {
     super(props);
 
@@ -17,13 +17,19 @@ export default class PostsContainer extends PureComponent {
     this.getPosts();
   }
 
+  componentWillUpdate(nextProps, nextState) {
+    if (nextProps.user !== this.props.user) {
+      this.getPosts();
+    }
+  }
+
   componentWillUnmount() {
     this.postsRef.off();
   }
 
   getPosts = () => {
     this.postsRef = firebase.database().ref('posts').orderByChild('data');
-    const user_id = JSON.parse(localStorage.getItem('user_data')).uid;
+    const user_id = this.props.user.uid;
     let posts = [];
     let likes = [];
     this.postsRef.on('value', (snapshot) => {
