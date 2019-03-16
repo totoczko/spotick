@@ -96,23 +96,12 @@ class Settings extends Component {
         login: user.displayName,
         email: user.email
       })
-      this.getUserSubscription(user.uid)
     });
   }
 
   componentWillUnmount() {
     this.authFirebaseListener && this.authFirebaseListener()
   }
-
-  getUserSubscription = (userId) => {
-    this.userRef = firebase.database().ref('users/' + userId);
-    this.userRef.on('value', (snapshot) => {
-      const subscription = snapshot.val().subscription;
-      const push = snapshot.val().push;
-      this.setState({ push, subscription })
-    });
-  }
-
 
   toggleExpand = panel => (event, expanded) => {
     this.setState({
@@ -148,38 +137,28 @@ class Settings extends Component {
 
   render() {
     const { classes } = this.props;
-    const { expanded, login, email, push, user } = this.state;
+    const { expanded, login, email, user } = this.state;
     const settings = [
       {
         type: 'login',
         new: 'newLogin',
         heading: 'Login',
         placeholder: login,
-        description: 'Zmień nazwę użytkownika:',
-        show: true
+        description: 'Zmień nazwę użytkownika:'
       },
       {
         type: 'email',
         new: 'newEmail',
         heading: 'Email',
         placeholder: email,
-        description: 'Zmień swój adres e-mail:',
-        show: true
+        description: 'Zmień swój adres e-mail:'
       },
       {
         type: 'password',
         new: 'newPassword',
         heading: 'Zmień hasło',
         placeholder: '',
-        description: 'Zmień hasło:',
-        show: true
-      },
-      {
-        type: 'push',
-        heading: 'Powiadomienia',
-        placeholder: push ? 'włączone' : 'wyłączone',
-        description: 'Włącz / wyłącz powiadomienia push:',
-        show: 'Notification' in window ? true : false
+        description: 'Zmień hasło:'
       }
     ]
     return (
@@ -187,49 +166,39 @@ class Settings extends Component {
         <Navigation onlyBack={true} />
         <div className={classes.root}>
           {settings.map((setting, index) =>
-            setting.show === true ? (
-              <ExpansionPanel key={index} expanded={expanded === 'panel' + (index + 1)} onChange={this.toggleExpand('panel' + (index + 1))} className={classes.panel}>
-                <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
-                  <Typography className={classes.heading}>{setting.heading}</Typography>
-                  <Typography className={classes.secondaryHeading}>{setting.placeholder}</Typography>
-                </ExpansionPanelSummary>
-                {setting.type === 'push' ? (
-                  <ExpansionPanelDetails>
-                    <div className={classes.expanded}>
-                      <Typography className={classes.secondaryHeading}>{setting.description}</Typography>
-                      <div className={classes.form}>
-                        <PushToggle push={push} user={user} />
-                      </div>
+            <ExpansionPanel key={index} expanded={expanded === 'panel' + (index + 1)} onChange={this.toggleExpand('panel' + (index + 1))} className={classes.panel}>
+              <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
+                <Typography className={classes.heading}>{setting.heading}</Typography>
+                <Typography className={classes.secondaryHeading}>{setting.placeholder}</Typography>
+              </ExpansionPanelSummary>
+              <div>
+                <ExpansionPanelDetails>
+                  <div className={classes.expanded}>
+                    <Typography className={classes.secondaryHeading}>{setting.description}</Typography>
+                    <div className={classes.form}>
+                      <TextField
+                        id={`outlined-name-${index}`}
+                        label={setting.heading}
+                        className={classes.textField}
+                        onChange={this.handleEdit(setting.new)}
+                        margin="normal"
+                        variant="outlined"
+                        type={setting.type === 'password' ? 'password' : 'text'}
+                      />
                     </div>
-                  </ExpansionPanelDetails>
-                ) : (
-                    <div>
-                      <ExpansionPanelDetails>
-                        <div className={classes.expanded}>
-                          <Typography className={classes.secondaryHeading}>{setting.description}</Typography>
-                          <div className={classes.form}>
-                            <TextField
-                              id={`outlined-name-${index}`}
-                              label={setting.heading}
-                              className={classes.textField}
-                              onChange={this.handleEdit(setting.new)}
-                              margin="normal"
-                              variant="outlined"
-                              type={setting.type === 'password' ? 'password' : 'text'}
-                            />
-                          </div>
-                        </div>
-                      </ExpansionPanelDetails>
-                      <Divider />
-                      <ExpansionPanelActions>
-                        <Button size="small" onClick={this.toggleExpand('panel' + (index + 1))}>Anuluj</Button>
-                        <Button size="small" color="primary" onClick={() => this.handleUpdateFirebase(setting.type)}>Zapisz</Button>
-                      </ExpansionPanelActions>
-                    </div>
-                  )}
-              </ExpansionPanel>
-            ) : ''
+                  </div>
+                </ExpansionPanelDetails>
+                <Divider />
+                <ExpansionPanelActions>
+                  <Button size="small" onClick={this.toggleExpand('panel' + (index + 1))}>Anuluj</Button>
+                  <Button size="small" color="primary" onClick={() => this.handleUpdateFirebase(setting.type)}>Zapisz</Button>
+                </ExpansionPanelActions>
+              </div>
+            </ExpansionPanel>
           )}
+          {'Notification' in window ? (
+            <PushToggle user={user} />
+          ) : ''}
           <Button className={classnames(classes.panelButton, classes.red)} onClick={() => this.handleLogout()}>Wyloguj się</Button>
         </div>
         <BottomAppNavigation />
