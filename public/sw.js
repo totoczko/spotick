@@ -103,6 +103,33 @@ if (workbox) {
         }
     })
 
+    self.addEventListener('push', (event) => {
+        console.log('push notification received', event);
+
+        let data = {
+            title: 'New!',
+            constent: 'New post on Spotick!'
+        };
+        if (event.data) {
+            data = JSON.parse(event.data.text());
+        }
+
+        const options = {
+            body: data.content,
+            icon: 'img/icons/icon-96x96.png',
+            vibrate: [100, 50, 200],
+            badge: 'img/icons/icon-96x96.png',
+            tag: 'new-post',
+            renotify: true
+        }
+        event.waitUntil(
+            self.registration.showNotification(data, options)
+        )
+
+    })
+
+    console.log('1')
+
 } else {
     console.log(`Boo! Workbox didn't load 😬`);
 }

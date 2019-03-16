@@ -106,7 +106,9 @@ class Login extends Component {
       const user = {
         id: userId,
         username: this.state.username,
-        email: email
+        email: email,
+        push: false,
+        subscription: false
       }
       usersRef.set(user).then(() => {
         this.props.history.push('/')

@@ -12,6 +12,7 @@ import AddInfo from '../components/AddInfo';
 import BottomAppNavigation from '../components/BottomAppNavigation';
 import Navigation from '../components/Navigation';
 import AddFile from '../components/AddFile';
+import webpush from 'web-push';
 
 const styles = theme => ({
   layout: {
@@ -161,36 +162,72 @@ class AddPost extends PureComponent {
     let today = new Date();
     today = today.getTime()
     imgRef.put(this.state.img).then(() => {
-      imgRef.getDownloadURL().then((url) => {
-        //add content
-        const itemsRef = firebase.database().ref('posts/' + postId);
-        const item = {
-          postId: postId,
-          imageid: imageId,
-          user: this.state.user,
-          data: today,
-          img: url,
-          geo: this.state.geo,
-          shortText: this.state.shortText,
-          likes: {
-            count: 0
+      imgRef.getDownloadURL()
+        .then((url) => {
+          //add content
+          const itemsRef = firebase.database().ref('posts/' + postId);
+          const item = {
+            postId: postId,
+            imageid: imageId,
+            user: this.state.user,
+            data: today,
+            img: url,
+            geo: this.state.geo,
+            shortText: this.state.shortText,
+            likes: {
+              count: 0
+            }
           }
-        }
-        itemsRef.set(item);
-        this.setState({
-          postId: '',
-          imageId: '',
-          data: '',
-          img: '',
-          geo: '',
-          shortText: '',
-        });
+          itemsRef.set(item);
+          this.setState({
+            postId: '',
+            imageId: '',
+            data: '',
+            img: '',
+            geo: '',
+            shortText: '',
+          });
+          this.setState({ status: 'loaded' })
+          this.props.history.goBack()
+        })
+    })
+      .then(() => {
+        webpush.setVapidDetails(
+          'mailto:test@test.pl',
+          'BCpge7IV7kIBHpMQ1ahqFVC0TzobN3sqkN_C5hk3LTrU5ytxj4o2ozTA_vxU-ZHZW8HW0Ldw9JJPfLX6hg-lPkA',
+          '52hq0m6auAORzXwI46Os-a6wyxvKtH5B2-IkVfXn2JE');
+        return this.getSubscriptions().then((subscriptions) => {
+          console.log(subscriptions)
+          subscriptions.forEach((sub) => {
+            const pushConfig = {
+              endpoint: sub.val().endpoint,
+              keys: sub.val().keys.auth,
+              p256dh: sub.val().keys.p256dh
+            }
+            console.log(pushConfig)
+            webpush.sendNotification(pushConfig, JSON.stringify({
+              title: 'Nowy post na Spotick!',
+              constent: 'Ktoś wrzucił nowe zdjęcie, zobacz jakie!'
+            }));
+          })
+        })
+
+      }).catch((err) => {
         this.setState({ status: 'loaded' })
-        this.props.history.goBack()
+        console.log(err)
+      });
+  }
+
+  getSubscriptions = () => {
+    this.usersRef = firebase.database().ref('users');
+    let subscriptions = [];
+    this.usersRef.on('value', (snapshot) => {
+      snapshot.forEach((child) => {
+        if (child.val().subscription) {
+          subscriptions.push(child.val().subscription);
+        }
       })
-    }).catch((err) => {
-      this.setState({ status: 'loaded' })
-      console.log(err)
+      return subscriptions;
     });
   }
 

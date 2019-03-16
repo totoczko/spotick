@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { FormGroup, FormControlLabel, Switch, ExpansionPanelDetails, Typography, withStyles } from '@material-ui/core';
+import { Switch, ExpansionPanelDetails, Typography, withStyles } from '@material-ui/core';
 import urlBase64ToUint8Array from '../helpers/urlBaseToUint';
 import firebase from '../helpers/firebase';
 
@@ -77,7 +77,7 @@ class PushToggle extends Component {
           if (sub === null) {
             //simmple subscribe() is not safe - anyone can do this, we need to protect our fb endpoint
             //we will ude VAPID keys with WebPush - it runs on our server so is not visible to users
-            const vapidPublicKey = 'BAA_oo8pDlWeI_WxsmFIPu3nA5YwzwLHbmrND2aIv20WRylRYiO-uvslTvIErcoeuAIYb7TtpKQRWGU4RrrYnhw';
+            const vapidPublicKey = 'BCpge7IV7kIBHpMQ1ahqFVC0TzobN3sqkN_C5hk3LTrU5ytxj4o2ozTA_vxU-ZHZW8HW0Ldw9JJPfLX6hg-lPkA';
             const convertedVapidPublicKey = urlBase64ToUint8Array(vapidPublicKey);
             reg.pushManager.subscribe({
               userVisibleOnly: true,
@@ -88,7 +88,7 @@ class PushToggle extends Component {
         })
         .then((newSub) => {
           this.setState({
-            subscription: JSON.stringify(newSub)
+            subscription: newSub
           }, () => {
             this.handleUpdateFirebase('push')
             this.handleUpdateFirebase('subscription')
