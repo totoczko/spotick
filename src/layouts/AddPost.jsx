@@ -72,7 +72,8 @@ class AddPost extends PureComponent {
       step: 2,
       imgSent: false,
       camera: false,
-      status: 'beforeSend'
+      status: 'beforeSend',
+      subscriptions: []
     }
   }
 
@@ -126,6 +127,7 @@ class AddPost extends PureComponent {
         }
       })
     }
+    this.getSubscriptions();
   }
 
   componentWillUpdate(nextProps, nextState) {
@@ -190,32 +192,35 @@ class AddPost extends PureComponent {
           this.setState({ status: 'loaded' })
           this.props.history.goBack()
         })
-    })
-      .then(() => {
-        webpush.setVapidDetails(
-          'mailto:test@test.pl',
-          'BCpge7IV7kIBHpMQ1ahqFVC0TzobN3sqkN_C5hk3LTrU5ytxj4o2ozTA_vxU-ZHZW8HW0Ldw9JJPfLX6hg-lPkA',
-          '52hq0m6auAORzXwI46Os-a6wyxvKtH5B2-IkVfXn2JE');
-        return this.getSubscriptions().then((subscriptions) => {
-          console.log(subscriptions)
-          subscriptions.forEach((sub) => {
-            const pushConfig = {
-              endpoint: sub.val().endpoint,
-              keys: sub.val().keys.auth,
-              p256dh: sub.val().keys.p256dh
-            }
-            console.log(pushConfig)
-            webpush.sendNotification(pushConfig, JSON.stringify({
-              title: 'Nowy post na Spotick!',
-              constent: 'Ktoś wrzucił nowe zdjęcie, zobacz jakie!'
-            }));
-          })
-        })
+      return true
+    }).then(() => {
+      this.sendNotifications();
+    }).catch((err) => {
+      this.setState({ status: 'loaded' })
+      console.log(err)
+    });
+  }
 
-      }).catch((err) => {
-        this.setState({ status: 'loaded' })
-        console.log(err)
-      });
+  sendNotifications = () => {
+    webpush.setVapidDetails(
+      'mailto:test@test.pl',
+      'BCpge7IV7kIBHpMQ1ahqFVC0TzobN3sqkN_C5hk3LTrU5ytxj4o2ozTA_vxU-ZHZW8HW0Ldw9JJPfLX6hg-lPkA',
+      '52hq0m6auAORzXwI46Os-a6wyxvKtH5B2-IkVfXn2JE');
+    const { subscriptions } = this.state;
+    subscriptions.forEach((sub) => {
+      const pushConfig = {
+        endpoint: sub.endpoint,
+        keys: {
+          auth: sub.keys.auth,
+          p256dh: sub.keys.p256dh
+        }
+      }
+      console.log(pushConfig)
+      webpush.sendNotification(pushConfig, JSON.stringify({
+        title: 'Nowy post na Spotick!',
+        constent: 'Ktoś wrzucił nowe zdjęcie, zobacz jakie!'
+      }));
+    })
   }
 
   getSubscriptions = () => {
@@ -227,7 +232,7 @@ class AddPost extends PureComponent {
           subscriptions.push(child.val().subscription);
         }
       })
-      return subscriptions;
+      this.setState({ subscriptions });
     });
   }
 
