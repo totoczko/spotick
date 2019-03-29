@@ -170,6 +170,7 @@ class AddPost extends PureComponent {
           const itemsRef = firebase.database().ref('posts/' + postId);
           const item = {
             postId: postId,
+            id: postId,
             imageid: imageId,
             user: this.state.user,
             data: today,
@@ -180,7 +181,20 @@ class AddPost extends PureComponent {
               count: 0
             }
           }
-          itemsRef.set(item);
+
+          itemsRef.set(item).then(() => {
+            fetch("https://us-central1-spot-pwa.cloudfunctions.net/sendNotifications", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                Accept: "application/json"
+              },
+              body: JSON.stringify({
+                subscriptions: this.state.subscriptions
+              })
+            })
+          });
+
           this.setState({
             postId: '',
             imageId: '',
@@ -194,7 +208,7 @@ class AddPost extends PureComponent {
         })
       return true
     }).then(() => {
-      this.sendNotifications();
+      // this.sendNotifications();
     }).catch((err) => {
       this.setState({ status: 'loaded' })
       console.log(err)
@@ -237,6 +251,7 @@ class AddPost extends PureComponent {
   }
 
   handleSwitch = (step) => () => {
+    console.log(step)
     this.setState({
       step,
       imgSent: false

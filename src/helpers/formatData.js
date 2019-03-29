@@ -22,7 +22,7 @@ export const formatData = (data) => {
     result = diff_hour + ' godzin' + pl(diff_hour) + ' temu'
   } else if (diff_min >= (60 * 24)) {
     const month = ['stycznia', 'lutego', 'marca', 'kwietnia', 'maja', 'czerwca', 'lipca', 'sierpnia', 'września', 'października', 'listopada', 'grudnia']
-    result = dd + ' ' + month[mm]
+    result = dd + ' ' + month[mm - 1]
   }
   return result
 }

@@ -90,8 +90,7 @@ class PushToggle extends Component {
           this.setState({
             subscription: newSub
           }, () => {
-            this.handleUpdateFirebase('push')
-            this.handleUpdateFirebase('subscription')
+            this.handleUpdateFirebase()
             this.displayConfirmNotification()
           })
           return true
@@ -116,8 +115,7 @@ class PushToggle extends Component {
       push: false,
       subscription: false
     }, () => {
-      this.handleUpdateFirebase('push')
-      this.handleUpdateFirebase('subscription')
+      this.handleUpdateFirebase()
     })
   }
 
@@ -153,17 +151,12 @@ class PushToggle extends Component {
     });
   }
 
-  handleUpdateFirebase = (type) => {
+  handleUpdateFirebase = () => {
     const userId = this.state.user.uid;
-    if (type === 'push') {
-      firebase.database().ref('users/' + userId).update({
-        push: this.state.push
-      })
-    } else if (type === 'subscription') {
-      firebase.database().ref('users/' + userId).update({
-        subscription: this.state.subscription
-      })
-    }
+    firebase.database().ref('users/' + userId).update({
+      push: this.state.push,
+      subscription: this.state.subscription
+    })
   };
 
 

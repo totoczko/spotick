@@ -7,7 +7,9 @@ export const firebaseConfig = {
     apiKey: "AIzaSyBot5tOfkhdUCvJsWh6sk--42syvvJwM4M",
     authDomain: "spot-pwa.firebaseio.com/",
     databaseURL: "https://spot-pwa.firebaseio.com",
-    storageBucket: "spot-pwa.appspot.com"
+    projectId: "spot-pwa",
+    storageBucket: "spot-pwa.appspot.com",
+    messagingSenderId: "968470527016"
 };
 
 firebase.initializeApp(firebaseConfig);
