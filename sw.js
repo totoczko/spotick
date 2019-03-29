@@ -100,6 +100,19 @@ if (workbox) {
             notification.close();
         } else {
             console.log(action)
+            e.waitUntil(clients.matchAll().then((clis) => {
+                let client = clis.find((c) => {
+                    return c.visibilityState === 'visible'
+                })
+
+                if (client !== undefined) {
+                    client.navigate('http://localhost:3000')
+                    client.focus()
+                } else {
+                    clients.openWindow('http://localhost:3000')
+                }
+                notification.close()
+            }))
         }
     })
 
@@ -123,7 +136,7 @@ if (workbox) {
             renotify: true
         }
         event.waitUntil(
-            self.registration.showNotification(data, options)
+            self.registration.showNotification(data.title, options)
         )
 
     })
