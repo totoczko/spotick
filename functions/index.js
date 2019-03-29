@@ -20,7 +20,8 @@ exports.sendNotifications = functions.https.onRequest((request, response) => {
       'mailto:test@test.pl',
       'BCpge7IV7kIBHpMQ1ahqFVC0TzobN3sqkN_C5hk3LTrU5ytxj4o2ozTA_vxU-ZHZW8HW0Ldw9JJPfLX6hg-lPkA',
       '52hq0m6auAORzXwI46Os-a6wyxvKtH5B2-IkVfXn2JE');
-    let subscriptions = request.body.subscriptions;
+    const from = request.body.from;
+    const subscriptions = request.body.subscriptions;
     subscriptions.forEach((sub) => {
       var pushConfig = {
         endpoint: sub.endpoint,
@@ -33,8 +34,8 @@ exports.sendNotifications = functions.https.onRequest((request, response) => {
       webpush.sendNotification(
         pushConfig,
         JSON.stringify({
-          title: "New Post",
-          content: "New Post added!",
+          title: "Nowy post!",
+          content: "Na Spotick pojawił się nowy post od " + from.name + "!",
           openUrl: "/help"
         })
       )

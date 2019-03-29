@@ -190,6 +190,7 @@ class AddPost extends PureComponent {
                 Accept: "application/json"
               },
               body: JSON.stringify({
+                from: this.state.user,
                 subscriptions: this.state.subscriptions
               })
             })
