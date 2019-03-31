@@ -1,13 +1,8 @@
 const functions = require('firebase-functions');
-var admin = require("firebase-admin");
-var cors = require("cors")({ origin: true });
-var webpush = require("web-push");
-
-// // Create and Deploy Your First Cloud Functions
-// // https://firebase.google.com/docs/functions/write-firebase-functions
-//
-
-var serviceAccount = require("./spotick-key.json");
+const admin = require("firebase-admin");
+const cors = require("cors")({ origin: true });
+const webpush = require("web-push");
+const serviceAccount = require("./spotick-key.json");
 
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
@@ -22,8 +17,9 @@ exports.sendNotifications = functions.https.onRequest((request, response) => {
       '52hq0m6auAORzXwI46Os-a6wyxvKtH5B2-IkVfXn2JE');
     const from = request.body.from;
     const subscriptions = request.body.subscriptions;
+
     subscriptions.forEach((sub) => {
-      var pushConfig = {
+      const pushConfig = {
         endpoint: sub.endpoint,
         keys: {
           auth: sub.keys.auth,
@@ -38,17 +34,16 @@ exports.sendNotifications = functions.https.onRequest((request, response) => {
           content: "Na Spotick pojawił się nowy post od " + from.name + "!",
           openUrl: "/help"
         })
-      )
-        .catch((err) => {
-          console.log(err);
-        });
+      ).catch((err) => {
+        return response.status(500).json({ error: err });
+      });
+
     });
-    return response
-      .status(200)
-      .json({ message: "Data stored" });
-  })
-    .catch((err) => {
-      response.status(500).json({ error: err });
-    });
+
+    return response.status(200).json({ message: "Data stored" });
+
+  }).catch((err) => {
+    return response.status(500).json({ error: err });
+  });
 
 });

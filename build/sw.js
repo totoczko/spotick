@@ -1,13 +1,14 @@
-importScripts('https://storage.googleapis.com/workbox-cdn/releases/3.6.1/workbox-sw.js');
+// importScripts('https://storage.googleapis.com/workbox-cdn/releases/3.6.1/workbox-sw.js');
+importScripts('https://storage.googleapis.com/workbox-cdn/releases/4.1.1/workbox-sw.js');
 
 if (workbox) {
     console.log(`Yay! Workbox is loaded 🎉`);
 
     workbox.precaching.precacheAndRoute([]);
 
-    // importScripts(
-    //     "/precache-manifest.5683773f26cb2d8ce534cde80cf446ce.js"
-    // );
+    importScripts(
+        "/precache-manifest.67da165ef2cbc486b3bb2a15a4b04009.js"
+    );
 
     workbox.clientsClaim();
 
