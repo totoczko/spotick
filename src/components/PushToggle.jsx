@@ -12,12 +12,6 @@ const styles = theme => ({
     borderTop: '1px solid #eee !important',
     paddingBottom: 10
   },
-  form: {
-    width: '100%',
-    display: 'flex',
-    justifyContent: 'space-between',
-    marginTop: 15
-  },
   expanded: {
     width: '100%'
   },
@@ -29,7 +23,10 @@ const styles = theme => ({
   form: {
     width: '50%',
     float: 'right',
-    textAlign: 'right'
+    textAlign: 'right',
+    display: 'flex',
+    justifyContent: 'space-between',
+    marginTop: 15
   }
 });
 

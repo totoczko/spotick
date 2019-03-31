@@ -5,7 +5,7 @@ import firebase from 'firebase';
 
 export const firebaseConfig = {
     apiKey: "AIzaSyBot5tOfkhdUCvJsWh6sk--42syvvJwM4M",
-    authDomain: "spot-pwa.firebaseio.com/",
+    authDomain: "spot-pwa.firebaseapp.com",
     databaseURL: "https://spot-pwa.firebaseio.com",
     projectId: "spot-pwa",
     storageBucket: "spot-pwa.appspot.com",

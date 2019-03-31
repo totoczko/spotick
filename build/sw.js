@@ -106,10 +106,10 @@ if (workbox) {
                 })
 
                 if (client !== undefined) {
-                    client.navigate('http://localhost:3000')
+                    client.navigate('https://totoczko.github.io/spotick/')
                     client.focus()
                 } else {
-                    clients.openWindow('http://localhost:3000')
+                    clients.openWindow('https://totoczko.github.io/spotick/')
                 }
                 notification.close()
             }))
@@ -140,8 +140,6 @@ if (workbox) {
         )
 
     })
-
-    console.log('1')
 
 } else {
     console.log(`Boo! Workbox didn't load 😬`);
