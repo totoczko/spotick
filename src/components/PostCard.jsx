@@ -80,7 +80,7 @@ class PostCard extends React.Component {
   render() {
     const { classes, content } = this.props;
     const { time } = this.state;
-    const { postId, user, img, geo, shortText, likes } = content;
+    const { id, user, img, geo, shortText, likes } = content;
     return (
       <Card className={classes.card}>
         <CardHeader
@@ -102,7 +102,7 @@ class PostCard extends React.Component {
             </Typography>
           </div>
           <div width="20%">
-            <LikeCounter likes={likes} postId={postId} />
+            <LikeCounter likes={likes} id={id} />
           </div>
         </CardContent>
       </Card >

@@ -105,7 +105,7 @@ class Profile extends PureComponent {
           {listType.length > 0 ?
             listType.map((post, index) => (
               <GridListTile cols={1} key={index} className={classes.gridListTile}>
-                <Link to={'/post/' + post.postId}>
+                <Link to={'/post/' + post.id}>
                   <img src={post.img} alt={post.shortText} className={classes.gridImg} />
                 </Link>
               </GridListTile>

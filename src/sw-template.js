@@ -4,15 +4,16 @@ if ('function' === typeof importScripts) {
   importScripts('https://storage.googleapis.com/workbox-cdn/releases/3.6.1/workbox-sw.js');
   importScripts('js/idb.js');
 
-  let dbPromise = idb.open('post-db', 1, () => {
-    if (!dbPromise.objectStoreNames.contains('posts')) {
-      dbPromise.createObjectStore('posts', { keyPath: 'id' })
+  let dbPromise = idb.open('post-store', 1, (db) => {
+    if (!db.objectStoreNames.contains('posts')) {
+      db.createObjectStore('posts', { keyPath: 'id' })
     }
   });
 
   /* global workbox */
   if (workbox) {
-    console.log('2 Workbox is loaded');
+    console.log('6 Workbox is loaded');
+    workbox.setConfig({ debug: false })
 
     /* injection point for manifest files.  */
     workbox.precaching.precacheAndRoute([]);
@@ -61,6 +62,13 @@ if ('function' === typeof importScripts) {
       })
     );
 
+    // workbox.routing.registerRoute(
+    //   /.*.firebaseio\.com.*/,
+    //   new workbox.strategies.StaleWhileRevalidate({
+    //     cacheName: 'posts',
+    //   })
+    // );
+
     workbox.routing.registerRoute(
       /^https:\/\/firebasestorage\.googleapis\.com/,
       new workbox.strategies.StaleWhileRevalidate({
@@ -71,21 +79,22 @@ if ('function' === typeof importScripts) {
     self.addEventListener('fetch', (event) => {
       const url = 'https://spot-pwa.firebaseio.com/posts';
       if (event.request.url.indexOf(url) > -1) {
-        event.respondWith(fetch(event.request).then((res) => {
-          const cloned = res.clone();
-          cloned.json().then((data) => {
-            for (let key in data) {
-              dbPromise.then((db) => {
-                let tx = db.transaction('posts', 'readwrite');
-                let store = tx.objectStore('posts');
-                store.put(data[key])
-                return tx.complete;
-              })
-            }
-          })
-          return res
-        })
-
+        event.respondWith(
+          fetch(event.request)
+            .then((res) => {
+              const cloned = res.clone();
+              deletePostsFromIDB('posts', dbPromise)
+                .then(() => {
+                  return cloned.json()
+                })
+                .then((data) => {
+                  for (let key in data) {
+                    savePostsIntoIDB('posts', data[key], dbPromise)
+                  }
+                })
+              return res
+            })
+            .catch((err) => console.log(err))
         )
       }
     })
@@ -144,3 +153,22 @@ if ('function' === typeof importScripts) {
     console.log('Workbox could not be loaded. No Offline support');
   }
 }
+
+const savePostsIntoIDB = (st, data, dbPromise) => {
+  return dbPromise.then((db) => {
+    let tx = db.transaction(st, 'readwrite');
+    let store = tx.objectStore(st);
+    store.put(data);
+    return tx.complete;
+  })
+}
+
+const deletePostsFromIDB = (st, dbPromise) => {
+  return dbPromise.then((db) => {
+    let tx = db.transaction(st, 'readwrite');
+    let store = tx.objectStore(st);
+    store.clear();
+    return tx.complete;
+  })
+}
+

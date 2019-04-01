@@ -43,7 +43,7 @@ export default class UserPostsContainer extends PureComponent {
       posts.reverse();
       likes.reverse();
       this.setState({ posts, likes, status: 'loaded' })
-    })
+    }).catch(err => console.log(err))
   }
 
   render() {

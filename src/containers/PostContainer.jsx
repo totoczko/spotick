@@ -30,7 +30,7 @@ export default class PostsContainer extends PureComponent {
       console.log(res)
       post = res.body;
       this.setState({ post, status: 'loaded' });
-    })
+    }).catch(err => console.log(err))
   }
 
   render() {

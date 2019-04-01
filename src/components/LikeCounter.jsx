@@ -66,12 +66,12 @@ class LikeCounter extends Component {
 
   render() {
     const { likes } = this.state;
-    const { postId, classes } = this.props;
+    const { id, classes } = this.props;
     const user = auth.currentUser;
     const liked = user && likes.users ? likes.users.indexOf(user.uid) >= 0 : false;
     return (
       <>
-        <IconButton aria-label="Polajkuj" onClick={() => this.handleLike(postId, likes)}>
+        <IconButton aria-label="Polajkuj" onClick={() => this.handleLike(id, likes)}>
           <FavoriteIcon className={liked ? classes.liked : ''} />
         </IconButton>
         <span className={classes.likes}>{likes && likes.count}</span>

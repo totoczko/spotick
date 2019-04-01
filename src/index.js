@@ -14,6 +14,6 @@ ReactDOM.render(<App />, document.getElementById('root'));
 if ('serviceWorker' in navigator) {
     // Use the window load event to keep the page load performant
     window.addEventListener('load', () => {
-        navigator.serviceWorker.register('./sw.js');
+        navigator.serviceWorker.register(window.location.origin === 'https://totoczko.github.io' ? 'https://totoczko.github.io/spotick/sw.js' : 'http://localhost:3000/sw.js');
     });
 }
