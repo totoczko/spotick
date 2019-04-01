@@ -1,18 +1,18 @@
+//https://karannagupta.com/using-custom-workbox-service-workers-with-create-react-app/
+
 if ('function' === typeof importScripts) {
   importScripts('https://storage.googleapis.com/workbox-cdn/releases/3.6.1/workbox-sw.js');
   importScripts('js/idb.js');
 
-  let dbPromise = idb.open('post-db', 1, () => {
-    if (dbPromise.objectStoreNames) {
-      if (!dbPromise.objectStoreNames.contains('posts')) {
-        dbPromise.createObjectStore('posts', { keyPath: 'id' })
-      }
+  let dbPromise = idb.open('post-store', 1, (db) => {
+    if (!db.objectStoreNames.contains('posts')) {
+      db.createObjectStore('posts', { keyPath: 'id' })
     }
   });
 
   /* global workbox */
   if (workbox) {
-    console.log('4 Workbox is loaded');
+    console.log('6 Workbox is loaded');
     workbox.setConfig({ debug: false })
 
     /* injection point for manifest files.  */
@@ -59,27 +59,27 @@ if ('function' === typeof importScripts) {
   },
   {
     "url": "index.html",
-    "revision": "a767dbf0bb9cdc4b142029f705d83eca"
+    "revision": "fa2b07d2fa09041f43645ea4ab3dc65c"
   },
   {
     "url": "js/idb.js",
-    "revision": "017ced36d82bea1e08b08393361e354d"
+    "revision": "ece273ebfe24fa7cb44aa0f5c3fe0aaa"
   },
   {
-    "url": "precache-manifest.e63e2811987d71c7e7c879b4fb4606d5.js",
-    "revision": "e63e2811987d71c7e7c879b4fb4606d5"
+    "url": "precache-manifest.2c759100d2ee80d5aa69dd8370c6687f.js",
+    "revision": "2c759100d2ee80d5aa69dd8370c6687f"
   },
   {
     "url": "service-worker.js",
-    "revision": "12b3dac0e96cfb91133c9910ce2f36a6"
+    "revision": "8ff26c658ee4088b3eb606f63f367d93"
   },
   {
-    "url": "static/css/main.773b25ae.chunk.css",
-    "revision": "9f44bfb6862f5256b80d5b40a601a788"
+    "url": "static/css/main.035e49fd.chunk.css",
+    "revision": "d40f2963516f80216f3da9ff53fac75e"
   },
   {
-    "url": "static/js/main.3fe4d21f.chunk.js",
-    "revision": "fab76b8eaff8fa592d697c32012f6da8"
+    "url": "static/js/main.35a853a0.chunk.js",
+    "revision": "76842b7bb284440bbfbe5975a7a6e920"
   },
   {
     "url": "static/js/runtime~main.0f559a56.js",
@@ -131,12 +131,12 @@ if ('function' === typeof importScripts) {
       })
     );
 
-    workbox.routing.registerRoute(
-      /.*.firebaseio\.com.*/,
-      new workbox.strategies.StaleWhileRevalidate({
-        cacheName: 'posts',
-      })
-    );
+    // workbox.routing.registerRoute(
+    //   /.*.firebaseio\.com.*/,
+    //   new workbox.strategies.StaleWhileRevalidate({
+    //     cacheName: 'posts',
+    //   })
+    // );
 
     workbox.routing.registerRoute(
       /^https:\/\/firebasestorage\.googleapis\.com/,
@@ -152,22 +152,15 @@ if ('function' === typeof importScripts) {
           fetch(event.request)
             .then((res) => {
               const cloned = res.clone();
-              cloned.json()
+              deletePostsFromIDB('posts', dbPromise)
+                .then(() => {
+                  return cloned.json()
+                })
                 .then((data) => {
-                  console.log(data)
                   for (let key in data) {
-                    console.log(data[key])
-                    dbPromise
-                      .then((db) => {
-                        let tx = db.transaction(['posts'], 'readwrite');
-                        let store = tx.objectStore('posts');
-                        store.put(data[key])
-                        return tx.complete;
-                      })
-                      .catch((err) => console.log(err))
+                    savePostsIntoIDB('posts', data[key], dbPromise)
                   }
                 })
-                .catch((err) => console.log(err))
               return res
             })
             .catch((err) => console.log(err))
@@ -229,3 +222,22 @@ if ('function' === typeof importScripts) {
     console.log('Workbox could not be loaded. No Offline support');
   }
 }
+
+const savePostsIntoIDB = (st, data, dbPromise) => {
+  return dbPromise.then((db) => {
+    let tx = db.transaction(st, 'readwrite');
+    let store = tx.objectStore(st);
+    store.put(data);
+    return tx.complete;
+  })
+}
+
+const deletePostsFromIDB = (st, dbPromise) => {
+  return dbPromise.then((db) => {
+    let tx = db.transaction(st, 'readwrite');
+    let store = tx.objectStore(st);
+    store.clear();
+    return tx.complete;
+  })
+}
+
