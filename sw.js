@@ -12,7 +12,8 @@ if ('function' === typeof importScripts) {
 
   /* global workbox */
   if (workbox) {
-    console.log('2 Workbox is loaded');
+    console.log('3 Workbox is loaded');
+    workbox.setConfig({ debug: false })
 
     /* injection point for manifest files.  */
     workbox.precaching.precacheAndRoute([
@@ -58,27 +59,27 @@ if ('function' === typeof importScripts) {
   },
   {
     "url": "index.html",
-    "revision": "31dcd93b79269f4bf21936c6a1effafe"
+    "revision": "79be276e5cb06067f89c7040ad432b35"
   },
   {
     "url": "js/idb.js",
     "revision": "017ced36d82bea1e08b08393361e354d"
   },
   {
-    "url": "precache-manifest.4b5a74f7284174d7235ca601a30242b3.js",
-    "revision": "4b5a74f7284174d7235ca601a30242b3"
+    "url": "precache-manifest.2319b0e4ac735a531ebcad605b18ff15.js",
+    "revision": "2319b0e4ac735a531ebcad605b18ff15"
   },
   {
     "url": "service-worker.js",
-    "revision": "bd1a784888e6cbf328cc11af131b386b"
+    "revision": "dc76b8927a223e8ab768d3b107e75144"
   },
   {
     "url": "static/css/main.773b25ae.chunk.css",
     "revision": "9f44bfb6862f5256b80d5b40a601a788"
   },
   {
-    "url": "static/js/main.566c3c70.chunk.js",
-    "revision": "e0582983e0a14e34cf16df5594a5bc18"
+    "url": "static/js/main.51506cac.chunk.js",
+    "revision": "a5eb58b931566b7a19375e75cbe4f025"
   },
   {
     "url": "static/js/runtime~main.0f559a56.js",
