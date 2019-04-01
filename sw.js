@@ -6,13 +6,13 @@ if ('function' === typeof importScripts) {
 
   let dbPromise = idb.open('post-store', 1, (db) => {
     if (!db.objectStoreNames.contains('posts')) {
-      db.createObjectStore('posts', { keyPath: 'id' })
+      db.createObjectStore('posts', { keyPath: 'data' })
     }
   });
 
   /* global workbox */
   if (workbox) {
-    console.log('6 Workbox is loaded');
+    console.log('7 Workbox is loaded');
     workbox.setConfig({ debug: false })
 
     /* injection point for manifest files.  */
@@ -59,27 +59,27 @@ if ('function' === typeof importScripts) {
   },
   {
     "url": "index.html",
-    "revision": "fa2b07d2fa09041f43645ea4ab3dc65c"
+    "revision": "982b0351cbf04cd614f9f4d741f3a7d2"
   },
   {
     "url": "js/idb.js",
     "revision": "ece273ebfe24fa7cb44aa0f5c3fe0aaa"
   },
   {
-    "url": "precache-manifest.2c759100d2ee80d5aa69dd8370c6687f.js",
-    "revision": "2c759100d2ee80d5aa69dd8370c6687f"
+    "url": "precache-manifest.045507b4050f1b68b0039bc2ccf2694c.js",
+    "revision": "045507b4050f1b68b0039bc2ccf2694c"
   },
   {
     "url": "service-worker.js",
-    "revision": "8ff26c658ee4088b3eb606f63f367d93"
+    "revision": "d7c815bb324347530a904880632ec83a"
   },
   {
     "url": "static/css/main.035e49fd.chunk.css",
     "revision": "d40f2963516f80216f3da9ff53fac75e"
   },
   {
-    "url": "static/js/main.35a853a0.chunk.js",
-    "revision": "76842b7bb284440bbfbe5975a7a6e920"
+    "url": "static/js/main.b86b1a7c.chunk.js",
+    "revision": "70030b9667ad35f9bf4b2051c2c365d8"
   },
   {
     "url": "static/js/runtime~main.0f559a56.js",
