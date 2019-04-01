@@ -9,76 +9,7 @@ if ('function' === typeof importScripts) {
     console.log('1 Workbox is loaded');
 
     /* injection point for manifest files.  */
-    workbox.precaching.precacheAndRoute([
-  {
-    "url": "img/icons/android-chrome-512x512.png",
-    "revision": "ee14056b2f247b0c24b35436e05f4bff"
-  },
-  {
-    "url": "img/icons/favicon.png",
-    "revision": "4324d8245d6dd1cb58d179ed5313fadc"
-  },
-  {
-    "url": "img/icons/icon-128x128.png",
-    "revision": "c25be1ba2fd6249d9cc54e463a19b8dc"
-  },
-  {
-    "url": "img/icons/icon-144x144.png",
-    "revision": "7ce45583d1d5f4c024ade4d9874290fc"
-  },
-  {
-    "url": "img/icons/icon-152x152.png",
-    "revision": "6c58e57d7b883b237ca161eb513d69a8"
-  },
-  {
-    "url": "img/icons/icon-192x192.png",
-    "revision": "4751e1fbca2165dfc5e45c43ce07ffcb"
-  },
-  {
-    "url": "img/icons/icon-384x384.png",
-    "revision": "e933b0150332ba79bc751c8d56e6aa90"
-  },
-  {
-    "url": "img/icons/icon-512x512.png",
-    "revision": "1c343d7b194ec6e907d4e88ee68678f2"
-  },
-  {
-    "url": "img/icons/icon-72x72.png",
-    "revision": "b1daa0f24a5c29b1dc7e413b6a7b88c2"
-  },
-  {
-    "url": "img/icons/icon-96x96.png",
-    "revision": "2c67d4cf71981ee34f171c151da0ff88"
-  },
-  {
-    "url": "index.html",
-    "revision": "ce96dbae31b33d7d7a28aabfcc809139"
-  },
-  {
-    "url": "precache-manifest.67da165ef2cbc486b3bb2a15a4b04009.js",
-    "revision": "67da165ef2cbc486b3bb2a15a4b04009"
-  },
-  {
-    "url": "service-worker.js",
-    "revision": "f6c12779a195db9b6eeb56cc23e48d8e"
-  },
-  {
-    "url": "static/css/main.b126b3f1.chunk.css",
-    "revision": "ea984efa81cd409873fff1ea1fd57b0b"
-  },
-  {
-    "url": "static/js/1.13037388.chunk.js",
-    "revision": "097c1fe3d85b8fe44a3a7063762be69e"
-  },
-  {
-    "url": "static/js/main.d38cb152.chunk.js",
-    "revision": "3a4e699911009cb97e60366a48065ba0"
-  },
-  {
-    "url": "static/js/runtime~main.0f559a56.js",
-    "revision": "87c3aa95b5d068eef14d46b378c7d0e7"
-  }
-]);
+    workbox.precaching.precacheAndRoute([]);
 
     /* custom cache rules*/
     workbox.routing.registerNavigationRoute('/index.html', {

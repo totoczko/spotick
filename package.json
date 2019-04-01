@@ -17,12 +17,13 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "build": "react-scripts build",
+    "build": "react-scripts build && npm run build-sw",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "predeploy": "npm run build",
     "deploy": "gh-pages -d build",
-    "web-push": "web-push"
+    "web-push": "web-push",
+    "build-sw": "node ./src/sw-build.js"
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -36,7 +37,8 @@
   "devDependencies": {
     "gh-pages": "^2.0.1",
     "http-server": "^0.11.1",
-    "react-app-rewired": "^1.6.2"
+    "react-app-rewired": "^1.6.2",
+    "workbox-build": "^4.1.1"
   },
   "homepage": "https://totoczko.github.io/spotick/"
 }
