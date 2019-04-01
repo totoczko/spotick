@@ -6,13 +6,13 @@ if ('function' === typeof importScripts) {
 
   let dbPromise = idb.open('post-store', 1, (db) => {
     if (!db.objectStoreNames.contains('posts')) {
-      db.createObjectStore('posts', { keyPath: 'id' })
+      db.createObjectStore('posts', { keyPath: 'data' })
     }
   });
 
   /* global workbox */
   if (workbox) {
-    console.log('5 Workbox is loaded');
+    console.log('8 Workbox is loaded');
     workbox.setConfig({ debug: false })
 
     /* injection point for manifest files.  */

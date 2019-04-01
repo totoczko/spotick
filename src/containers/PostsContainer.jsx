@@ -17,13 +17,26 @@ export default class PostsContainer extends PureComponent {
 
   getPosts = () => {
     let posts = [];
+    const sortPosts = (a, b) => {
+      const dateA = a.data;
+      const dateB = b.data;
+      let comparison = 0;
+      if (dateA > dateB) {
+        comparison = -1;
+      } else if (dateA < dateB) {
+        comparison = 1;
+      }
+      return comparison;
+    }
+
     if ('indexedDB' in window) {
       getPostsFromIDB('posts').then((data) => {
         console.log('from cache')
         for (let post in data) {
           posts.push(data[post]);
-          this.setState({ posts, status: 'loaded' });
         }
+        posts = posts.reverse();
+        this.setState({ posts, status: 'loaded' });
       })
     }
 
@@ -35,7 +48,10 @@ export default class PostsContainer extends PureComponent {
       for (let post in res.body) {
         posts.push(res.body[post]);
       }
-      posts.reverse();
+      let postsSorted = posts.sort(sortPosts)
+      return postsSorted;
+
+    }).then(posts => {
       this.setState({ posts, status: 'loaded' });
     }).catch(err => console.log(err))
   }

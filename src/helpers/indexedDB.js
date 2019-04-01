@@ -2,7 +2,7 @@ import idb from './idb.js'
 
 let dbPromise = idb.open('post-store', 1, (db) => {
   if (!db.objectStoreNames.contains('posts')) {
-    db.createObjectStore('posts', { keyPath: 'id' })
+    db.createObjectStore('posts', { keyPath: 'data' })
   }
 });
 
