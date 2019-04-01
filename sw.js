@@ -12,7 +12,7 @@ if ('function' === typeof importScripts) {
 
   /* global workbox */
   if (workbox) {
-    console.log('7 Workbox is loaded');
+    console.log('8 Workbox is loaded');
     workbox.setConfig({ debug: false })
 
     /* injection point for manifest files.  */
