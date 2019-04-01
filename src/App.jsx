@@ -35,14 +35,18 @@ class App extends Component {
     this.state = {
       user: null,
       isLogged: false,
-      loading: true
+      loading: true,
+      auth: null
     }
   }
 
   componentDidMount() {
     this.authFirebaseListener = auth.onAuthStateChanged((user) => {
       if (user) {
-        this.setState({ user, isLogged: true })
+        const idToken = user.getIdToken().then((token) => {
+          this.setState({ auth: token })
+        });
+        this.setState({ user, isLogged: true, auth: idToken })
       }
       this.setState({ loading: false })
     });
@@ -53,7 +57,7 @@ class App extends Component {
   }
 
   getAppContent = () => {
-    const { user, isLogged, loading } = this.state;
+    const { user, isLogged, loading, auth } = this.state;
     const { classes } = this.props;
     let appState = loading ? 0 : (isLogged ? 1 : 2);
     switch (appState) {
@@ -62,7 +66,7 @@ class App extends Component {
       case 1:
         return (
           <div className={classes.container}>
-            <Route exact path="/" component={Home} />
+            <Route auth={auth} exact path="/" component={Home} />
             <Route exact path="/post/:id" component={({ match }) => <Post id={match.params.id} user={user} />} />
             <PrivateRoute isLogged={isLogged} exact path="/profile" component={Profile} user={user} />
             <PrivateRoute isLogged={isLogged} exact path="/add" component={AddPost} user={user} />

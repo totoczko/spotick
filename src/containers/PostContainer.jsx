@@ -1,6 +1,5 @@
 import { PureComponent } from 'react';
-import firebase from '../helpers/firebase';
-
+import { auth } from '../helpers/firebase';
 
 export default class PostsContainer extends PureComponent {
   constructor(props) {
@@ -13,22 +12,25 @@ export default class PostsContainer extends PureComponent {
   }
 
   componentDidMount() {
-    this.getPost();
-  }
-
-  componentWillUnmount() {
-    this.postRef.off();
-  }
-
-  getPost = () => {
-    const { id } = this.props;
-    this.postRef = firebase.database().ref('posts/' + id);
-    let post = [];
-
-    this.postRef.on('value', (snapshot) => {
-      post = snapshot.val();
-      this.setState({ post, status: 'loaded' })
+    this.authFirebaseListener = auth.onAuthStateChanged((user) => {
+      if (user) {
+        user.getIdToken().then((token) => {
+          this.getPost(token);
+        });
+      }
     });
+  }
+
+  getPost = (token) => {
+    const { id } = this.props;
+    const FirebaseREST = require('firebase-rest').default;
+    var jsonClient = new FirebaseREST.JSONClient('https://spot-pwa.firebaseio.com', { auth: token });
+    let post;
+    jsonClient.get('/posts/' + id).then(res => {
+      console.log(res)
+      post = res.body;
+      this.setState({ post, status: 'loaded' });
+    })
   }
 
   render() {

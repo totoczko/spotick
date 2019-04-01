@@ -1,12 +1,18 @@
 //https://karannagupta.com/using-custom-workbox-service-workers-with-create-react-app/
 
 if ('function' === typeof importScripts) {
-  importScripts(
-    'https://storage.googleapis.com/workbox-cdn/releases/3.6.1/workbox-sw.js'
-  );
+  importScripts('https://storage.googleapis.com/workbox-cdn/releases/3.6.1/workbox-sw.js');
+  importScripts('js/idb.js');
+
+  let dbPromise = idb.open('post-db', 1, () => {
+    if (!dbPromise.objectStoreNames.contains('posts')) {
+      dbPromise.createObjectStore('posts', { keyPath: 'id' })
+    }
+  });
+
   /* global workbox */
   if (workbox) {
-    console.log('1 Workbox is loaded');
+    console.log('2 Workbox is loaded');
 
     /* injection point for manifest files.  */
     workbox.precaching.precacheAndRoute([
@@ -53,6 +59,10 @@ if ('function' === typeof importScripts) {
   {
     "url": "index.html",
     "revision": "ce96dbae31b33d7d7a28aabfcc809139"
+  },
+  {
+    "url": "js/idb.js",
+    "revision": "017ced36d82bea1e08b08393361e354d"
   },
   {
     "url": "precache-manifest.67da165ef2cbc486b3bb2a15a4b04009.js",
@@ -130,6 +140,28 @@ if ('function' === typeof importScripts) {
         cacheName: 'post-images',
       })
     );
+
+    self.addEventListener('fetch', (event) => {
+      const url = 'https://spot-pwa.firebaseio.com/posts';
+      if (event.request.url.indexOf(url) > -1) {
+        event.respondWith(fetch(event.request).then((res) => {
+          const cloned = res.clone();
+          cloned.json().then((data) => {
+            for (let key in data) {
+              dbPromise.then((db) => {
+                let tx = db.transaction('posts', 'readwrite');
+                let store = tx.objectStore('posts');
+                store.put(data[key])
+                return tx.complete;
+              })
+            }
+          })
+          return res
+        })
+
+        )
+      }
+    })
 
     self.addEventListener('notificationclick', (e) => {
       const notification = e.notification;

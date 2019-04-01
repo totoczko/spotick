@@ -1,6 +1,5 @@
 import { PureComponent } from 'react';
-import firebase from '../helpers/firebase';
-
+import { auth } from '../helpers/firebase';
 
 export default class UserPostsContainer extends PureComponent {
   constructor(props) {
@@ -14,39 +13,37 @@ export default class UserPostsContainer extends PureComponent {
   }
 
   componentDidMount() {
-    this.getPosts();
+    this.authFirebaseListener = auth.onAuthStateChanged((user) => {
+      if (user) {
+        user.getIdToken().then((token) => {
+          this.getPosts(token);
+        });
+      }
+    });
   }
 
-  componentWillUpdate(nextProps, nextState) {
-    if (nextProps.user !== this.props.user) {
-      this.getPosts();
-    }
-  }
-
-  componentWillUnmount() {
-    this.postsRef.off();
-  }
-
-  getPosts = () => {
-    this.postsRef = firebase.database().ref('posts').orderByChild('data');
+  getPosts = (token) => {
+    const FirebaseREST = require('firebase-rest').default;
+    var jsonClient = new FirebaseREST.JSONClient('https://spot-pwa.firebaseio.com', { auth: token });
     const user_id = this.props.user.uid;
     let posts = [];
     let likes = [];
-    this.postsRef.on('value', (snapshot) => {
-      snapshot.forEach((child) => {
-        if (child.val().user.id === user_id) {
-          posts.push(child.val());
+    jsonClient.get('/posts').then(res => {
+      console.log(res)
+      for (let postKey in res.body) {
+        if (res.body[postKey].user.id === user_id) {
+          posts.push(res.body[postKey]);
         }
-        if (child.val().likes.users) {
-          if (child.val().likes.users.indexOf(user_id) >= 0) {
-            likes.push(child.val());
+        if (res.body[postKey].likes.users) {
+          if (res.body[postKey].likes.users.indexOf(user_id) >= 0) {
+            likes.push(res.body[postKey]);
           }
         }
-      })
+      }
       posts.reverse();
       likes.reverse();
       this.setState({ posts, likes, status: 'loaded' })
-    });
+    })
   }
 
   render() {

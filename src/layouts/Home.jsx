@@ -44,13 +44,13 @@ const styles = theme => ({
 
 
 function Home(props) {
-  const { classes } = props;
+  const { classes, auth } = props;
 
   return (
     <div className={classNames(classes.layout, classes.cardGrid)}>
       <>
         <Navigation />
-        <PostsContainer>
+        <PostsContainer auth={auth}>
           {(posts, status) => {
             if (status === 'loading') {
               return (

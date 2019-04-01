@@ -1,6 +1,4 @@
 import { PureComponent } from 'react';
-import firebase from '../helpers/firebase';
-
 
 export default class PostsContainer extends PureComponent {
   constructor(props) {
@@ -16,20 +14,17 @@ export default class PostsContainer extends PureComponent {
     this.getPosts();
   }
 
-  componentWillUnmount() {
-    this.postsRef.off();
-  }
-
-  getPosts = () => {
-    this.postsRef = firebase.database().ref('posts').orderByChild('data');
+  getPosts = (token) => {
+    const FirebaseREST = require('firebase-rest').default;
+    var jsonClient = new FirebaseREST.JSONClient('https://spot-pwa.firebaseio.com');
     let posts = [];
-    this.postsRef.on('value', (snapshot) => {
-      snapshot.forEach((child) => {
-        posts.push(child.val());
-      })
+    jsonClient.get('/posts').then(res => {
+      for (let post in res.body) {
+        posts.push(res.body[post]);
+      }
       posts.reverse();
-      this.setState({ posts, status: 'loaded' })
-    });
+      this.setState({ posts, status: 'loaded' });
+    })
   }
 
   render() {

@@ -58,7 +58,7 @@ class Post extends Component {
             }
 
             return (
-              (post ? (
+              (post.user ? (
                 <>
                   <Navigation singlePost={true} openActions={post.user.id === user.uid ? this.handleClickOpen : false} />
                   {post.user.id === user.uid ? (

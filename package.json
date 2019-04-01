@@ -7,6 +7,8 @@
     "@material-ui/icons": "^3.0.1",
     "cors": "^2.8.5",
     "firebase": "^5.5.8",
+    "firebase-rest": "^1.0.0",
+    "idb": "^4.0.1",
     "react": "^16.6.1",
     "react-dom": "^16.6.1",
     "react-geocode": "^0.1.2",
