@@ -6,7 +6,7 @@ if ('function' === typeof importScripts) {
   );
   /* global workbox */
   if (workbox) {
-    console.log('NEW UPDATED Workbox is loaded');
+    console.log('1 Workbox is loaded');
 
     /* injection point for manifest files.  */
     workbox.precaching.precacheAndRoute([
@@ -85,21 +85,6 @@ if ('function' === typeof importScripts) {
       blacklist: [/^\/_/, /\/[^\/]+\.[^\/]+$/],
     });
 
-    // workbox.routing.registerRoute(
-    //   /\.(?:png|gif|jpg|jpeg)$/,
-    //   workbox.strategies.cacheFirst({
-    //     cacheName: 'images',
-    //     plugins: [
-    //       new workbox.expiration.Plugin({
-    //         maxEntries: 60,
-    //         maxAgeSeconds: 30 * 24 * 60 * 60, // 30 Days
-    //       }),
-    //     ],
-    //   })
-    // );
-
-    //start
-
     // Cache the Google Fonts stylesheets with a stale-while-revalidate strategy.
     workbox.routing.registerRoute(
       /^https:\/\/fonts\.googleapis\.com/,
@@ -126,19 +111,6 @@ if ('function' === typeof importScripts) {
     );
 
     workbox.routing.registerRoute(
-      /\.(?:png|gif|jpg|jpeg|svg)$/,
-      new workbox.strategies.CacheFirst({
-        cacheName: 'images',
-        plugins: [
-          new workbox.expiration.Plugin({
-            maxEntries: 60,
-            maxAgeSeconds: 30 * 24 * 60 * 60, // 30 Days
-          }),
-        ],
-      })
-    );
-
-    workbox.routing.registerRoute(
       /index.html/,
       new workbox.strategies.StaleWhileRevalidate({
         cacheName: 'html',
@@ -156,13 +128,6 @@ if ('function' === typeof importScripts) {
       /^https:\/\/firebasestorage\.googleapis\.com/,
       new workbox.strategies.StaleWhileRevalidate({
         cacheName: 'post-images',
-      })
-    );
-
-    workbox.routing.registerRoute(
-      /.*.firebaseio\.com.*/,
-      new workbox.strategies.StaleWhileRevalidate({
-        cacheName: 'posts',
       })
     );
 
@@ -215,8 +180,6 @@ if ('function' === typeof importScripts) {
       )
 
     })
-
-    //end
 
   } else {
     console.log('Workbox could not be loaded. No Offline support');
