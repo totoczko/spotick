@@ -120,12 +120,20 @@ class AddPost extends PureComponent {
     }
 
     if (this.props.user) {
-      this.setState({
-        user: {
-          id: this.props.user.uid,
-          name: this.props.user.displayName
+      let color = '';
+      this.usersRef = firebase.database().ref('users/' + this.props.user.uid);
+      this.usersRef.on('value', (snapshot) => {
+        color = snapshot.val().color;
+        if (color) {
+          this.setState({
+            user: {
+              id: this.props.user.uid,
+              name: this.props.user.displayName,
+              color: color
+            }
+          })
         }
-      })
+      });
     }
     this.getSubscriptions();
   }

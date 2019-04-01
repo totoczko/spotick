@@ -4,12 +4,13 @@ import { withStyles } from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card';
 import CardHeader from '@material-ui/core/CardHeader';
 import Avatar from '@material-ui/core/Avatar';
-import red from '@material-ui/core/colors/red';
+// import red from '@material-ui/core/colors/red';
 import { Typography, CircularProgress, GridListTile, GridList } from '@material-ui/core';
 import BottomAppNavigation from 'components/BottomAppNavigation';
 import Navigation from 'components/Navigation';
 import UserPostsContainer from '../containers/UserPostsContainer';
 import classnames from 'classnames';
+import firebase from '../helpers/firebase';
 import { Link } from 'react-router-dom';
 
 const styles = theme => ({
@@ -17,9 +18,6 @@ const styles = theme => ({
     maxWidth: 400,
     borderRadius: 0,
     boxShadow: 'none'
-  },
-  avatar: {
-    backgroundColor: red[500],
   },
   heading: {
     lineHeight: '1em',
@@ -69,8 +67,14 @@ class Profile extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
-      view: 'posts'
+      view: 'posts',
+      color: null
     }
+  }
+
+  componentDidMount() {
+    const user = this.props.user;
+    this.getUserColor(user.uid)
   }
 
   switchView = (view) => {
@@ -96,8 +100,15 @@ class Profile extends PureComponent {
     )
   }
 
+  getUserColor = (id) => {
+    this.usersRef = firebase.database().ref('users/' + id);
+    this.usersRef.on('value', (snapshot) => {
+      this.setState({ color: snapshot.val().color })
+    });
+  }
+
   render() {
-    const { view } = this.state;
+    const { view, color } = this.state;
     const { classes, user } = this.props;
     const renderList = (listType) => {
       return (
@@ -125,7 +136,7 @@ class Profile extends PureComponent {
         <Card className={classes.profile}>
           <CardHeader
             avatar={
-              <Avatar className={classes.avatar}>{user ? user.displayName[0].toUpperCase() : ''}</Avatar>
+              <Avatar className={classes.avatar} style={{ backgroundColor: color }}>{user.displayName ? user.displayName[0].toUpperCase() : ''}</Avatar>
             }
             title={user ? user.displayName : ''}
             subheader={user ? user.email : ''}

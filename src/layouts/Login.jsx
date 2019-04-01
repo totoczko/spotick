@@ -103,18 +103,29 @@ class Login extends Component {
       })
       const userId = auth.currentUser.uid;
       const usersRef = firebase.database().ref('users/' + userId);
+      const color = this.getUserColor();
       const user = {
         id: userId,
         username: this.state.username,
         email: email,
         push: false,
-        subscription: false
+        subscription: false,
+        color: color
       }
       usersRef.set(user).then(() => {
         this.props.history.push('/')
       });
     });
 
+  }
+
+  getUserColor = () => {
+    var letters = '0123456789ABCDEF';
+    var color = '#';
+    for (var i = 0; i < 6; i++) {
+      color += letters[Math.floor(Math.random() * 16)];
+    }
+    return color;
   }
 
   toggleType = () => {

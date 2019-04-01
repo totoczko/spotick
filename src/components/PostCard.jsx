@@ -6,10 +6,10 @@ import CardHeader from '@material-ui/core/CardHeader';
 import CardContent from '@material-ui/core/CardContent';
 import Avatar from '@material-ui/core/Avatar';
 import Typography from '@material-ui/core/Typography';
-import red from '@material-ui/core/colors/red';
 import PlaceIcon from '@material-ui/icons/Place';
 import LikeCounter from './LikeCounter';
 import { formatData } from '../helpers/formatData';
+import firebase from '../helpers/firebase';
 
 const styles = theme => ({
   card: {
@@ -36,9 +36,9 @@ const styles = theme => ({
   expandOpen: {
     transform: 'rotate(180deg)',
   },
-  avatar: {
-    backgroundColor: red[500],
-  },
+  // avatar: {
+  //   backgroundColor: red[500],
+  // },
   localization: {
     color: 'rgba(0, 0, 0, 0.54)',
     fontSize: 12,
@@ -60,32 +60,44 @@ class PostCard extends React.Component {
     super(props);
     this.state = {
       expanded: false,
-      time: null
+      time: null,
+      color: null
     }
   }
 
   componentDidMount() {
+    const user = this.props.content.user;
+    let color = user.color ? user.color : this.getUserColor(user.id)
     this.setState({
-      time: formatData(this.props.content.data)
+      time: formatData(this.props.content.data),
+      color
     })
     this.interval = setInterval(() => this.setState({
       time: formatData(this.props.content.data)
     }), 60 * 1000);
   }
 
+
   handleExpandClick = () => {
     this.setState(state => ({ expanded: !state.expanded }));
   };
 
+  getUserColor = (id) => {
+    this.usersRef = firebase.database().ref('users/' + id);
+    this.usersRef.on('value', (snapshot) => {
+      return snapshot.val().color;
+    });
+  }
+
   render() {
     const { classes, content } = this.props;
-    const { time } = this.state;
+    const { time, color } = this.state;
     const { id, user, img, geo, shortText, likes } = content;
     return (
       <Card className={classes.card}>
         <CardHeader
           avatar={
-            <Avatar className={classes.avatar}>{user && user.name[0].toUpperCase()}</Avatar>
+            <Avatar className={classes.avatar} style={{ backgroundColor: color }}>{user && user.name[0].toUpperCase()}</Avatar>
           }
           title={user.name}
           subheader={time}
