@@ -1,18 +1,18 @@
-//https://karannagupta.com/using-custom-workbox-service-workers-with-create-react-app/
-
 if ('function' === typeof importScripts) {
   importScripts('https://storage.googleapis.com/workbox-cdn/releases/3.6.1/workbox-sw.js');
   importScripts('js/idb.js');
 
   let dbPromise = idb.open('post-db', 1, () => {
-    if (!dbPromise.objectStoreNames.contains('posts')) {
-      dbPromise.createObjectStore('posts', { keyPath: 'id' })
+    if (dbPromise.objectStoreNames) {
+      if (!dbPromise.objectStoreNames.contains('posts')) {
+        dbPromise.createObjectStore('posts', { keyPath: 'id' })
+      }
     }
   });
 
   /* global workbox */
   if (workbox) {
-    console.log('3 Workbox is loaded');
+    console.log('4 Workbox is loaded');
     workbox.setConfig({ debug: false })
 
     /* injection point for manifest files.  */
@@ -59,27 +59,27 @@ if ('function' === typeof importScripts) {
   },
   {
     "url": "index.html",
-    "revision": "79be276e5cb06067f89c7040ad432b35"
+    "revision": "a767dbf0bb9cdc4b142029f705d83eca"
   },
   {
     "url": "js/idb.js",
     "revision": "017ced36d82bea1e08b08393361e354d"
   },
   {
-    "url": "precache-manifest.2319b0e4ac735a531ebcad605b18ff15.js",
-    "revision": "2319b0e4ac735a531ebcad605b18ff15"
+    "url": "precache-manifest.e63e2811987d71c7e7c879b4fb4606d5.js",
+    "revision": "e63e2811987d71c7e7c879b4fb4606d5"
   },
   {
     "url": "service-worker.js",
-    "revision": "dc76b8927a223e8ab768d3b107e75144"
+    "revision": "12b3dac0e96cfb91133c9910ce2f36a6"
   },
   {
     "url": "static/css/main.773b25ae.chunk.css",
     "revision": "9f44bfb6862f5256b80d5b40a601a788"
   },
   {
-    "url": "static/js/main.51506cac.chunk.js",
-    "revision": "a5eb58b931566b7a19375e75cbe4f025"
+    "url": "static/js/main.3fe4d21f.chunk.js",
+    "revision": "fab76b8eaff8fa592d697c32012f6da8"
   },
   {
     "url": "static/js/runtime~main.0f559a56.js",
@@ -132,6 +132,13 @@ if ('function' === typeof importScripts) {
     );
 
     workbox.routing.registerRoute(
+      /.*.firebaseio\.com.*/,
+      new workbox.strategies.StaleWhileRevalidate({
+        cacheName: 'posts',
+      })
+    );
+
+    workbox.routing.registerRoute(
       /^https:\/\/firebasestorage\.googleapis\.com/,
       new workbox.strategies.StaleWhileRevalidate({
         cacheName: 'post-images',
@@ -141,21 +148,29 @@ if ('function' === typeof importScripts) {
     self.addEventListener('fetch', (event) => {
       const url = 'https://spot-pwa.firebaseio.com/posts';
       if (event.request.url.indexOf(url) > -1) {
-        event.respondWith(fetch(event.request).then((res) => {
-          const cloned = res.clone();
-          cloned.json().then((data) => {
-            for (let key in data) {
-              dbPromise.then((db) => {
-                let tx = db.transaction('posts', 'readwrite');
-                let store = tx.objectStore('posts');
-                store.put(data[key])
-                return tx.complete;
-              })
-            }
-          })
-          return res
-        })
-
+        event.respondWith(
+          fetch(event.request)
+            .then((res) => {
+              const cloned = res.clone();
+              cloned.json()
+                .then((data) => {
+                  console.log(data)
+                  for (let key in data) {
+                    console.log(data[key])
+                    dbPromise
+                      .then((db) => {
+                        let tx = db.transaction(['posts'], 'readwrite');
+                        let store = tx.objectStore('posts');
+                        store.put(data[key])
+                        return tx.complete;
+                      })
+                      .catch((err) => console.log(err))
+                  }
+                })
+                .catch((err) => console.log(err))
+              return res
+            })
+            .catch((err) => console.log(err))
         )
       }
     })
