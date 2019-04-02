@@ -20,14 +20,17 @@ import Loading from './components/Loading';
 
 //    "start": "npm run build && http-server ./build",
 
-const styles = {
+const styles = theme => ({
   container: {
     paddingTop: 50,
     paddingBottom: 50,
     minHeight: '100vh',
-    boxSizing: 'border-box'
+    boxSizing: 'border-box',
+    [theme.breakpoints.up('sm')]: {
+      paddingTop: 80,
+    },
   }
-};
+});
 
 class App extends Component {
   constructor(props) {

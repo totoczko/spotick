@@ -17,7 +17,10 @@ class CapturePhoto extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
-      elementHeight: 300
+      elementHeight: 300,
+      cameraHeight: null,
+      cameraWidth: null,
+      elementWidth: null
     }
   }
 
@@ -25,7 +28,9 @@ class CapturePhoto extends PureComponent {
     if (this.props.camera) {
       this.showCamera();
       setTimeout(() => {
-        this.setState({ elementHeight: this.divRef.offsetHeight });
+        const elementHeight = this.divRef.offsetHeight;
+        const elementWidth = elementHeight * this.state.cameraWidth / this.state.cameraHeight;
+        this.setState({ elementHeight, elementWidth });
       }, 1000);
     }
   }
@@ -33,6 +38,13 @@ class CapturePhoto extends PureComponent {
   showCamera = () => {
     navigator.mediaDevices.getUserMedia({ video: true }).then(stream => {
       this.videoStream.srcObject = stream;
+      const cameraHeight = stream.getVideoTracks()[0].getSettings().height;
+      const cameraWidth = stream.getVideoTracks()[0].getSettings().width;
+      this.setState({
+        cameraHeight,
+        cameraWidth
+      })
+
     }).catch(err => {
       console.log(err)
     })
@@ -41,7 +53,7 @@ class CapturePhoto extends PureComponent {
 
   render() {
     const { classes, captureImage, imgSent } = this.props;
-    const { elementHeight } = this.state;
+    const { elementHeight, elementWidth } = this.state;
     const videoClass = cx({
       video: true,
       hidden: imgSent
@@ -64,13 +76,16 @@ class CapturePhoto extends PureComponent {
             className={videoClass}
             autoPlay
             ref={(stream) => { this.videoStream = stream }}
+            height={elementHeight}
+            width={elementWidth}
+          />
+          <canvas
+            className={canvasClass}
+            ref={(canvas) => { this.canvas = canvas }}
+            height={elementHeight}
+            width={elementWidth}
           />
         </div>
-        <canvas
-          className={canvasClass}
-          ref={(canvas) => { this.canvas = canvas }}
-          height={elementHeight}
-        />
         <Button
           className={buttonClass}
           color="primary"

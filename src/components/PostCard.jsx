@@ -18,7 +18,13 @@ const styles = theme => ({
     boxShadow: 'none'
   },
   media: {
-    width: '100%'
+    width: '100%',
+    height: 300,
+    objectFit: 'cover',
+    [theme.breakpoints.up('sm')]: {
+      paddingLeft: 12,
+      paddingRight: 12
+    },
   },
   actions: {
     display: 'flex'
