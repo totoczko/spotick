@@ -11,9 +11,9 @@ import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import logo from 'assets/images/logo-nb.png';
 
-const styles = {
+const styles = theme => ({
 	root: {
-		flexGrow: 1
+		flexGrow: 1,
 	},
 	appbar: {
 		backgroundColor: '#fafafa',
@@ -41,9 +41,14 @@ const styles = {
 		marginRight: 30
 	},
 	toolbar: {
-		justifyContent: 'space-between'
+		justifyContent: 'space-between',
+		[theme.breakpoints.up(1100 + theme.spacing.unit * 3 * 2)]: {
+			width: 1100,
+			marginLeft: 'auto',
+			marginRight: 'auto',
+		}
 	}
-};
+});
 
 class Navigation extends React.Component {
 	goBack = () => {

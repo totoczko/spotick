@@ -54,14 +54,14 @@ class BottomAppNavigation extends React.Component {
             {camera &&
               <BottomNavigationAction
                 className={classNames(classes.button, classes.textButton + ' ' + (step === 1 && 'activeTextButton'))}
-                onClick={() => handleSwitch(1)}
+                onClick={handleSwitch(1)}
                 icon={"Zdjęcie"}
               />
             }
             <BottomNavigationAction
               className={classNames(classes.button, classes.textButton + ' ' + (step === 2 && 'activeTextButton'))}
               icon={"Galeria"}
-              onClick={() => handleSwitch(2)}
+              onClick={handleSwitch(2)}
             />
           </BottomNavigation>
           :

@@ -15,9 +15,21 @@ import { Link } from 'react-router-dom';
 
 const styles = theme => ({
   profile: {
-    maxWidth: 400,
     borderRadius: 0,
-    boxShadow: 'none'
+    boxShadow: 'none',
+    [theme.breakpoints.up(1100 + theme.spacing.unit * 3 * 2)]: {
+      width: 1100,
+      marginLeft: 'auto',
+      marginRight: 'auto',
+      marginBottom: 15
+    }
+  },
+  layout: {
+    [theme.breakpoints.up(1100 + theme.spacing.unit * 3 * 2)]: {
+      width: 1100,
+      marginLeft: 'auto',
+      marginRight: 'auto'
+    }
   },
   heading: {
     lineHeight: '1em',
@@ -30,7 +42,8 @@ const styles = theme => ({
     marginBottom: 15
   },
   gridList: {
-    margin: '0 !important'
+    margin: '0 !important',
+    overflow: 'visible'
   },
   postCounter: {
     border: '1px solid #eee',
@@ -59,7 +72,23 @@ const styles = theme => ({
   gridImg: {
     objectFit: 'cover',
     width: '100%',
-    height: '100%'
+    height: '100%',
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    bottom: 0,
+    right: 0
+  },
+  gridListTile: {
+    height: 'initial !important',
+    position: 'relative',
+    width: '100%',
+    overflow: 'hidden',
+    background: '#4679BD'
+  },
+  gridListLink: {
+    display: 'block',
+    paddingTop: '100%'
   }
 });
 
@@ -115,8 +144,8 @@ class Profile extends PureComponent {
         <GridList spacing={0} className={classes.gridList}>
           {listType.length > 0 ?
             listType.map((post, index) => (
-              <GridListTile cols={1} key={index} className={classes.gridListTile}>
-                <Link to={'/post/' + post.id}>
+              <GridListTile cols={window.innerWidth > 1100 ? .6666 : 1} key={index} className={classes.gridListTile}>
+                <Link to={'/post/' + post.id} className={classes.gridListLink}>
                   <img src={post.img} alt={post.shortText} className={classes.gridImg} />
                 </Link>
               </GridListTile>
@@ -126,8 +155,9 @@ class Profile extends PureComponent {
                   Brak postów do wyświetlenia
 						 </Typography>
               </div>
-            )}
-        </GridList>
+            )
+          }
+        </GridList >
       )
     }
     return (
@@ -142,27 +172,29 @@ class Profile extends PureComponent {
             subheader={user ? user.email : ''}
           />
         </Card>
-        <UserPostsContainer user={user}>
-          {(posts, likes, status) => {
-            if (status === 'loading') {
+        <div className={classes.layout}>
+          <UserPostsContainer user={user}>
+            {(posts, likes, status) => {
+              if (status === 'loading') {
+                return (
+                  <>
+                    {this.renderPostsCounter(0, 0)}
+                    <div className={classes.center}>
+                      <CircularProgress className={classes.progress} size={30} thickness={5} />
+                    </div>
+                  </>
+                )
+              }
               return (
                 <>
-                  {this.renderPostsCounter(0, 0)}
-                  <div className={classes.center}>
-                    <CircularProgress className={classes.progress} size={30} thickness={5} />
-                  </div>
+                  {this.renderPostsCounter(posts.length, likes.length)}
+                  {view === 'posts' ? renderList(posts) : renderList(likes)}
                 </>
               )
             }
-            return (
-              <>
-                {this.renderPostsCounter(posts.length, likes.length)}
-                {view === 'posts' ? renderList(posts) : renderList(likes)}
-              </>
-            )
-          }
-          }
-        </UserPostsContainer>
+            }
+          </UserPostsContainer>
+        </div>
         <BottomAppNavigation />
       </>
     )

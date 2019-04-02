@@ -29,7 +29,6 @@ export default class UserPostsContainer extends PureComponent {
     let posts = [];
     let likes = [];
     jsonClient.get('/posts').then(res => {
-      console.log(res)
       for (let postKey in res.body) {
         if (res.body[postKey].user.id === user_id) {
           posts.push(res.body[postKey]);

@@ -18,6 +18,13 @@ const styles = theme => ({
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center'
+  },
+  layout: {
+    [theme.breakpoints.up(1100 + theme.spacing.unit * 3 * 2)]: {
+      width: 1100,
+      marginLeft: 'auto',
+      marginRight: 'auto',
+    }
   }
 });
 
@@ -50,8 +57,10 @@ class Post extends Component {
               return (
                 <>
                   <Navigation singlePost={true} />
-                  <div className={classes.center}>
-                    <CircularProgress className={classes.progress} size={30} thickness={5} />
+                  <div className={classes.layout}>
+                    <div className={classes.center}>
+                      <CircularProgress className={classes.progress} size={30} thickness={5} />
+                    </div>
                   </div>
                 </>
               )
@@ -69,7 +78,9 @@ class Post extends Component {
                       id={id}
                     />
                   ) : ''}
-                  <PostCard content={post} />
+                  <div className={classes.layout}>
+                    <PostCard content={post} />
+                  </div>
                 </>
               ) : (
                   <>

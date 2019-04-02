@@ -19,14 +19,23 @@ const styles = theme => ({
   root: {
     width: '100%',
     overflowX: 'hidden',
-    background: '#fdfdfd',
-    minHeight: '-webkit-fill-available'
+    // background: '#fdfdfd',
+    minHeight: '-webkit-fill-available',
+    [theme.breakpoints.up(1100 + theme.spacing.unit * 3 * 2)]: {
+      width: 800,
+      marginLeft: 'auto',
+      marginRight: 'auto',
+    }
   },
   panel: {
     margin: '15px 0 !important',
     boxShadow: 'none',
     borderBottom: '1px solid #eee !important',
-    borderTop: '1px solid #eee !important'
+    borderTop: '1px solid #eee !important',
+    [theme.breakpoints.up(1100 + theme.spacing.unit * 3 * 2)]: {
+      borderLeft: '1px solid #eee !important',
+      borderRight: '1px solid #eee !important',
+    }
   },
   panelButton: {
     boxShadow: 'none',
@@ -39,7 +48,11 @@ const styles = theme => ({
     textTransform: 'none',
     fontWeight: 'normal',
     marginBottom: 15,
-    background: '#fff'
+    background: '#fff',
+    [theme.breakpoints.up(1100 + theme.spacing.unit * 3 * 2)]: {
+      borderLeft: '1px solid #eee !important',
+      borderRight: '1px solid #eee !important',
+    }
   },
   red: {
     color: red[500]
@@ -54,7 +67,7 @@ const styles = theme => ({
   textField: {
     margin: 0,
     width: '100%',
-    borderRadius: '4px 0 0 4px'
+    borderRadius: '4px 0 0 4px',
   },
   form: {
     width: '100%',

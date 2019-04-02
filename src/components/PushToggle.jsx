@@ -10,7 +10,11 @@ const styles = theme => ({
     background: '#fff',
     borderBottom: '1px solid #eee !important',
     borderTop: '1px solid #eee !important',
-    paddingBottom: 10
+    paddingBottom: 10,
+    [theme.breakpoints.up(1100 + theme.spacing.unit * 3 * 2)]: {
+      borderLeft: '1px solid #eee !important',
+      borderRight: '1px solid #eee !important',
+    }
   },
   expanded: {
     width: '100%'
@@ -25,8 +29,7 @@ const styles = theme => ({
     float: 'right',
     textAlign: 'right',
     display: 'flex',
-    justifyContent: 'space-between',
-    marginTop: 15
+    justifyContent: 'flex-end'
   }
 });
 

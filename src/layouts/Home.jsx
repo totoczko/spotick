@@ -63,7 +63,7 @@ function Home(props) {
               <Grid container spacing={40} className={classes.cardItem}>
                 {posts.length > 0 ?
                   posts.map((post, index) => (
-                    <Grid item key={index} xs={12} sm={6} md={4} lg={3} className={classes.cardItemGrid}>
+                    <Grid item key={index} xs={12} sm={4} md={4} lg={4} className={classes.cardItemGrid}>
                       <PostCard content={post} />
                     </Grid>
                   )) : (

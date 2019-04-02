@@ -13,13 +13,14 @@ import firebase from '../helpers/firebase';
 
 const styles = theme => ({
   card: {
-    maxWidth: 400,
+    maxWidth: 500,
     borderRadius: 0,
-    boxShadow: 'none'
+    boxShadow: 'none',
+    margin: '0 auto'
   },
   media: {
     width: '100%',
-    height: 300,
+    height: 380,
     objectFit: 'cover',
     [theme.breakpoints.up('sm')]: {
       paddingLeft: 12,
@@ -42,9 +43,6 @@ const styles = theme => ({
   expandOpen: {
     transform: 'rotate(180deg)',
   },
-  // avatar: {
-  //   backgroundColor: red[500],
-  // },
   localization: {
     color: 'rgba(0, 0, 0, 0.54)',
     fontSize: 12,

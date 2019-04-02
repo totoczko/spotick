@@ -12,7 +12,7 @@ if ('function' === typeof importScripts) {
 
   /* global workbox */
   if (workbox) {
-    console.log('8 Workbox is loaded');
+    console.log('Workbox is loaded');
     workbox.setConfig({ debug: false })
 
     /* injection point for manifest files.  */
@@ -102,12 +102,9 @@ if ('function' === typeof importScripts) {
     self.addEventListener('notificationclick', (e) => {
       const notification = e.notification;
       const action = e.action;
-      console.log(notification);
       if (action === 'confirm') {
-        console.log('confirm was chosen')
         notification.close();
       } else {
-        console.log(action)
         e.waitUntil(clients.matchAll().then((clis) => {
           let client = clis.find((c) => {
             return c.visibilityState === 'visible'
@@ -125,8 +122,6 @@ if ('function' === typeof importScripts) {
     })
 
     self.addEventListener('push', (event) => {
-      console.log('push notification received', event);
-
       let data = {
         title: 'New!',
         constent: 'New post on Spotick!'

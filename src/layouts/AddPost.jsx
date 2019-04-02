@@ -26,7 +26,12 @@ const styles = theme => ({
     }
   },
   container: {
-    padding: 40
+    padding: 40,
+    [theme.breakpoints.up(1100 + theme.spacing.unit * 3 * 2)]: {
+      width: 500,
+      marginLeft: 'auto',
+      marginRight: 'auto',
+    }
   },
   form: {
     ...theme.mixins.gutters(),
@@ -237,7 +242,6 @@ class AddPost extends PureComponent {
           p256dh: sub.keys.p256dh
         }
       }
-      console.log(pushConfig)
       webpush.sendNotification(pushConfig, JSON.stringify({
         title: 'Nowy post na Spotick!',
         constent: 'Ktoś wrzucił nowe zdjęcie, zobacz jakie!'
@@ -259,7 +263,6 @@ class AddPost extends PureComponent {
   }
 
   handleSwitch = (step) => () => {
-    console.log(step)
     this.setState({
       step,
       imgSent: false
@@ -269,7 +272,6 @@ class AddPost extends PureComponent {
   captureImage = (canvas, video) => {
     const context = canvas.getContext('2d');
     const width = canvas.width;
-    // const height = video.videoHeight / (video.videoWidth / canvas.width);
     context.drawImage(video, 0, 0, width, canvas.height);
     video.srcObject.getVideoTracks().forEach(track => {
       track.stop()
