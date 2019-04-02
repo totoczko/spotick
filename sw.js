@@ -12,7 +12,7 @@ if ('function' === typeof importScripts) {
 
   /* global workbox */
   if (workbox) {
-    console.log('8 Workbox is loaded');
+    console.log('Workbox is loaded');
     workbox.setConfig({ debug: false })
 
     /* injection point for manifest files.  */
@@ -59,27 +59,27 @@ if ('function' === typeof importScripts) {
   },
   {
     "url": "index.html",
-    "revision": "982b0351cbf04cd614f9f4d741f3a7d2"
+    "revision": "65a83eef3f56fe20ad3494df0665c05b"
   },
   {
     "url": "js/idb.js",
     "revision": "ece273ebfe24fa7cb44aa0f5c3fe0aaa"
   },
   {
-    "url": "precache-manifest.045507b4050f1b68b0039bc2ccf2694c.js",
-    "revision": "045507b4050f1b68b0039bc2ccf2694c"
+    "url": "precache-manifest.4d901b5b9f34d5daab73287b389c7fd2.js",
+    "revision": "4d901b5b9f34d5daab73287b389c7fd2"
   },
   {
     "url": "service-worker.js",
-    "revision": "d7c815bb324347530a904880632ec83a"
+    "revision": "b2bdc7bc344efffaf3c926a491912d64"
   },
   {
-    "url": "static/css/main.035e49fd.chunk.css",
-    "revision": "d40f2963516f80216f3da9ff53fac75e"
+    "url": "static/css/main.aba00205.chunk.css",
+    "revision": "38e3ccd296a10a30d2777dd4c4bc707c"
   },
   {
-    "url": "static/js/main.b86b1a7c.chunk.js",
-    "revision": "70030b9667ad35f9bf4b2051c2c365d8"
+    "url": "static/js/main.2293e39c.chunk.js",
+    "revision": "ec96e435d8b12f62534b5483f3506a23"
   },
   {
     "url": "static/js/runtime~main.0f559a56.js",
@@ -171,12 +171,9 @@ if ('function' === typeof importScripts) {
     self.addEventListener('notificationclick', (e) => {
       const notification = e.notification;
       const action = e.action;
-      console.log(notification);
       if (action === 'confirm') {
-        console.log('confirm was chosen')
         notification.close();
       } else {
-        console.log(action)
         e.waitUntil(clients.matchAll().then((clis) => {
           let client = clis.find((c) => {
             return c.visibilityState === 'visible'
@@ -194,8 +191,6 @@ if ('function' === typeof importScripts) {
     })
 
     self.addEventListener('push', (event) => {
-      console.log('push notification received', event);
-
       let data = {
         title: 'New!',
         constent: 'New post on Spotick!'
