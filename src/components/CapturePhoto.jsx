@@ -28,10 +28,27 @@ class CapturePhoto extends PureComponent {
     if (this.props.camera) {
       this.showCamera();
       setTimeout(() => {
-        const elementHeight = this.divRef.offsetHeight;
+        const elementHeight = this.divRef ? this.divRef.offsetHeight : 0;
         const elementWidth = elementHeight * this.state.cameraWidth / this.state.cameraHeight;
+        console.log(this.state.cameraWidth + ' ' + this.state.cameraHeight + ' ' + elementWidth + ' ' + elementHeight)
         this.setState({ elementHeight, elementWidth });
       }, 1000);
+    }
+  }
+
+  detectMobile = () => {
+    if (navigator.userAgent.match(/Android/i)
+      || navigator.userAgent.match(/webOS/i)
+      || navigator.userAgent.match(/iPhone/i)
+      || navigator.userAgent.match(/iPad/i)
+      || navigator.userAgent.match(/iPod/i)
+      || navigator.userAgent.match(/BlackBerry/i)
+      || navigator.userAgent.match(/Windows Phone/i)
+    ) {
+      return true;
+    }
+    else {
+      return false;
     }
   }
 
@@ -40,15 +57,22 @@ class CapturePhoto extends PureComponent {
       this.videoStream.srcObject = stream;
       const cameraHeight = stream.getVideoTracks()[0].getSettings().height;
       const cameraWidth = stream.getVideoTracks()[0].getSettings().width;
-      this.setState({
-        cameraHeight,
-        cameraWidth
-      })
-
+      if (!this.detectMobile()) {
+        // horizontal
+        this.setState({
+          cameraHeight,
+          cameraWidth
+        })
+      } else {
+        // vertical
+        this.setState({
+          cameraHeight: cameraWidth,
+          cameraWidth: cameraHeight
+        })
+      }
     }).catch(err => {
       console.log(err)
     })
-
   }
 
   render() {

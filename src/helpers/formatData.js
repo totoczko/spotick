@@ -6,7 +6,7 @@ export const formatData = (data) => {
   if (dd < 10) {
     dd = '0' + dd
   };
-  var diff = (now.getTime() - formatted.getTime()) / 1000;
+  let diff = (now.getTime() - formatted.getTime()) / 1000;
   const diff_min = Math.abs(Math.round(diff / 60));
   const pl = (num) => {
     if (num === 1) {

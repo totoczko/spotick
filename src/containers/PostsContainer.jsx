@@ -40,7 +40,7 @@ export default class PostsContainer extends PureComponent {
     }
 
     const FirebaseREST = require('firebase-rest').default;
-    var jsonClient = new FirebaseREST.JSONClient('https://spot-pwa.firebaseio.com');
+    let jsonClient = new FirebaseREST.JSONClient('https://spot-pwa.firebaseio.com');
     jsonClient.get('/posts').then(res => {
       posts = [];
       for (let post in res.body) {

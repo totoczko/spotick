@@ -1,13 +1,62 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import { withStyles } from '@material-ui/core/styles';
+import Button from '@material-ui/core/Button';
 
-export default class AddFile extends Component {
+const styles = theme => ({
+	button: {
+		margin: theme.spacing.unit,
+	},
+	input: {
+		display: 'none',
+	},
+	label: {
+		width: '100%',
+		display: 'block',
+		textAlign: 'center'
+	},
+	preview: {
+		width: '100%',
+		marginBottom: 15
+	}
+});
+
+
+class AddFile extends Component {
+	constructor(props) {
+		super(props)
+		this.state = {
+			file: null
+		}
+	}
+
+	showImage = (event) => {
+		this.setState({
+			file: URL.createObjectURL(event.target.files[0])
+		})
+		// this.props.handleAddFile;
+	}
+
 	render() {
-		const { handleAddFile } = this.props;
+		const { classes, handleAddFile } = this.props;
 		return (
 			<div id="pick-image">
-				<p>Wybierz zdjęcie:</p>
-				<input type="file" accept="image/*" id="image-picker" onChange={handleAddFile} />
+				<img className={classes.preview} src={this.state.file} alt="podgląd" />
+				<input
+					accept="image/*"
+					className={classes.input}
+					id="image-picker"
+					onChange={(event) => {
+						this.showImage(event);
+						handleAddFile(event)
+					}}
+					type="file"
+				/>
+				<label htmlFor="image-picker" className={classes.label}>
+					<Button variant="contained" component="span" className={classes.button}>
+						Wybierz zdjęcie
+        </Button>
+				</label>
 			</div>
 		)
 	}
@@ -16,3 +65,5 @@ export default class AddFile extends Component {
 AddFile.propTypes = {
 	handleAddFile: PropTypes.func.isRequired
 };
+
+export default withStyles(styles)(AddFile);

@@ -12,7 +12,7 @@ if ('function' === typeof importScripts) {
 
   /* global workbox */
   if (workbox) {
-    console.log('8 Workbox is loaded');
+    console.log('Workbox is loaded');
     workbox.setConfig({ debug: false })
 
     /* injection point for manifest files.  */
@@ -62,12 +62,6 @@ if ('function' === typeof importScripts) {
       })
     );
 
-    // workbox.routing.registerRoute(
-    //   /.*.firebaseio\.com.*/,
-    //   new workbox.strategies.StaleWhileRevalidate({
-    //     cacheName: 'posts',
-    //   })
-    // );
 
     workbox.routing.registerRoute(
       /^https:\/\/firebasestorage\.googleapis\.com/,
@@ -83,15 +77,16 @@ if ('function' === typeof importScripts) {
           fetch(event.request)
             .then((res) => {
               const cloned = res.clone();
-              deletePostsFromIDB('posts', dbPromise)
-                .then(() => {
+              if (event.request.url.indexOf('posts.json') > -1) {
+                deletePostsFromIDB('posts', dbPromise).then(() => {
                   return cloned.json()
                 })
-                .then((data) => {
-                  for (let key in data) {
-                    savePostsIntoIDB('posts', data[key], dbPromise)
-                  }
-                })
+                  .then((data) => {
+                    for (let key in data) {
+                      savePostsIntoIDB('posts', data[key], dbPromise)
+                    }
+                  })
+              }
               return res
             })
             .catch((err) => console.log(err))
@@ -102,12 +97,9 @@ if ('function' === typeof importScripts) {
     self.addEventListener('notificationclick', (e) => {
       const notification = e.notification;
       const action = e.action;
-      console.log(notification);
       if (action === 'confirm') {
-        console.log('confirm was chosen')
         notification.close();
       } else {
-        console.log(action)
         e.waitUntil(clients.matchAll().then((clis) => {
           let client = clis.find((c) => {
             return c.visibilityState === 'visible'

@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import {
-  BrowserRouter,
+  HashRouter,
   Route
 } from 'react-router-dom';
 // import firebase from './helpers/firebase';
@@ -95,11 +95,11 @@ class App extends Component {
 
   render() {
     return (
-      <BrowserRouter basename={process.env.PUBLIC_URL}>
+      <HashRouter basename={process.env.PUBLIC_URL}>
         <ScrollToTop>
           {this.getAppContent()}
         </ScrollToTop>
-      </BrowserRouter>
+      </HashRouter>
     )
   }
 }

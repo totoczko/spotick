@@ -62,13 +62,6 @@ if ('function' === typeof importScripts) {
       })
     );
 
-    // workbox.routing.registerRoute(
-    //   /.*.firebaseio\.com.*/,
-    //   new workbox.strategies.StaleWhileRevalidate({
-    //     cacheName: 'posts',
-    //   })
-    // );
-
     workbox.routing.registerRoute(
       /^https:\/\/firebasestorage\.googleapis\.com/,
       new workbox.strategies.StaleWhileRevalidate({
@@ -83,15 +76,16 @@ if ('function' === typeof importScripts) {
           fetch(event.request)
             .then((res) => {
               const cloned = res.clone();
-              deletePostsFromIDB('posts', dbPromise)
-                .then(() => {
+              if (event.request.url.indexOf('posts.json') > -1) {
+                deletePostsFromIDB('posts', dbPromise).then(() => {
                   return cloned.json()
                 })
-                .then((data) => {
-                  for (let key in data) {
-                    savePostsIntoIDB('posts', data[key], dbPromise)
-                  }
-                })
+                  .then((data) => {
+                    for (let key in data) {
+                      savePostsIntoIDB('posts', data[key], dbPromise)
+                    }
+                  })
+              }
               return res
             })
             .catch((err) => console.log(err))
@@ -122,6 +116,8 @@ if ('function' === typeof importScripts) {
     })
 
     self.addEventListener('push', (event) => {
+      console.log('push notification received', event);
+
       let data = {
         title: 'New!',
         constent: 'New post on Spotick!'

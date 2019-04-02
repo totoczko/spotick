@@ -1,5 +1,6 @@
 import { PureComponent } from 'react';
 import { auth } from '../helpers/firebase';
+import { getPostsFromIDB } from '../helpers/indexedDB';
 
 export default class PostsContainer extends PureComponent {
   constructor(props) {
@@ -23,11 +24,21 @@ export default class PostsContainer extends PureComponent {
 
   getPost = (token) => {
     const { id } = this.props;
-    const FirebaseREST = require('firebase-rest').default;
-    var jsonClient = new FirebaseREST.JSONClient('https://spot-pwa.firebaseio.com', { auth: token });
     let post;
+    if ('indexedDB' in window) {
+      getPostsFromIDB('posts').then((data) => {
+        for (let postKey in data) {
+          if (data[postKey].id === id) {
+            post = data[postKey];
+          }
+        }
+        this.setState({ post, status: 'loaded' });
+      })
+    }
+
+    const FirebaseREST = require('firebase-rest').default;
+    const jsonClient = new FirebaseREST.JSONClient('https://spot-pwa.firebaseio.com', { auth: token });
     jsonClient.get('/posts/' + id).then(res => {
-      console.log(res)
       post = res.body;
       this.setState({ post, status: 'loaded' });
     }).catch(err => console.log(err))

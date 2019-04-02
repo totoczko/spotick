@@ -292,9 +292,7 @@ class AddPost extends PureComponent {
         return <CapturePhoto captureImage={this.captureImage} imgSent={imgSent} camera={camera} />
       case 2:
         return (
-          <div className={classes.container}>
-            <AddFile handleAddFile={this.handleAddFile} />
-          </div>
+          <AddFile handleAddFile={this.handleAddFile} />
         )
       case 3:
         return (

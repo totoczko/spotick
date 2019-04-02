@@ -1,14 +1,14 @@
 export const dataURItoBlob = (dataURI) => {
-    var byteString = atob(dataURI.split(",")[1]);
-    var mimeString = dataURI
+    const byteString = atob(dataURI.split(",")[1]);
+    const mimeString = dataURI
         .split(",")[0]
         .split(":")[1]
         .split(";")[0];
-    var ab = new ArrayBuffer(byteString.length);
-    var ia = new Uint8Array(ab);
-    for (var i = 0; i < byteString.length; i++) {
+    const ab = new ArrayBuffer(byteString.length);
+    const ia = new Uint8Array(ab);
+    for (let i = 0; i < byteString.length; i++) {
         ia[i] = byteString.charCodeAt(i);
     }
-    var blob = new Blob([ab], { type: mimeString });
+    const blob = new Blob([ab], { type: mimeString });
     return blob;
 }
