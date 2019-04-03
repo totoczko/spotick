@@ -12,6 +12,7 @@
     "react": "^16.6.1",
     "react-dom": "^16.6.1",
     "react-geocode": "^0.1.2",
+    "react-lazyload": "^2.5.0",
     "react-router-dom": "^4.3.1",
     "react-scripts": "2.1.1",
     "uuid": "^3.3.2",

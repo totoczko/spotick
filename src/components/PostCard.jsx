@@ -10,6 +10,7 @@ import PlaceIcon from '@material-ui/icons/Place';
 import LikeCounter from './LikeCounter';
 import { formatData } from '../helpers/formatData';
 import firebase from '../helpers/firebase';
+import LazyLoad from 'react-lazyload';
 
 const styles = theme => ({
   card: {
@@ -106,7 +107,9 @@ class PostCard extends React.Component {
           title={user.name}
           subheader={time}
         />
-        <img src={img} alt={shortText} className={classes.media} />
+        <LazyLoad height={380}>
+          <img src={img} alt={shortText} className={classes.media} />
+        </LazyLoad>
         <CardContent className={classes.info}>
           <div width="80%">
             <p className={classes.localization}>
