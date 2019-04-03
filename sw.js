@@ -59,19 +59,19 @@ if ('function' === typeof importScripts) {
   },
   {
     "url": "index.html",
-    "revision": "8653f184261619f917b8b12ffe1ac7d4"
+    "revision": "e74364f7e924b4351c4617b08211fd6a"
   },
   {
     "url": "js/idb.js",
     "revision": "ece273ebfe24fa7cb44aa0f5c3fe0aaa"
   },
   {
-    "url": "precache-manifest.f522ba07b2b8337766733194a4dd1cd1.js",
-    "revision": "f522ba07b2b8337766733194a4dd1cd1"
+    "url": "precache-manifest.79bd155f04c9acdc659dc2374f55254b.js",
+    "revision": "79bd155f04c9acdc659dc2374f55254b"
   },
   {
     "url": "service-worker.js",
-    "revision": "2ab1e7516921f24b12907f58da9b304d"
+    "revision": "b7feaf19a4323de081ba64bd9f4617ec"
   },
   {
     "url": "static/css/main.ca9c41e1.chunk.css",
