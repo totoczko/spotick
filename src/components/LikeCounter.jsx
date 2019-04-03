@@ -6,6 +6,11 @@ import IconButton from '@material-ui/core/IconButton';
 import FavoriteIcon from '@material-ui/icons/Favorite';
 import red from '@material-ui/core/colors/red';
 import { auth } from '../helpers/firebase';
+import Redirect from 'react-router-dom/Redirect';
+import {
+  withRouter
+} from 'react-router-dom'
+
 
 const styles = theme => ({
   likes: {
@@ -35,14 +40,15 @@ class LikeCounter extends Component {
   }
 
   handleLike = (post_id, likes) => {
-    const user = auth.currentUser.uid;
+    const user = auth.currentUser;
     if (user) {
+      const userId = user.uid;
       let count_upd = likes.count;
       let users_upd = likes.users ? likes.users : [];
-      const like_index = users_upd.indexOf(user);
+      const like_index = users_upd.indexOf(userId);
       if (like_index < 0) {
         count_upd++;
-        users_upd.push(user);
+        users_upd.push(userId);
       } else {
         count_upd--;
         users_upd.splice(like_index, 1)
@@ -60,7 +66,7 @@ class LikeCounter extends Component {
         }
       })
     } else {
-      // TODO: przekierowanie do logowania
+      this.props.history.push('/login')
     }
   }
 
@@ -84,4 +90,7 @@ LikeCounter.propTypes = {
   classes: PropTypes.object.isRequired
 };
 
-export default withStyles(styles)(LikeCounter);
+
+const likeCounterWithRouter = withRouter(LikeCounter);
+
+export default withStyles(styles)(likeCounterWithRouter);
