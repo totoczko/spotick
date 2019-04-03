@@ -34,7 +34,6 @@ class AddFile extends Component {
 		this.setState({
 			file: URL.createObjectURL(event.target.files[0])
 		})
-		// this.props.handleAddFile;
 	}
 
 	render() {
