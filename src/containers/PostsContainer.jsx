@@ -1,5 +1,6 @@
 import { PureComponent } from 'react';
 import { getPostsFromIDB } from '../helpers/indexedDB';
+import { sortPosts } from '../helpers/sortPosts'
 
 export default class PostsContainer extends PureComponent {
   constructor(props) {
@@ -35,22 +36,10 @@ export default class PostsContainer extends PureComponent {
       const nextPage = page + 1;
       this.setState({ page: nextPage, loadingMore: true })
     }
-    // console.log((window.innerHeight + window.scrollY) + ' ' + (document.body.offsetHeight - 60) + ' ' + page)
   }
 
   getPosts = (limitToLast, endAt) => {
     let posts = this.state.posts ? this.state.posts : [];
-    const sortPosts = (a, b) => {
-      const dateA = a.data;
-      const dateB = b.data;
-      let comparison = 0;
-      if (dateA > dateB) {
-        comparison = -1;
-      } else if (dateA < dateB) {
-        comparison = 1;
-      }
-      return comparison;
-    }
 
     if ('indexedDB' in window) {
       getPostsFromIDB('posts').then((data) => {
