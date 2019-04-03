@@ -77,16 +77,18 @@ if ('function' === typeof importScripts) {
           fetch(event.request)
             .then((res) => {
               const cloned = res.clone();
-              if (event.request.url.indexOf('posts.json') > -1) {
-                deletePostsFromIDB('posts', dbPromise).then(() => {
-                  return cloned.json()
+              // if (event.request.url.indexOf('posts.json') > -1) {
+              // deletePostsFromIDB('posts', dbPromise).then(() => {
+              cloned.json()
+                .then((data) => {
+                  for (let key in data) {
+                    deletePostFromIDB('posts', data[key], dbPromise)
+                      .then(() => {
+                        savePostsIntoIDB('posts', data[key], dbPromise)
+                      })
+                  }
                 })
-                  .then((data) => {
-                    for (let key in data) {
-                      savePostsIntoIDB('posts', data[key], dbPromise)
-                    }
-                  })
-              }
+              // }
               return res
             })
             .catch((err) => console.log(err))
@@ -164,3 +166,11 @@ const deletePostsFromIDB = (st, dbPromise) => {
   })
 }
 
+const deletePostFromIDB = (st, id, dbPromise) => {
+  return dbPromise.then((db) => {
+    let tx = db.transaction(st, 'readwrite');
+    let store = tx.objectStore(st);
+    store.delete(id);
+    return tx.complete;
+  })
+}

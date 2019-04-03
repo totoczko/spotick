@@ -7,16 +7,39 @@ export default class PostsContainer extends PureComponent {
 
     this.state = {
       status: 'loading',
-      posts: null
+      posts: null,
+      lastPostLoaded: null,
+      page: 1,
+      loadingMore: false
     }
   }
 
   componentDidMount() {
-    this.getPosts();
+    window.addEventListener('scroll', this.onScroll, false);
+    this.getPosts(3, null);
   }
 
-  getPosts = () => {
-    let posts = [];
+  componentWillUnmount() {
+    window.removeEventListener('scroll', this.onScroll, false);
+  }
+
+  componentWillUpdate(nextProps, nextState) {
+    if (nextState.page > this.state.page) {
+      this.getPosts(4, this.state.lastPostLoaded);
+    }
+  }
+
+  onScroll = () => {
+    const { page } = this.state;
+    if ((window.innerHeight + window.scrollY) >= (document.body.offsetHeight - 60) && !this.state.loadingMore) {
+      const nextPage = page + 1;
+      this.setState({ page: nextPage, loadingMore: true })
+    }
+    // console.log((window.innerHeight + window.scrollY) + ' ' + (document.body.offsetHeight - 60) + ' ' + page)
+  }
+
+  getPosts = (limitToLast, endAt) => {
+    let posts = this.state.posts ? this.state.posts : [];
     const sortPosts = (a, b) => {
       const dateA = a.data;
       const dateB = b.data;
@@ -41,16 +64,20 @@ export default class PostsContainer extends PureComponent {
 
     const FirebaseREST = require('firebase-rest').default;
     let jsonClient = new FirebaseREST.JSONClient('https://spot-pwa.firebaseio.com');
-    jsonClient.get('/posts').then(res => {
-      posts = [];
+    jsonClient.get('/posts', { orderBy: 'data', limitToLast: limitToLast, endAt: endAt ? endAt : '', initial: endAt ? true : false }).then(res => {
+      if (!endAt) {
+        posts = [];
+      }
       for (let post in res.body) {
         posts.push(res.body[post]);
       }
+      console.log(posts)
       let postsSorted = posts.sort(sortPosts)
       return postsSorted;
-
     }).then(posts => {
-      this.setState({ posts, status: 'loaded' });
+      const lastPostLoaded = posts[posts.length - 1].data;
+      console.log(lastPostLoaded)
+      this.setState({ posts, status: 'loaded', lastPostLoaded });
     }).catch(err => console.log(err))
   }
 

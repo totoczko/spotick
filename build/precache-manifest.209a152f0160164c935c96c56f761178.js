@@ -4,19 +4,19 @@ self.__precacheManifest = [
     "url": "/spotick/static/js/runtime~main.0f559a56.js"
   },
   {
-    "revision": "549dc975c487a6533a46",
-    "url": "/spotick/static/js/main.549dc975.chunk.js"
+    "revision": "db0c6607b1994e105bc0",
+    "url": "/spotick/static/js/main.db0c6607.chunk.js"
   },
   {
     "revision": "ebe1367bc3fe24698cbd",
     "url": "/spotick/static/js/1.ebe1367b.chunk.js"
   },
   {
-    "revision": "549dc975c487a6533a46",
+    "revision": "db0c6607b1994e105bc0",
     "url": "/spotick/static/css/main.66a29204.chunk.css"
   },
   {
-    "revision": "224765fbcfb1eebc7a4ae047b0fb6a39",
+    "revision": "c4b2af2c374b783d9f50df49cd480da6",
     "url": "/spotick/index.html"
   }
 ];
