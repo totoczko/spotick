@@ -6,6 +6,7 @@ import Button from '@material-ui/core/Button';
 const styles = theme => ({
 	button: {
 		margin: theme.spacing.unit,
+		marginTop: 30
 	},
 	input: {
 		display: 'none',
@@ -16,8 +17,7 @@ const styles = theme => ({
 		textAlign: 'center'
 	},
 	preview: {
-		width: '100%',
-		marginBottom: 15
+		width: '100%'
 	}
 });
 
@@ -40,7 +40,7 @@ class AddFile extends Component {
 		const { classes, handleAddFile } = this.props;
 		return (
 			<div id="pick-image">
-				<img className={classes.preview} src={this.state.file} alt="podgląd" />
+				{this.state.file ? <img className={classes.preview} src={this.state.file} alt="podgląd" /> : ''}
 				<input
 					accept="image/*"
 					className={classes.input}

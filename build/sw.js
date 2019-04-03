@@ -59,27 +59,27 @@ if ('function' === typeof importScripts) {
   },
   {
     "url": "index.html",
-    "revision": "430d1e16269b011f8691ba997dddc8cf"
+    "revision": "224765fbcfb1eebc7a4ae047b0fb6a39"
   },
   {
     "url": "js/idb.js",
     "revision": "ece273ebfe24fa7cb44aa0f5c3fe0aaa"
   },
   {
-    "url": "precache-manifest.85bb8a00dcae5eb6ddeba3b4fc89ed2a.js",
-    "revision": "85bb8a00dcae5eb6ddeba3b4fc89ed2a"
+    "url": "precache-manifest.c185cfb7ebbdd6215c14f90220f5af46.js",
+    "revision": "c185cfb7ebbdd6215c14f90220f5af46"
   },
   {
     "url": "service-worker.js",
-    "revision": "e27895ee2321fbf1ba29e6ff0a133fe5"
+    "revision": "aa1a68098ce216606e53c478132ef057"
   },
   {
-    "url": "static/css/main.aba00205.chunk.css",
-    "revision": "38e3ccd296a10a30d2777dd4c4bc707c"
+    "url": "static/css/main.66a29204.chunk.css",
+    "revision": "a0c589b265f0254f546c36e63fcbb9b9"
   },
   {
-    "url": "static/js/main.52d29f44.chunk.js",
-    "revision": "d57c4eb25f6a12f3b5d22c80a3c38b63"
+    "url": "static/js/main.549dc975.chunk.js",
+    "revision": "4c02843e4430c53a26644efb6f721df8"
   },
   {
     "url": "static/js/runtime~main.0f559a56.js",
@@ -131,13 +131,6 @@ if ('function' === typeof importScripts) {
       })
     );
 
-    // workbox.routing.registerRoute(
-    //   /.*.firebaseio\.com.*/,
-    //   new workbox.strategies.StaleWhileRevalidate({
-    //     cacheName: 'posts',
-    //   })
-    // );
-
     workbox.routing.registerRoute(
       /^https:\/\/firebasestorage\.googleapis\.com/,
       new workbox.strategies.StaleWhileRevalidate({
@@ -152,15 +145,16 @@ if ('function' === typeof importScripts) {
           fetch(event.request)
             .then((res) => {
               const cloned = res.clone();
-              deletePostsFromIDB('posts', dbPromise)
-                .then(() => {
+              if (event.request.url.indexOf('posts.json') > -1) {
+                deletePostsFromIDB('posts', dbPromise).then(() => {
                   return cloned.json()
                 })
-                .then((data) => {
-                  for (let key in data) {
-                    savePostsIntoIDB('posts', data[key], dbPromise)
-                  }
-                })
+                  .then((data) => {
+                    for (let key in data) {
+                      savePostsIntoIDB('posts', data[key], dbPromise)
+                    }
+                  })
+              }
               return res
             })
             .catch((err) => console.log(err))
@@ -191,6 +185,8 @@ if ('function' === typeof importScripts) {
     })
 
     self.addEventListener('push', (event) => {
+      console.log('push notification received', event);
+
       let data = {
         title: 'New!',
         constent: 'New post on Spotick!'

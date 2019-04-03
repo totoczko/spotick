@@ -20,20 +20,25 @@ class CapturePhoto extends PureComponent {
       elementHeight: 300,
       cameraHeight: null,
       cameraWidth: null,
-      elementWidth: null
+      elementWidth: null,
+      globalStream: null
     }
   }
 
   componentDidMount() {
     if (this.props.camera) {
-      this.showCamera();
-      setTimeout(() => {
+      this.turnOnCamera();
+      this.timeout = setTimeout(() => {
         const elementHeight = this.divRef ? this.divRef.offsetHeight : 0;
         const elementWidth = elementHeight * this.state.cameraWidth / this.state.cameraHeight;
-        console.log(this.state.cameraWidth + ' ' + this.state.cameraHeight + ' ' + elementWidth + ' ' + elementHeight)
         this.setState({ elementHeight, elementWidth });
       }, 1000);
     }
+  }
+
+  componentWillUnmount() {
+    this.turnOffCamera()
+    clearTimeout(this.timeout)
   }
 
   detectMobile = () => {
@@ -52,9 +57,10 @@ class CapturePhoto extends PureComponent {
     }
   }
 
-  showCamera = () => {
+  turnOnCamera = () => {
     navigator.mediaDevices.getUserMedia({ video: true }).then(stream => {
       this.videoStream.srcObject = stream;
+      this.setState({ globalStream: stream })
       const cameraHeight = stream.getVideoTracks()[0].getSettings().height;
       const cameraWidth = stream.getVideoTracks()[0].getSettings().width;
       if (!this.detectMobile()) {
@@ -73,6 +79,13 @@ class CapturePhoto extends PureComponent {
     }).catch(err => {
       console.log(err)
     })
+  }
+
+  turnOffCamera = () => {
+    if (this.state.globalStream) {
+      let track = this.state.globalStream.getTracks()[0]
+      track.stop()
+    }
   }
 
   render() {
