@@ -1,13 +1,13 @@
 {
   "main.css": "/spotick/static/css/main.ca9c41e1.chunk.css",
-  "main.js": "/spotick/static/js/main.ce6f9ec9.chunk.js",
-  "main.js.map": "/spotick/static/js/main.ce6f9ec9.chunk.js.map",
+  "main.js": "/spotick/static/js/main.1c0cf1b4.chunk.js",
+  "main.js.map": "/spotick/static/js/main.1c0cf1b4.chunk.js.map",
   "static/js/1.40fd993b.chunk.js": "/spotick/static/js/1.40fd993b.chunk.js",
   "static/js/1.40fd993b.chunk.js.map": "/spotick/static/js/1.40fd993b.chunk.js.map",
   "runtime~main.js": "/spotick/static/js/runtime~main.0f559a56.js",
   "runtime~main.js.map": "/spotick/static/js/runtime~main.0f559a56.js.map",
   "static/css/main.ca9c41e1.chunk.css.map": "/spotick/static/css/main.ca9c41e1.chunk.css.map",
   "index.html": "/spotick/index.html",
-  "precache-manifest.79bd155f04c9acdc659dc2374f55254b.js": "/spotick/precache-manifest.79bd155f04c9acdc659dc2374f55254b.js",
+  "precache-manifest.a4f32afccb3847c5692076228620ea51.js": "/spotick/precache-manifest.a4f32afccb3847c5692076228620ea51.js",
   "service-worker.js": "/spotick/service-worker.js"
 }
