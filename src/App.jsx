@@ -38,7 +38,7 @@ class App extends Component {
     this.state = {
       user: null,
       isLogged: false,
-      loading: true,
+      loading: false,
       auth: null
     }
   }

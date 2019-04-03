@@ -31,10 +31,8 @@ export default class PostsContainer extends PureComponent {
 
     if ('indexedDB' in window) {
       getPostsFromIDB('posts').then((data) => {
-        for (let post in data) {
-          posts.push(data[post]);
-        }
-        posts = posts.reverse();
+        posts.push(data)
+        posts = posts[0].reverse()
         this.setState({ posts, status: 'loaded' });
       })
     }
