@@ -7,7 +7,7 @@ export default class PostsContainer extends PureComponent {
     super(props);
 
     this.state = {
-      status: 'loading',
+      loaded: false,
       post: null
     }
   }
@@ -32,7 +32,7 @@ export default class PostsContainer extends PureComponent {
             post = data[postKey];
           }
         }
-        this.setState({ post, status: 'loaded' });
+        this.setState({ post, loaded: true });
       })
     }
 
@@ -40,12 +40,12 @@ export default class PostsContainer extends PureComponent {
     const jsonClient = new FirebaseREST.JSONClient('https://spot-pwa.firebaseio.com', { auth: token });
     jsonClient.get('/posts/' + id).then(res => {
       post = res.body;
-      this.setState({ post, status: 'loaded' });
+      this.setState({ post, loaded: true });
     }).catch(err => console.log(err))
   }
 
   render() {
-    return this.props.children(this.state.post, this.state.status)
+    return this.props.children(this.state.post, this.state.loaded)
   }
 
 }

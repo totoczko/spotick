@@ -10,15 +10,16 @@ import SettingsIcon from '@material-ui/icons/Settings';
 import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import logo from 'assets/images/logo-nb.png';
+import { colors } from '../helpers/colors';
 
 const styles = theme => ({
 	root: {
 		flexGrow: 1,
 	},
 	appbar: {
-		backgroundColor: '#fafafa',
+		backgroundColor: colors.background,
 		boxShadow: 'none',
-		borderBottom: '1px solid #eee',
+		borderBottom: '1px solid ' + colors.border,
 	},
 	grow: {
 		flexGrow: 1,
@@ -35,7 +36,7 @@ const styles = theme => ({
 		height: 40
 	},
 	link: {
-		color: '#212985'
+		color: colors.primary
 	},
 	lefticon: {
 		marginRight: 30
@@ -51,7 +52,7 @@ const styles = theme => ({
 });
 
 class Navigation extends React.Component {
-	goBack = () => {
+	goBack = () => () => {
 		this.props.history.goBack();
 	}
 
@@ -67,7 +68,7 @@ class Navigation extends React.Component {
 							</Link>
 						}
 						{(singlePost || onlyBack) && !loggedOut &&
-							<ArrowBackIosIcon className={classes.link} onClick={() => this.goBack()} />
+							<ArrowBackIosIcon className={classes.link} onClick={this.goBack()} />
 						}
 						{location.pathname === '/add' && imgSent && step !== 3 && !loggedOut &&
 							<Button className={classes.link} onClick={handleSwitch(3)}>
@@ -85,7 +86,7 @@ class Navigation extends React.Component {
 							</Link>
 						}
 						{singlePost && openActions && !loggedOut &&
-							<MoreVertIcon className={classes.link} onClick={() => openActions()} />
+							<MoreVertIcon className={classes.link} onClick={openActions()} />
 						}
 					</Toolbar>
 				</AppBar>

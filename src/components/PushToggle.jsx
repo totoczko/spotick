@@ -2,18 +2,19 @@ import React, { Component } from 'react'
 import { Switch, ExpansionPanelDetails, Typography, withStyles } from '@material-ui/core';
 import urlBase64ToUint8Array from '../helpers/urlBaseToUint';
 import firebase from '../helpers/firebase';
+import { colors } from '../helpers/colors';
 
 const styles = theme => ({
   pushToggle: {
     marginTop: 15,
     marginBottom: 15,
-    background: '#fff',
-    borderBottom: '1px solid #eee !important',
-    borderTop: '1px solid #eee !important',
+    background: colors.white,
+    borderBottom: '1px solid ' + colors.border + ' !important',
+    borderTop: '1px solid ' + colors.border + ' !important',
     paddingBottom: 10,
     [theme.breakpoints.up(1100 + theme.spacing.unit * 3 * 2)]: {
-      borderLeft: '1px solid #eee !important',
-      borderRight: '1px solid #eee !important',
+      borderLeft: '1px solid ' + colors.border + ' !important',
+      borderRight: '1px solid ' + colors.border + ' !important',
     }
   },
   expanded: {

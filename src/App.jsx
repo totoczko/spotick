@@ -3,7 +3,6 @@ import {
   HashRouter,
   Route
 } from 'react-router-dom';
-// import firebase from './helpers/firebase';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core';
 import Home from 'layouts/Home';
@@ -17,8 +16,6 @@ import Post from './layouts/Post';
 import Settings from './layouts/Settings';
 import PrivateRoute from './components/PrivateRoute'
 import Loading from './components/Loading';
-
-//    "start": "npm run build && http-server ./build",
 
 const styles = theme => ({
   container: {
@@ -38,7 +35,7 @@ class App extends Component {
     this.state = {
       user: null,
       isLogged: false,
-      loading: false,
+      loading: true,
       auth: null
     }
   }
@@ -46,29 +43,26 @@ class App extends Component {
   componentDidMount() {
     this.authFirebaseListener = auth.onAuthStateChanged((user) => {
       if (user) {
-        const idToken = user.getIdToken().then((token) => {
-          this.setState({ auth: token })
+        user.getIdToken().then((token) => {
+          this.setState({ user, isLogged: true, auth: token, loading: false })
         });
-        this.setState({ user, isLogged: true, auth: idToken })
       }
-      this.setState({ loading: false })
     });
   }
 
   componentWillUnmount() {
-    this.authFirebaseListener && this.authFirebaseListener()
+    this.authFirebaseListener && this.authFirebaseListener() // Unlisten it by calling it as a function
   }
 
   getAppContent = () => {
     const { user, isLogged, loading, auth } = this.state;
     const { classes } = this.props;
-    let appState = loading ? 0 : (isLogged ? 1 : 2);
-    switch (appState) {
-      case 0:
-        return <Loading />
-      case 1:
-        return (
+    return (
+      loading ? (
+        <Loading />
+      ) : (
           <div className={classes.container}>
+            <ScrollToTop />
             <Route auth={auth} exact path="/" component={Home} />
             <Route exact path="/post/:id" component={({ match }) => <Post id={match.params.id} user={user} />} />
             <PrivateRoute isLogged={isLogged} exact path="/profile" component={Profile} user={user} />
@@ -77,28 +71,13 @@ class App extends Component {
             <Route exact path="/login" component={Login} />
           </div>
         )
-      case 2:
-        return (
-          <div className={classes.container}>
-            <Route exact path="/" component={Home} />
-            <Route exact path="/post/:id" component={({ match }) => <Post id={match.params.id} />} />
-            <Route exact path="/profile" component={Login} />
-            <Route exact path="/add" component={Login} />
-            <Route exact path="/settings" component={Login} />
-            <Route exact path="/login" component={Login} />
-          </div>
-        )
-      default:
-        return <Loading />
-    }
+    )
   }
 
   render() {
     return (
       <HashRouter basename={process.env.PUBLIC_URL}>
-        <ScrollToTop>
-          {this.getAppContent()}
-        </ScrollToTop>
+        {this.getAppContent()}
       </HashRouter>
     )
   }

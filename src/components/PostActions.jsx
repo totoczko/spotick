@@ -6,6 +6,7 @@ import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import Dialog from '@material-ui/core/Dialog';
+import { colors } from '../helpers/colors';
 
 const styles = theme => ({
   action: {
@@ -17,7 +18,7 @@ const styles = theme => ({
     padding: 0
   },
   border: {
-    borderBottom: '1px solid #eee'
+    borderBottom: '1px solid ' + colors.border
   }
 });
 

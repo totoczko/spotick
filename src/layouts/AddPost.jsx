@@ -77,7 +77,7 @@ class AddPost extends PureComponent {
       step: 2,
       imgSent: false,
       camera: false,
-      status: 'beforeSend',
+      loaded: 'beforeSend',
       subscriptions: []
     }
   }
@@ -88,15 +88,13 @@ class AddPost extends PureComponent {
       "crossDomain": true,
       "method": "GET"
     }).then(res => res.json()).then(res => {
-      if (res.address.city) {
-        return res.address.city;
-      } else {
-        return res.address.town
-      }
+      return res.address.city || res.address.town;
     })
   }
 
   componentDidMount() {
+    const { user } = this.props;
+
     //check if there is navigation, if there is, autofill locatization
     if ("geolocation" in navigator) {
       navigator.geolocation.getCurrentPosition(
@@ -124,16 +122,16 @@ class AddPost extends PureComponent {
       }
     }
 
-    if (this.props.user) {
+    if (user) {
       let color = '';
-      this.usersRef = firebase.database().ref('users/' + this.props.user.uid);
+      this.usersRef = firebase.database().ref('users/' + user.uid);
       this.usersRef.on('value', (snapshot) => {
         color = snapshot.val().color;
         if (color) {
           this.setState({
             user: {
-              id: this.props.user.uid,
-              name: this.props.user.displayName,
+              id: user.uid,
+              name: user.displayName,
               color: color
             }
           })
@@ -143,7 +141,7 @@ class AddPost extends PureComponent {
     this.getSubscriptions();
   }
 
-  componentWillUpdate(nextProps, nextState) {
+  componentWillReceiveProps(nextProps) {
     if (nextProps.user !== this.props.user) {
       this.setState({
         user: {
@@ -169,14 +167,15 @@ class AddPost extends PureComponent {
 
   handleSend = () => {
     //add photo 
-    this.setState({ status: 'loading' })
+    const { user, img, geo, shortText, subscriptions } = this.state;
+    this.setState({ loaded: false })
     const imageId = uuid();
     const id = uuid();
     const storage = firebase.storage();
     const imgRef = storage.ref().child('images').child(imageId);
-    let today = new Date();
-    today = today.getTime()
-    imgRef.put(this.state.img).then(() => {
+    const today = new Date().getTime();
+
+    imgRef.put(img).then(() => {
       imgRef.getDownloadURL()
         .then((url) => {
           //add content
@@ -184,11 +183,11 @@ class AddPost extends PureComponent {
           const item = {
             id: id,
             imageid: imageId,
-            user: this.state.user,
+            user: user,
             data: today,
             img: url,
-            geo: this.state.geo,
-            shortText: this.state.shortText,
+            geo: geo,
+            shortText: shortText,
             likes: {
               count: 0
             }
@@ -202,8 +201,8 @@ class AddPost extends PureComponent {
                 Accept: "application/json"
               },
               body: JSON.stringify({
-                from: this.state.user,
-                subscriptions: this.state.subscriptions
+                from: user,
+                subscriptions: subscriptions
               })
             })
           });
@@ -215,15 +214,13 @@ class AddPost extends PureComponent {
             img: '',
             geo: '',
             shortText: '',
+            loaded: true
           });
-          this.setState({ status: 'loaded' })
           this.props.history.goBack()
         })
       return true
-    }).then(() => {
-      // this.sendNotifications();
     }).catch((err) => {
-      this.setState({ status: 'loaded' })
+      this.setState({ loaded: true })
       console.log(err)
     });
   }
@@ -251,7 +248,7 @@ class AddPost extends PureComponent {
 
   getSubscriptions = () => {
     this.usersRef = firebase.database().ref('users');
-    let subscriptions = [];
+    const subscriptions = [];
     this.usersRef.on('value', (snapshot) => {
       snapshot.forEach((child) => {
         if (child.val().subscription) {
@@ -308,7 +305,7 @@ class AddPost extends PureComponent {
 
   render() {
     const { classes } = this.props;
-    const { step, imgSent, camera, status } = this.state;
+    const { step, imgSent, camera, loaded } = this.state;
     return (
       <>
         <Navigation handleSwitch={this.handleSwitch} imgSent={imgSent} step={step} />
@@ -321,7 +318,7 @@ class AddPost extends PureComponent {
             </Grid>
           </Grid>
         </div>
-        {status === 'loading' ? (
+        {!loaded ? (
           <div className={classes.center}>
             <CircularProgress className={classes.progress} size={30} thickness={5} />
           </div>

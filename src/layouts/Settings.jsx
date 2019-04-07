@@ -10,16 +10,15 @@ import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
 import Typography from '@material-ui/core/Typography';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import { Button, TextField, Divider, ExpansionPanelActions } from '@material-ui/core';
-import { red } from '@material-ui/core/colors';
 import { auth } from '../helpers/firebase';
 import classnames from 'classnames';
 import PushToggle from '../components/PushToggle';
+import { colors } from '../helpers/colors';
 
 const styles = theme => ({
   root: {
     width: '100%',
     overflowX: 'hidden',
-    // background: '#fdfdfd',
     minHeight: '-webkit-fill-available',
     [theme.breakpoints.up(1100 + theme.spacing.unit * 3 * 2)]: {
       width: 800,
@@ -30,17 +29,17 @@ const styles = theme => ({
   panel: {
     margin: '15px 0 !important',
     boxShadow: 'none',
-    borderBottom: '1px solid #eee !important',
-    borderTop: '1px solid #eee !important',
+    borderBottom: '1px solid ' + colors.border + ' !important',
+    borderTop: '1px solid ' + colors.border + ' !important',
     [theme.breakpoints.up(1100 + theme.spacing.unit * 3 * 2)]: {
-      borderLeft: '1px solid #eee !important',
-      borderRight: '1px solid #eee !important',
+      borderLeft: '1px solid ' + colors.border + ' !important',
+      borderRight: '1px solid ' + colors.border + ' !important',
     }
   },
   panelButton: {
     boxShadow: 'none',
-    borderBottom: '1px solid #eee !important',
-    borderTop: '1px solid #eee !important',
+    borderBottom: '1px solid ' + colors.border + ' !important',
+    borderTop: '1px solid ' + colors.border + ' !important',
     width: '100%',
     textAlign: 'left',
     padding: '15px 24px',
@@ -48,21 +47,21 @@ const styles = theme => ({
     textTransform: 'none',
     fontWeight: 'normal',
     marginBottom: 15,
-    background: '#fff',
+    background: colors.white,
     [theme.breakpoints.up(1100 + theme.spacing.unit * 3 * 2)]: {
-      borderLeft: '1px solid #eee !important',
-      borderRight: '1px solid #eee !important',
+      borderLeft: '1px solid ' + colors.border + ' !important',
+      borderRight: '1px solid ' + colors.border + ' !important',
     }
   },
   red: {
-    color: red[500]
+    color: colors.red
   },
   heading: {
     flexBasis: '40%',
     flexShrink: 0,
   },
   secondaryHeading: {
-    color: theme.palette.text.secondary,
+    color: colors.textGray,
   },
   textField: {
     margin: 0,
@@ -79,10 +78,10 @@ const styles = theme => ({
     width: '100%'
   },
   iconSmall: {
-    color: '#212985'
+    color: colors.primary
   },
   button: {
-    background: '#fafafa',
+    background: colors.background,
     border: '1px solid rgba(0, 0, 0, .2)',
     borderLeft: 0,
     borderRadius: '0 4px 4px 0'
@@ -90,17 +89,20 @@ const styles = theme => ({
 });
 
 class Settings extends Component {
-  state = {
-    user: null,
-    expanded: null,
-    login: null,
-    email: null,
-    password: null,
-    newLogin: null,
-    newEmail: null,
-    newPassword: null,
-    push: false
-  };
+  constructor(props) {
+    super(props);
+    this.state = {
+      user: null,
+      expanded: null,
+      login: null,
+      email: null,
+      password: null,
+      newLogin: null,
+      newEmail: null,
+      newPassword: null,
+      push: false
+    };
+  }
 
   componentDidMount() {
     this.authFirebaseListener = auth.onAuthStateChanged((user) => {
@@ -116,7 +118,7 @@ class Settings extends Component {
     this.authFirebaseListener && this.authFirebaseListener()
   }
 
-  toggleExpand = panel => (event, expanded) => {
+  toggleExpand = panel => (expanded) => {
     this.setState({
       expanded: expanded ? panel : false,
     });
@@ -134,7 +136,7 @@ class Settings extends Component {
     });
   };
 
-  handleUpdateFirebase = (type) => {
+  handleUpdateFirebase = (type) => () => {
     const { user } = this.state;
     if (type === 'email') {
       firebase.database().ref('users/' + user.uid).update({ email: this.state.newEmail })
@@ -204,7 +206,7 @@ class Settings extends Component {
                 <Divider />
                 <ExpansionPanelActions>
                   <Button size="small" onClick={this.toggleExpand('panel' + (index + 1))}>Anuluj</Button>
-                  <Button size="small" color="primary" onClick={() => this.handleUpdateFirebase(setting.type)}>Zapisz</Button>
+                  <Button size="small" color="primary" onClick={this.handleUpdateFirebase(setting.type)}>Zapisz</Button>
                 </ExpansionPanelActions>
               </div>
             </ExpansionPanel>

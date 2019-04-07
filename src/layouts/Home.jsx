@@ -48,38 +48,34 @@ function Home(props) {
 
   return (
     <div className={classNames(classes.layout, classes.cardGrid)}>
-      <>
-        <Navigation />
-        <PostsContainer auth={auth}>
-          {(posts, status) => {
-            if (status === 'loading') {
-              return (
-                <div className={classes.center}>
-                  <CircularProgress className={classes.progress} size={30} thickness={5} />
-                </div>
-              )
-            }
+      <Navigation />
+      <PostsContainer auth={auth}>
+        {(posts, loaded) => {
+          if (!loaded) {
             return (
-              <Grid container spacing={40} className={classes.cardItem}>
-                {posts.length > 0 ?
-                  posts.map((post, index) => (
-                    <Grid item key={index} xs={12} sm={4} md={4} lg={4} className={classes.cardItemGrid}>
-                      <PostCard content={post} />
-                    </Grid>
-                  )) : (
-                    <Typography
-                      variant="subheading"
-                      className={classes.center}
-                    >
-                      Brak postów do wyświetlenia
-                  </Typography>
-                  )}
-              </Grid>
+              <div className={classes.center}>
+                <CircularProgress className={classes.progress} size={30} thickness={5} />
+              </div>
             )
-          }}
-        </PostsContainer>
-        <BottomAppNavigation />
-      </>
+          }
+          return (
+            <Grid container spacing={40} className={classes.cardItem}>
+              {posts.length > 0
+                ? posts.map((post, index) => (
+                  <Grid item key={index} xs={12} sm={4} md={4} lg={4} className={classes.cardItemGrid}>
+                    <PostCard content={post} />
+                  </Grid>
+                ))
+                : (
+                  <Typography variant="subheading" className={classes.center}>
+                    Brak postów do wyświetlenia
+                  </Typography>
+                )}
+            </Grid>
+          )
+        }}
+      </PostsContainer>
+      <BottomAppNavigation />
     </div>
   );
 }

@@ -52,8 +52,8 @@ class Post extends Component {
     return (
       <>
         <PostContainer id={id}>
-          {(post, status) => {
-            if (status === 'loading') {
+          {(post, loaded) => {
+            if (!loaded) {
               return (
                 <>
                   <Navigation singlePost={true} />

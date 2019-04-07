@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import { withStyles } from '@material-ui/core';
+import { colors } from '../helpers/colors';
 
 const styles = theme => ({
   center: {
@@ -11,7 +12,7 @@ const styles = theme => ({
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
-    background: '#fafafa',
+    background: colors.background,
     zIndex: 1
   }
 });

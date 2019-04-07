@@ -1,12 +1,13 @@
 import { PureComponent } from 'react';
 import { getPostsFromIDB } from '../helpers/indexedDB';
+import { sortPosts } from '../helpers/sort';
 
 export default class PostsContainer extends PureComponent {
   constructor(props) {
     super(props);
 
     this.state = {
-      status: 'loading',
+      loaded: false,
       posts: null
     }
   }
@@ -17,23 +18,13 @@ export default class PostsContainer extends PureComponent {
 
   getPosts = () => {
     let posts = [];
-    const sortPosts = (a, b) => {
-      const dateA = a.data;
-      const dateB = b.data;
-      let comparison = 0;
-      if (dateA > dateB) {
-        comparison = -1;
-      } else if (dateA < dateB) {
-        comparison = 1;
-      }
-      return comparison;
-    }
 
     if ('indexedDB' in window) {
       getPostsFromIDB('posts').then((data) => {
         posts.push(data)
-        posts = posts[0].reverse()
-        this.setState({ posts, status: 'loaded' });
+        console.log(posts)
+        posts = data.length > 0 ? posts[0].reverse() : posts;
+        this.setState({ posts, loaded: true });
       })
     }
 
@@ -41,19 +32,15 @@ export default class PostsContainer extends PureComponent {
     let jsonClient = new FirebaseREST.JSONClient('https://spot-pwa.firebaseio.com');
     jsonClient.get('/posts').then(res => {
       posts = [];
-      for (let post in res.body) {
-        posts.push(res.body[post]);
-      }
-      let postsSorted = posts.sort(sortPosts)
-      return postsSorted;
+      posts = Object.values(res.body).sort(sortPosts);
 
-    }).then(posts => {
-      this.setState({ posts, status: 'loaded' });
+      this.setState({ posts, loaded: true });
+
     }).catch(err => console.log(err))
   }
 
   render() {
-    return this.props.children(this.state.posts, this.state.status)
+    return this.props.children(this.state.posts, this.state.loaded)
   }
 
 }

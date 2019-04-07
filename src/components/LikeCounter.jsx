@@ -4,21 +4,20 @@ import firebase from '../helpers/firebase';
 import { withStyles } from '@material-ui/core/styles';
 import IconButton from '@material-ui/core/IconButton';
 import FavoriteIcon from '@material-ui/icons/Favorite';
-import red from '@material-ui/core/colors/red';
 import { auth } from '../helpers/firebase';
-import Redirect from 'react-router-dom/Redirect';
 import {
   withRouter
 } from 'react-router-dom'
+import { colors } from '../helpers/colors';
 
 
 const styles = theme => ({
   likes: {
     fontSize: 12,
-    color: '#979797'
+    color: colors.textGray
   },
   liked: {
-    color: red[500]
+    color: colors.red
   }
 });
 

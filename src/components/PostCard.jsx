@@ -11,6 +11,7 @@ import LikeCounter from './LikeCounter';
 import { formatData } from '../helpers/formatData';
 import firebase from '../helpers/firebase';
 import LazyLoad from 'react-lazyload';
+import { colors } from '../helpers/colors';
 
 const styles = theme => ({
   card: {
@@ -45,7 +46,7 @@ const styles = theme => ({
     transform: 'rotate(180deg)',
   },
   localization: {
-    color: 'rgba(0, 0, 0, 0.54)',
+    color: colors.textGray,
     fontSize: 12,
     display: 'flex',
     alignItems: 'center'
@@ -71,15 +72,13 @@ class PostCard extends React.Component {
   }
 
   componentDidMount() {
-    const user = this.props.content.user;
-    let color = user.color ? user.color : this.getUserColor(user.id)
+    const { content } = this.props;
+    const user = content.user;
+    const color = this.getUserColor(user.id)
     this.setState({
-      time: formatData(this.props.content.data),
+      time: formatData(content.data),
       color
     })
-    this.interval = setInterval(() => this.setState({
-      time: formatData(this.props.content.data)
-    }), 60 * 1000);
   }
 
 
@@ -88,10 +87,15 @@ class PostCard extends React.Component {
   };
 
   getUserColor = (id) => {
-    this.usersRef = firebase.database().ref('users/' + id);
-    this.usersRef.on('value', (snapshot) => {
-      return snapshot.val().color;
-    });
+    const userColor = this.props.content.user.color;
+    if (userColor) {
+      return userColor;
+    } else {
+      this.usersRef = firebase.database().ref('users/' + id);
+      this.usersRef.on('value', (snapshot) => {
+        return snapshot.val().color;
+      });
+    }
   }
 
   render() {
@@ -111,7 +115,7 @@ class PostCard extends React.Component {
           <img src={img} alt={shortText} className={classes.media} />
         </LazyLoad>
         <CardContent className={classes.info}>
-          <div width="80%">
+          <div style={{ width: '80%' }}>
             <p className={classes.localization}>
               <PlaceIcon className={classes.iconGeo} />
               {geo}
@@ -120,7 +124,7 @@ class PostCard extends React.Component {
               {shortText}
             </Typography>
           </div>
-          <div width="20%">
+          <div style={{ width: '20%' }}>
             <LikeCounter likes={likes} id={id} />
           </div>
         </CardContent>

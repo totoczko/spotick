@@ -1,13 +1,14 @@
 import { PureComponent } from 'react';
 import { auth } from '../helpers/firebase';
 import { getPostsFromIDB } from '../helpers/indexedDB';
+import { sortPosts } from '../helpers/sort';
 
 export default class UserPostsContainer extends PureComponent {
   constructor(props) {
     super(props);
 
     this.state = {
-      status: 'loading',
+      loaded: false,
       likes: [],
       posts: []
     }
@@ -27,17 +28,6 @@ export default class UserPostsContainer extends PureComponent {
     const user_id = this.props.user.uid;
     let posts = [];
     let likes = [];
-    const sortPosts = (a, b) => {
-      const dateA = a.data;
-      const dateB = b.data;
-      let comparison = 0;
-      if (dateA > dateB) {
-        comparison = -1;
-      } else if (dateA < dateB) {
-        comparison = 1;
-      }
-      return comparison;
-    }
 
     if ('indexedDB' in window) {
       getPostsFromIDB('posts').then((data) => {
@@ -54,7 +44,7 @@ export default class UserPostsContainer extends PureComponent {
 
         posts = posts.reverse();
         likes = likes.reverse();
-        this.setState({ posts, likes, status: 'loaded' });
+        this.setState({ posts, likes, loaded: true });
       })
     }
 
@@ -83,12 +73,12 @@ export default class UserPostsContainer extends PureComponent {
     }).then(itemsSorted => {
       const posts = itemsSorted[0];
       const likes = itemsSorted[1];
-      this.setState({ posts, likes, status: 'loaded' });
+      this.setState({ posts, likes, loaded: true });
     }).catch(err => console.log(err))
   }
 
   render() {
-    return this.props.children(this.state.posts, this.state.likes, this.state.status)
+    return this.props.children(this.state.posts, this.state.likes, this.state.loaded)
   }
 
 }

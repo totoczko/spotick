@@ -4,7 +4,6 @@ import { withStyles } from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card';
 import CardHeader from '@material-ui/core/CardHeader';
 import Avatar from '@material-ui/core/Avatar';
-// import red from '@material-ui/core/colors/red';
 import { Typography, CircularProgress, GridListTile, GridList } from '@material-ui/core';
 import BottomAppNavigation from 'components/BottomAppNavigation';
 import Navigation from 'components/Navigation';
@@ -12,6 +11,7 @@ import UserPostsContainer from '../containers/UserPostsContainer';
 import classnames from 'classnames';
 import firebase from '../helpers/firebase';
 import { Link } from 'react-router-dom';
+import { colors } from '../helpers/colors';
 
 const styles = theme => ({
   profile: {
@@ -33,7 +33,7 @@ const styles = theme => ({
   },
   heading: {
     lineHeight: '1em',
-    color: '#999',
+    color: colors.textGray,
     marginBottom: 5,
     marginTop: 15
   },
@@ -46,17 +46,17 @@ const styles = theme => ({
     overflow: 'visible'
   },
   postCounter: {
-    border: '1px solid #eee',
+    border: '1px solid ' + colors.border,
     textAlign: 'center'
   },
   postCounterButton: {
     width: '50%',
-    borderRight: '1px solid #eee',
+    borderRight: '1px solid ' + colors.border,
     display: 'inline-block',
     boxSizing: 'border-box'
   },
   buttonActive: {
-    background: '#fafafa'
+    background: colors.background
   },
   center: {
     width: '100% !important',
@@ -84,7 +84,7 @@ const styles = theme => ({
     position: 'relative',
     width: '100%',
     overflow: 'hidden',
-    background: '#4679BD'
+    background: colors.primary
   },
   gridListLink: {
     display: 'block',
@@ -102,11 +102,11 @@ class Profile extends PureComponent {
   }
 
   componentDidMount() {
-    const user = this.props.user;
+    const { user } = this.props;
     this.getUserColor(user.uid)
   }
 
-  switchView = (view) => {
+  switchView = (view) => () => {
     this.setState({ view })
   }
 
@@ -117,11 +117,11 @@ class Profile extends PureComponent {
     const count_likes_num = count_likes.length === 0 ? 0 : count_likes;
     return (
       <div className={classes.postCounter}>
-        <div className={classnames(classes.postCounterButton, view === 'posts' ? classes.buttonActive : '')} onClick={() => this.switchView('posts')}>
+        <div className={classnames(classes.postCounterButton, view === 'posts' ? classes.buttonActive : '')} onClick={this.switchView('posts')}>
           <Typography variant="overline" className={classes.heading}>Moje posty</Typography>
           <Typography variant="overline" className={classes.counter}>{count_num}</Typography>
         </div>
-        <div className={classnames(classes.postCounterButton, view === 'likes' ? classes.buttonActive : '')} onClick={() => this.switchView('likes')}>
+        <div className={classnames(classes.postCounterButton, view === 'likes' ? classes.buttonActive : '')} onClick={this.switchView('likes')}>
           <Typography variant="overline" className={classes.heading}>Polubione</Typography>
           <Typography variant="overline" className={classes.counter}>{count_likes_num}</Typography>
         </div>
@@ -136,30 +136,38 @@ class Profile extends PureComponent {
     });
   }
 
+  renderList = (listType) => {
+    const { classes } = this.props;
+    return (
+      <GridList spacing={0} className={classes.gridList}>
+        {listType.length > 0 ?
+          listType.map((post, index) => (
+            <GridListTile
+              cols={window.innerWidth > 1100 ? .6666 : 1}
+              key={index}
+              className={classes.gridListTile}>
+              <Link
+                to={'/post/' + post.id}
+                className={classes.gridListLink}>
+                <img src={post.img} alt={post.shortText} className={classes.gridImg} />
+              </Link>
+            </GridListTile>
+          )) : (
+            <div className={classes.center}>
+              <Typography variant="subheading">
+                Brak postów do wyświetlenia
+           </Typography>
+            </div>
+          )
+        }
+      </GridList >
+    )
+  }
+
   render() {
     const { view, color } = this.state;
     const { classes, user } = this.props;
-    const renderList = (listType) => {
-      return (
-        <GridList spacing={0} className={classes.gridList}>
-          {listType.length > 0 ?
-            listType.map((post, index) => (
-              <GridListTile cols={window.innerWidth > 1100 ? .6666 : 1} key={index} className={classes.gridListTile}>
-                <Link to={'/post/' + post.id} className={classes.gridListLink}>
-                  <img src={post.img} alt={post.shortText} className={classes.gridImg} />
-                </Link>
-              </GridListTile>
-            )) : (
-              <div className={classes.center}>
-                <Typography variant="subheading">
-                  Brak postów do wyświetlenia
-						 </Typography>
-              </div>
-            )
-          }
-        </GridList >
-      )
-    }
+
     return (
       <>
         <Navigation />
@@ -174,8 +182,8 @@ class Profile extends PureComponent {
         </Card>
         <div className={classes.layout}>
           <UserPostsContainer user={user}>
-            {(posts, likes, status) => {
-              if (status === 'loading') {
+            {(posts, likes, loaded) => {
+              if (!loaded) {
                 return (
                   <>
                     {this.renderPostsCounter(0, 0)}
@@ -188,7 +196,7 @@ class Profile extends PureComponent {
               return (
                 <>
                   {this.renderPostsCounter(posts.length, likes.length)}
-                  {view === 'posts' ? renderList(posts) : renderList(likes)}
+                  {view === 'posts' ? this.renderList(posts) : this.renderList(likes)}
                 </>
               )
             }

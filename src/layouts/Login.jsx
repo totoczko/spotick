@@ -14,11 +14,12 @@ import Typography from '@material-ui/core/Typography';
 import withStyles from '@material-ui/core/styles/withStyles';
 import Navigation from 'components/Navigation';
 import BottomAppNavigation from 'components/BottomAppNavigation';
+import { colors } from '../helpers/colors';
 
 const styles = theme => ({
   main: {
     width: 'auto',
-    display: 'block', // Fix IE 11 issue.
+    display: 'block',
     marginLeft: theme.spacing.unit * 3,
     marginRight: theme.spacing.unit * 3,
     [theme.breakpoints.up(400 + theme.spacing.unit * 3 * 2)]: {
@@ -36,10 +37,10 @@ const styles = theme => ({
   },
   avatar: {
     margin: theme.spacing.unit,
-    backgroundColor: theme.palette.secondary.main,
+    backgroundColor: colors.primary,
   },
   form: {
-    width: '100%', // Fix IE 11 issue.
+    width: '100%',
     marginTop: theme.spacing.unit,
   },
   submit: {
@@ -74,24 +75,18 @@ class Login extends Component {
   };
 
   catchError = (error) => {
-    let errorMessage = error.message;
-    alert(errorMessage)
+    alert(error.message)
   }
 
   login = (email, password) => {
     auth.setPersistence(firebase.auth.Auth.Persistence.SESSION)
-      .then(function () {
-        // Existing and future Auth states are now persisted in the current
-        // session only. Closing the window would clear any existing state even
-        // if a user forgets to sign out.
-        // ...
-        // New sign-in will be persisted with session persistence.
+      .then(() => {
         return firebase.auth().signInWithEmailAndPassword(email, password)
       })
       .then(() => {
         this.props.history.push('/')
       })
-      .catch(function (error) {
+      .catch((error) => {
         this.catchError(error)
       });
   }
@@ -134,6 +129,15 @@ class Login extends Component {
     }))
   }
 
+  handleSubmit = (type) => {
+    const { login, password } = this.state;
+    if (type === 'login') {
+      this.login(login, password)
+    } else {
+      this.register(login, password)
+    }
+  }
+
   componentWillUnmount() {
     this.setState({
       login: '',
@@ -145,8 +149,9 @@ class Login extends Component {
 
   render() {
     const { classes } = this.props;
-    const { type, login, password } = this.state;
-
+    const { type } = this.state;
+    const switchViewButtonText = (type === 'login') ? 'Zaloguj się' : 'Zarejestruj się';
+    const switchViewButtonDesc = (type === 'login') ? 'Nie masz jeszcze konta?' : 'Masz już konto?';
     return (
       <main className={classes.main}>
         <Navigation loggedOut={true} />
@@ -155,37 +160,45 @@ class Login extends Component {
           <Avatar className={classes.avatar}>
             <LockIcon />
           </Avatar>
+
           <Typography component="h1" variant="h5">
-            {type === 'login' ? 'Zaloguj się' : 'Zarejestruj się'}
+            {switchViewButtonText}
           </Typography>
+
           <form className={classes.form}>
             <FormControl margin="normal" required fullWidth>
               <InputLabel htmlFor="email">Email</InputLabel>
               <Input id="email" name="email" autoComplete="email" autoFocus onChange={this.handleChange('login')} />
             </FormControl>
+
             <FormControl margin="normal" required fullWidth>
               <InputLabel htmlFor="password">Hasło</InputLabel>
               <Input name="password" type="password" id="password" autoComplete="current-password" onChange={this.handleChange('password')} />
             </FormControl>
+
             {type === 'register' ?
               <FormControl margin="normal" required fullWidth>
                 <InputLabel htmlFor="email">Login</InputLabel>
                 <Input id="username" name="username" onChange={this.handleChange('username')} />
               </FormControl>
               : ''}
+
             <Button
               fullWidth
               variant="contained"
               color="primary"
               className={classes.submit}
-              onClick={() => type === 'login' ? this.login(login, password) : this.register(login, password)}
+              onClick={() => this.handleSubmit(type)}
             >
-              {type === 'login' ? 'Zaloguj się' : 'Zarejestruj się'}
+              {switchViewButtonText}
             </Button>
-            <small className={classes.typeLink}>{type === 'login' ? 'Nie masz jeszcze konta?' : 'Masz już konto?'}
+
+            <small className={classes.typeLink}>
+              {switchViewButtonDesc}
               <Button color="primary" className={classes.button} onClick={this.toggleType}>
-                {type === 'login' ? 'Zarejestruj się' : 'Zaloguj się'}
-              </Button></small>
+                {switchViewButtonText}
+              </Button>
+            </small>
           </form>
         </Paper>
         <BottomAppNavigation loggedOut={true} />
