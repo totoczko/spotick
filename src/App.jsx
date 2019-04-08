@@ -44,9 +44,10 @@ class App extends Component {
     this.authFirebaseListener = auth.onAuthStateChanged((user) => {
       if (user) {
         user.getIdToken().then((token) => {
-          this.setState({ user, isLogged: true, auth: token, loading: false })
+          this.setState({ user, isLogged: true, auth: token })
         });
       }
+      this.setState({ loading: false })
     });
   }
 
@@ -64,7 +65,7 @@ class App extends Component {
           <div className={classes.container}>
             <ScrollToTop />
             <Route auth={auth} exact path="/" component={Home} />
-            <Route exact path="/post/:id" component={({ match }) => <Post id={match.params.id} user={user} />} />
+            <Route auth={auth} exact path="/post/:id" component={({ match }) => <Post id={match.params.id} user={user} />} />
             <PrivateRoute isLogged={isLogged} exact path="/profile" component={Profile} user={user} />
             <PrivateRoute isLogged={isLogged} exact path="/add" component={AddPost} user={user} />
             <PrivateRoute isLogged={isLogged} exact path="/settings" component={Settings} user={user} />

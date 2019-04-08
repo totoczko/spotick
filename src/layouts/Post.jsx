@@ -39,16 +39,15 @@ class Post extends Component {
   }
 
   handleClickOpen = () => {
-    this.setState({
-      open: true,
-    });
+    this.setState({ open: true });
   };
 
   handleClose = value => {
     this.setState({ selectedValue: value, open: false });
   };
+
   render() {
-    const { id, classes, user } = this.props;
+    const { id, classes, user, auth } = this.props;
     return (
       <>
         <PostContainer id={id}>

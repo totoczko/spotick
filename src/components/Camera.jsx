@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react';
 
 export class Camera extends PureComponent {
-	captureImage() {
+	captureImage = () => () => {
 		const context = this.canvas.getContext("2d")
 		context.drawImage(this.videoStream, 0, 0, 800, 800)
 		const image = this.canvas.toDataURL('image/jpeg', 0.5)

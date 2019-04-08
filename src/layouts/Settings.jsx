@@ -214,7 +214,7 @@ class Settings extends Component {
           {'Notification' in window ? (
             <PushToggle user={user} />
           ) : ''}
-          <Button className={classnames(classes.panelButton, classes.red)} onClick={() => this.handleLogout()}>Wyloguj się</Button>
+          <Button className={classnames(classes.panelButton, classes.red)} onClick={this.handleLogout}>Wyloguj się</Button>
         </div>
         <BottomAppNavigation />
       </>

@@ -273,7 +273,7 @@ class AddPost extends PureComponent {
     video.srcObject.getVideoTracks().forEach(track => {
       track.stop()
     })
-    const img = dataURItoBlob(canvas.toDataURL())
+    const img = dataURItoBlob(canvas.toDataURL('image/jpeg', 0.5))
     this.setState({
       imgSent: true,
       img
@@ -295,7 +295,7 @@ class AddPost extends PureComponent {
         return (
           <div className={classes.container}>
             <AddInfo handleChange={this.handleChange} values={values} />
-            <Button variant="contained" color="primary" className={classes.button} onClick={() => this.handleSend()}>Opublikuj</Button>
+            <Button variant="contained" color="primary" className={classes.button} onClick={this.handleSend}>Opublikuj</Button>
           </div>
         )
       default:

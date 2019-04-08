@@ -52,7 +52,7 @@ const styles = theme => ({
 });
 
 class Navigation extends React.Component {
-	goBack = () => () => {
+	goBack = () => {
 		this.props.history.goBack();
 	}
 
@@ -68,7 +68,7 @@ class Navigation extends React.Component {
 							</Link>
 						}
 						{(singlePost || onlyBack) && !loggedOut &&
-							<ArrowBackIosIcon className={classes.link} onClick={this.goBack()} />
+							<ArrowBackIosIcon className={classes.link} onClick={this.goBack} />
 						}
 						{location.pathname === '/add' && imgSent && step !== 3 && !loggedOut &&
 							<Button className={classes.link} onClick={handleSwitch(3)}>
@@ -86,7 +86,7 @@ class Navigation extends React.Component {
 							</Link>
 						}
 						{singlePost && openActions && !loggedOut &&
-							<MoreVertIcon className={classes.link} onClick={openActions()} />
+							<MoreVertIcon className={classes.link} onClick={openActions} />
 						}
 					</Toolbar>
 				</AppBar>

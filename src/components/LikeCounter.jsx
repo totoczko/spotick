@@ -38,7 +38,7 @@ class LikeCounter extends Component {
     })
   }
 
-  handleLike = (post_id, likes) => {
+  handleLike = (post_id, likes) => () => {
     const user = auth.currentUser;
     if (user) {
       const userId = user.uid;
@@ -76,7 +76,7 @@ class LikeCounter extends Component {
     const liked = user && likes.users ? likes.users.indexOf(user.uid) >= 0 : false;
     return (
       <>
-        <IconButton aria-label="Polajkuj" onClick={() => this.handleLike(id, likes)}>
+        <IconButton aria-label="Polajkuj" onClick={this.handleLike(id, likes)}>
           <FavoriteIcon className={liked ? classes.liked : ''} />
         </IconButton>
         <span className={classes.likes}>{likes && likes.count}</span>

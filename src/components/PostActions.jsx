@@ -23,7 +23,7 @@ const styles = theme => ({
 });
 
 class PostActions extends Component {
-  handleDelete = (id) => {
+  handleDelete = (id) => () => {
     window.history.go(-1)
     firebase.database().ref('posts/' + id).remove();
   }
@@ -35,10 +35,10 @@ class PostActions extends Component {
       <Dialog onClose={() => onClose()} aria-labelledby="simple-dialog-title" {...other}>
         <div>
           <List className={classes.actionList}>
-            <ListItem button className={classes.border} onClick={() => this.handleDelete(id)}>
+            <ListItem button className={classes.border} onClick={this.handleDelete(id)}>
               <ListItemText primary="Usuń" className={classes.action} />
             </ListItem>
-            <ListItem button onClick={() => onClose()}>
+            <ListItem button onClick={onClose}>
               <ListItemText primary="Anuluj" className={classes.action} />
             </ListItem>
           </List>

@@ -127,7 +127,7 @@ class CapturePhoto extends PureComponent {
           className={buttonClass}
           color="primary"
           type="button"
-          onClick={() => captureImage(this.canvas, this.videoStream)}
+          onClick={captureImage(this.canvas, this.videoStream)}
           ref={(captureButton) => { this.captureButton = captureButton }}
         >
           <CameraIcon className={classes.captureButton} />

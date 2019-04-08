@@ -81,11 +81,6 @@ class PostCard extends React.Component {
     })
   }
 
-
-  handleExpandClick = () => {
-    this.setState(state => ({ expanded: !state.expanded }));
-  };
-
   getUserColor = (id) => {
     const userColor = this.props.content.user.color;
     if (userColor) {

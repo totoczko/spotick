@@ -2,7 +2,7 @@ import { PureComponent } from 'react';
 import { auth } from '../helpers/firebase';
 import { getPostsFromIDB } from '../helpers/indexedDB';
 
-export default class PostsContainer extends PureComponent {
+export default class PostContainer extends PureComponent {
   constructor(props) {
     super(props);
 
@@ -20,6 +20,10 @@ export default class PostsContainer extends PureComponent {
         });
       }
     });
+  }
+
+  componentWillUnmount() {
+    this.authFirebaseListener && this.authFirebaseListener() // Unlisten it by calling it as a function
   }
 
   getPost = (token) => {
