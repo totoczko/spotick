@@ -150,8 +150,9 @@ class Login extends Component {
   render() {
     const { classes } = this.props;
     const { type } = this.state;
-    const switchViewButtonText = (type === 'login') ? 'Zaloguj się' : 'Zarejestruj się';
-    const switchViewButtonDesc = (type === 'login') ? 'Nie masz jeszcze konta?' : 'Masz już konto?';
+    const switchViewCurrent = (type === 'login') ? 'Zaloguj się' : 'Zarejestruj się';
+    const switchViewButtonText = (type !== 'login') ? 'Zaloguj się' : 'Zarejestruj się';
+    const switchViewButtonDesc = (type !== 'login') ? 'Nie masz jeszcze konta?' : 'Masz już konto?';
     return (
       <main className={classes.main}>
         <Navigation loggedOut={true} />
@@ -162,7 +163,7 @@ class Login extends Component {
           </Avatar>
 
           <Typography component="h1" variant="h5">
-            {switchViewButtonText}
+            {switchViewCurrent}
           </Typography>
 
           <form className={classes.form}>
@@ -190,7 +191,7 @@ class Login extends Component {
               className={classes.submit}
               onClick={() => this.handleSubmit(type)}
             >
-              {switchViewButtonText}
+              {switchViewCurrent}
             </Button>
 
             <small className={classes.typeLink}>

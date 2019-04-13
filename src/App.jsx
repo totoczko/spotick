@@ -44,10 +44,11 @@ class App extends Component {
     this.authFirebaseListener = auth.onAuthStateChanged((user) => {
       if (user) {
         user.getIdToken().then((token) => {
-          this.setState({ user, isLogged: true, auth: token })
+          this.setState({ user, isLogged: true, auth: token, loading: false })
         });
+      } else {
+        this.setState({ loading: false })
       }
-      this.setState({ loading: false })
     });
   }
 

@@ -266,7 +266,7 @@ class AddPost extends PureComponent {
     })
   }
 
-  captureImage = (canvas, video) => {
+  captureImage = (canvas, video) => () => {
     const context = canvas.getContext('2d');
     const width = canvas.width;
     context.drawImage(video, 0, 0, width, canvas.height);
