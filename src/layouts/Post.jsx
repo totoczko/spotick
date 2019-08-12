@@ -47,7 +47,7 @@ class Post extends Component {
   };
 
   render() {
-    const { id, classes, user, auth } = this.props;
+    const { id, classes, user } = this.props;
     return (
       <>
         <PostContainer id={id}>

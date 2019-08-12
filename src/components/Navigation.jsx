@@ -9,13 +9,12 @@ import { Button } from '@material-ui/core';
 import SettingsIcon from '@material-ui/icons/Settings';
 import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
-import SearchIcon from '@material-ui/icons/Search';
+// import SearchIcon from '@material-ui/icons/Search';
 import logo from 'assets/images/logo-nb.png';
 import { colors } from '../helpers/colors';
-import Input from '@material-ui/core/Input';
-import InputLabel from '@material-ui/core/InputLabel';
-import InputAdornment from '@material-ui/core/InputAdornment';
-import FormControl from '@material-ui/core/FormControl';
+// import Input from '@material-ui/core/Input';
+// import InputAdornment from '@material-ui/core/InputAdornment';
+// import FormControl from '@material-ui/core/FormControl';
 
 const styles = theme => ({
 	root: {
@@ -53,39 +52,39 @@ const styles = theme => ({
 			marginLeft: 'auto',
 			marginRight: 'auto',
 		}
-	},
-	search: {
-		width: 25,
-		transition: 'width 100ms ease-in-out'
-	},
-	searchActive: {
-		width: 200,
-		transition: 'width 100ms ease-in-out'
 	}
+	// search: {
+	// 	width: 25,
+	// 	transition: 'width 100ms ease-in-out'
+	// },
+	// searchActive: {
+	// 	width: 200,
+	// 	transition: 'width 100ms ease-in-out'
+	// }
 });
 
 class Navigation extends React.Component {
-	constructor(props) {
-		super(props);
+	// constructor(props) {
+	// 	super(props);
 
-		this.state = {
-			searchActive: false
-		}
-	}
+	// this.state = {
+	// 	searchActive: false
+	// }
+	// }
 
 	goBack = () => {
 		this.props.history.goBack();
 	}
 
-	openSearch = () => {
-		this.setState({
-			searchActive: true
-		})
-	}
+	// openSearch = () => {
+	// 	this.setState({
+	// 		searchActive: true
+	// 	})
+	// }
 
 	render() {
 		const { classes, location, handleSwitch, imgSent, step, singlePost, openActions, onlyBack, loggedOut } = this.props;
-		const { searchActive } = this.state;
+		// const { searchActive } = this.state;
 		return (
 			<div className={classes.root}>
 				<AppBar position="fixed" className={classes.appbar}>
@@ -97,11 +96,6 @@ class Navigation extends React.Component {
 						}
 						{(singlePost || onlyBack) && !loggedOut &&
 							<ArrowBackIosIcon className={classes.link} onClick={this.goBack} />
-						}
-						{location.pathname === '/add' && imgSent && step !== 3 && !loggedOut &&
-							<Button className={classes.link} onClick={handleSwitch(3)}>
-								Dalej
-						</Button>
 						}
 						{location.pathname === '/add' && imgSent && step === 3 && !loggedOut &&
 							<Button className={classes.link} onClick={handleSwitch(1)}>
@@ -116,7 +110,7 @@ class Navigation extends React.Component {
 						{singlePost && openActions && !loggedOut &&
 							<MoreVertIcon className={classes.link} onClick={openActions} />
 						}
-						{location.pathname === '/' &&
+						{/* {location.pathname === '/' &&
 							<FormControl className={classes.margin}>
 								<Input
 									id="input-with-icon-adornment"
@@ -128,7 +122,7 @@ class Navigation extends React.Component {
 									}
 								/>
 							</FormControl>
-						}
+						} */}
 					</Toolbar>
 				</AppBar>
 			</div>

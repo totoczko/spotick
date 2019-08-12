@@ -26,8 +26,7 @@ const styles = theme => ({
     }
   },
   container: {
-    padding: 20,
-    paddingTop: 0,
+    padding: 40,
     [theme.breakpoints.up(1100 + theme.spacing.unit * 3 * 2)]: {
       width: 500,
       marginLeft: 'auto',
@@ -287,24 +286,17 @@ class AddPost extends PureComponent {
     const values = { shortText, geo };
     switch (step) {
       case 1:
-        return (
-          <>
-            <CapturePhoto captureImage={this.captureImage} imgSent={imgSent} camera={camera} />
-            <div className={classes.container}>
-              <AddInfo handleChange={this.handleChange} values={values} />
-              <Button variant="contained" color="primary" className={classes.button} onClick={this.handleSend}>Opublikuj</Button>
-            </div>
-          </>
-        )
+        return <CapturePhoto captureImage={this.captureImage} imgSent={imgSent} camera={camera} />
       case 2:
         return (
-          <>
-            <AddFile handleAddFile={this.handleAddFile} />
-            <div className={classes.container}>
-              <AddInfo handleChange={this.handleChange} values={values} />
-              <Button variant="contained" color="primary" className={classes.button} onClick={this.handleSend}>Opublikuj</Button>
-            </div>
-          </>
+          <AddFile handleAddFile={this.handleAddFile} />
+        )
+      case 3:
+        return (
+          <div className={classes.container}>
+            <AddInfo handleChange={this.handleChange} values={values} />
+            <Button variant="contained" color="primary" className={classes.button} onClick={this.handleSend}>Opublikuj</Button>
+          </div>
         )
       default:
         return <CapturePhoto captureImage={this.captureImage} imgSent={imgSent} camera={camera} />

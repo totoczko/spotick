@@ -102,8 +102,7 @@ class CapturePhoto extends PureComponent {
     });
 
     const buttonClass = cx({
-      captureButton: true,
-      hidden: imgSent
+      captureButton: true
     });
 
     return (
