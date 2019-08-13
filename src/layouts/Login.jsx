@@ -152,7 +152,7 @@ class Login extends Component {
     const { type } = this.state;
     const switchViewCurrent = (type === 'login') ? 'Zaloguj się' : 'Zarejestruj się';
     const switchViewButtonText = (type !== 'login') ? 'Zaloguj się' : 'Zarejestruj się';
-    const switchViewButtonDesc = (type !== 'login') ? 'Nie masz jeszcze konta?' : 'Masz już konto?';
+    const switchViewButtonDesc = (type !== 'login') ? 'Masz już konto?' : 'Nie masz jeszcze konta?';
     return (
       <main className={classes.main}>
         <Navigation loggedOut={true} />
