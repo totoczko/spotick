@@ -133,8 +133,14 @@ if ('function' === typeof importScripts) {
 
     workbox.routing.registerRoute(
       /^https:\/\/firebasestorage\.googleapis\.com/,
-      new workbox.strategies.StaleWhileRevalidate({
+      new workbox.strategies.CacheFirst({
         cacheName: 'post-images',
+        plugins: [
+          new workbox.expiration.Plugin({
+            maxEntries: 60,
+            maxAgeSeconds: 30 * 24 * 60 * 60, // 30 Days
+          }),
+        ]
       })
     );
 
