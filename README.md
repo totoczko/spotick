@@ -5,7 +5,7 @@ Main features:
 - making photos with build-in camera
 - geolocation
 - adding posts and scrolling through them
-- user profile view
+- user profile
 - liking posts, saving them as favourites 
 - push notifications
 - working offline
