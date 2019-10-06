@@ -1,4 +1,4 @@
-Spotick is a Progressive Web App inspired by Instagram developed using React.js. It was part of a thesis "Comparison of Progressive Web Apps, hybrid and native applications".
+Spotick is a Progressive Web App inspired by Instagram and developed using React.js. It was part of a thesis "Comparison of Progressive Web Apps, hybrid and native applications".
 
 Main features: 
 - registering / logging in and out
